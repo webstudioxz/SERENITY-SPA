@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Acerca de | FG-Studio - Innovación Digital</title>
+    
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta http-equiv="X-Frame-Options" content="DENY">
+    <meta http-equiv="X-XSS-Protection" content="1; mode=block">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #f8fafc;
+            color: #1e293b;
+            overflow-x: hidden;
+        }
+        
+        .navbar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 15px 0;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
+        }
+        
+        .navbar-scrolled {
+            padding: 10px 0;
+            background: white;
+            box-shadow: 0 4px 25px rgba(0,0,0,0.08);
+        }
+        
+        .navbar-brand {
+            font-weight: 800;
+            font-size: 1.6rem;
+            background: linear-gradient(135deg, #2c5aa0, #4cc9f0);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-decoration: none;
+        }
+        
+        .logo-img {
+            width: 45px;
+            height: 45px;
+            border-radius: 12px;
+            object-fit: cover;
+            margin-right: 10px;
+        }
+        
+        .nav-link {
+            font-weight: 500;
+            color: #334155;
+            margin: 0 8px;
+            transition: all 0.3s;
+            position: relative;
+            text-decoration: none;
+        }
+        
+        .nav-link:hover { color: #2c5aa0; }
+        
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, #2c5aa0, #4cc9f0);
+            transition: width 0.3s;
+        }
+        
+        .nav-link:hover::after { width: 70%; }
+        
+        .btn-back-home {
+            background: linear-gradient(135deg, #2c5aa0, #4cc9f0);
+            color: white;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 40px;
+            font-weight: 500;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-block;
+        }
+        
+        .btn-back-home:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(44,90,160,0.3);
+            color: white;
+        }
+        
+        .hero-about {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            padding: 120px 0 80px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hero-title {
+            font-size: 3.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #ffffff, #4cc9f0);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 20px;
+        }
+        
+        .mission-card {
+            background: white;
+            border-radius: 24px;
+            padding: 35px;
+            text-align: center;
+            height: 100%;
+            transition: all 0.4s;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+        }
+        
+        .mission-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+        
+        .mission-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #2c5aa0, #4cc9f0);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+        }
+        
+        .mission-icon i {
+            font-size: 2.5rem;
+            color: white;
+        }
+        
+        .timeline {
+            position: relative;
+            padding: 40px 0;
+        }
+        
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 2px;
+            height: 100%;
+            background: linear-gradient(180deg, #2c5aa0, #4cc9f0);
+        }
+        
+        .timeline-item {
+            margin-bottom: 50px;
+            position: relative;
+        }
+        
+        .timeline-dot {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 20px;
+            height: 20px;
+            background: #4cc9f0;
+            border-radius: 50%;
+            border: 3px solid white;
+            box-shadow: 0 0 0 4px rgba(76,201,240,0.3);
+            z-index: 1;
+        }
+        
+        .timeline-content {
+            width: 45%;
+            padding: 20px;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+            transition: all 0.3s;
+        }
+        
+        .timeline-content:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+        }
+        
+        .timeline-item:nth-child(odd) .timeline-content { margin-left: auto; }
+        
+        .team-card {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+            transition: all 0.4s;
+            margin-bottom: 30px;
+        }
+        
+        .team-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.12);
+        }
+        
+        .team-img {
+            width: 100%;
+            height: 280px;
+            object-fit: cover;
+        }
+        
+        .team-info {
+            padding: 25px;
+            text-align: center;
+        }
+        
+        .team-name {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+        
+        .team-role {
+            color: #4cc9f0;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+        
+        .team-social {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin-top: 15px;
+        }
+        
+        .team-social a {
+            width: 35px;
+            height: 35px;
+            background: #f1f5f9;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #2c5aa0;
+            transition: all 0.3s;
+            text-decoration: none;
+        }
+        
+        .team-social a:hover {
+            background: linear-gradient(135deg, #2c5aa0, #4cc9f0);
+            color: white;
+            transform: translateY(-3px);
+        }
+        
+        .stats-section {
+            background: linear-gradient(135deg, #2c5aa0, #4cc9f0);
+            padding: 60px 0;
+            color: white;
+        }
+        
+        .stat-number {
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 10px;
+        }
+        
+        .footer {
+            background: #0f172a;
+            color: white;
+            padding: 50px 0 20px;
+        }
+        
+        .social-links a {
+            width: 40px;
+            height: 40px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            margin: 0 5px;
+            transition: all 0.3s;
+            text-decoration: none;
+        }
+        
+        .social-links a:hover {
+            background: #4cc9f0;
+            transform: translateY(-3px);
+        }
+        
+        .loading-placeholder {
+            text-align: center;
+            padding: 40px;
+            color: #94a3b8;
+        }
+        
+        .loading-placeholder i {
+            font-size: 3rem;
+            margin-bottom: 15px;
+        }
+        
+        @media (max-width: 768px) {
+            .hero-title { font-size: 2rem; }
+            .timeline::before { left: 20px; }
+            .timeline-dot { left: 20px; }
+            .timeline-content {
+                width: calc(100% - 50px);
+                margin-left: 50px !important;
+            }
+            .stat-number { font-size: 2rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg fixed-top" id="navbar">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center" href="index.html">
+                <img src="https://i.ibb.co/LDG7Gf2d/fotor-ai-2025020222510.jpg" alt="FG-Studio" class="logo-img" loading="lazy">
+                <span>FG-Studio</span>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-label="Menú">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="index.html">Inicio</a></li>
+                    <li class="nav-item"><a class="nav-link" href="index.html#servicios">Servicios</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="hacercade.html">Acerca de</a></li>
+                    <li class="nav-item"><a class="nav-link" href="contactar.html">Contacto</a></li>
+                </ul>
+                <a href="/" class="btn btn-back-home ms-3">
+                    <i class="fas fa-home me-2"></i>Volver al inicio
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- CONTENIDO DINÁMICO -->
+    <div id="dynamicContent">
+        <!-- Hero -->
+        <section class="hero-about">
+            <div class="container text-center">
+                <div class="row justify-content-center">
+                    <div class="col-lg-8">
+                        <h1 class="hero-title" id="heroTitle">Cargando...</h1>
+                        <p class="text-white-50 fs-5 mt-3" id="heroSubtitle"></p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Misión y Visión -->
+        <section class="py-5">
+            <div class="container">
+                <div class="row g-4" id="misionVisionContainer">
+                    <div class="col-12 text-center">
+                        <div class="loading-placeholder">
+                            <i class="fas fa-spinner fa-spin"></i>
+                            <p>Cargando información...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Valores -->
+        <section class="py-5 bg-light" id="valoresSection" style="display:none;">
+            <div class="container">
+                <h2 class="text-center mb-5">Nuestros Valores</h2>
+                <div class="row g-4" id="valoresContainer"></div>
+            </div>
+        </section>
+        
+        <!-- Historia Timeline -->
+        <section class="py-5" id="historiaSection" style="display:none;">
+            <div class="container">
+                <h2 class="text-center mb-5">Nuestra Historia</h2>
+                <div class="timeline" id="timelineContainer"></div>
+            </div>
+        </section>
+        
+        <!-- Stats -->
+        <section class="stats-section" id="statsSection" style="display:none;">
+            <div class="container">
+                <div class="row text-center g-4" id="statsContainer"></div>
+            </div>
+        </section>
+        
+        <!-- Equipo -->
+        <section class="py-5" id="equipoSection" style="display:none;">
+            <div class="container">
+                <h2 class="text-center mb-5">Conoce al Equipo</h2>
+                <div class="row" id="equipoContainer"></div>
+            </div>
+        </section>
+    </div>
+
+    <!-- CTA -->
+    <section class="py-5 bg-primary text-white">
+        <div class="container text-center">
+            <h3>¿Listo para transformar tu negocio?</h3>
+            <p class="mb-4">Únete a los clientes que ya confían en FG-Studio</p>
+            <a href="contactar.html" class="btn btn-light btn-lg px-5">
+                <i class="fas fa-paper-plane me-2"></i>Contáctanos ahora
+            </a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4 mb-4">
+                    <h5 class="mb-3">FG-Studio</h5>
+                    <p class="text-white-50">Transformamos ideas en experiencias digitales exitosas.</p>
+                    <div class="social-links">
+                        <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                        <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="#" aria-label="GitHub"><i class="fab fa-github"></i></a>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <h5 class="mb-3">Enlaces Rápidos</h5>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><a href="index.html" class="text-white-50 text-decoration-none">Inicio</a></li>
+                        <li class="mb-2"><a href="index.html#servicios" class="text-white-50 text-decoration-none">Servicios</a></li>
+                        <li class="mb-2"><a href="hacercade.html" class="text-white-50 text-decoration-none">Acerca de</a></li>
+                        <li class="mb-2"><a href="contactar.html" class="text-white-50 text-decoration-none">Contacto</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <h5 class="mb-3">Contacto</h5>
+                    <p class="text-white-50 mb-2"><i class="fas fa-envelope me-2"></i>webstudioxz@gmail.com</p>
+                    <p class="text-white-50 mb-2"><i class="fas fa-phone me-2"></i>+53 5357-15-69</p>
+                    <p class="text-white-50"><i class="fas fa-map-marker-alt me-2"></i>Centro Habana, Cuba</p>
+                </div>
+            </div>
+            <hr class="bg-white-50">
+            <div class="text-center text-white-50">
+                <p>&copy; 2026 FG-Studio. Todos los derechos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    
+    <script>
+        const API_URL = window.location.origin;
+        
+        // ============================================
+        // CARGAR DATOS DINÁMICOS
+        // ============================================
+        async function loadAcercaDe() {
+            try {
+                const response = await fetch(`${API_URL}/api/acercade`);
+                if (!response.ok) throw new Error('Error al cargar');
+                
+                const data = await response.json();
+                renderAcercaDe(data);
+                initAOS();
+            } catch (error) {
+                console.error('Error:', error);
+                showError();
+            }
+        }
+        
+        function renderAcercaDe(data) {
+            if (!data || !data.hero) {
+                showError();
+                return;
+            }
+            
+            // Hero
+            document.getElementById('heroTitle').textContent = data.hero.titulo || 'FG-Studio';
+            document.getElementById('heroSubtitle').textContent = data.hero.subtitulo || '';
+            
+            // Misión y Visión
+            if (data.mision_vision && data.mision_vision.length > 0) {
+                const container = document.getElementById('misionVisionContainer');
+                container.innerHTML = data.mision_vision.map((item, index) => `
+                    <div class="col-md-${data.mision_vision.length === 1 ? '12' : '6'}" data-aos="${index % 2 === 0 ? 'fade-right' : 'fade-left'}">
+                        <div class="mission-card">
+                            <div class="mission-icon">
+                                <i class="fas ${item.icono || 'fa-star'}"></i>
+                            </div>
+                            <h3 class="mb-3">${escapeHtml(item.titulo)}</h3>
+                            <p class="text-secondary">${escapeHtml(item.descripcion)}</p>
+                        </div>
+                    </div>
+                `).join('');
+            }
+            
+            // Valores
+            if (data.valores && data.valores.length > 0) {
+                document.getElementById('valoresSection').style.display = 'block';
+                document.getElementById('valoresContainer').innerHTML = data.valores.map((v, i) => `
+                    <div class="col-md-3" data-aos="fade-up" data-aos-delay="${(i+1)*100}">
+                        <div class="text-center">
+                            <i class="fas ${v.icono || 'fa-star'} fa-3x mb-3" style="color: #2c5aa0"></i>
+                            <h5>${escapeHtml(v.titulo)}</h5>
+                            <p class="small text-secondary">${escapeHtml(v.descripcion)}</p>
+                        </div>
+                    </div>
+                `).join('');
+            }
+            
+            // Historia Timeline
+            if (data.historia && data.historia.length > 0) {
+                document.getElementById('historiaSection').style.display = 'block';
+                document.getElementById('timelineContainer').innerHTML = data.historia.map((h, i) => `
+                    <div class="timeline-item" data-aos="${i % 2 === 0 ? 'fade-right' : 'fade-left'}">
+                        <div class="timeline-dot"></div>
+                        <div class="timeline-content">
+                            <h5 class="text-primary">${escapeHtml(h.anio)}</h5>
+                            <h6>${escapeHtml(h.titulo)}</h6>
+                            <p class="text-secondary">${escapeHtml(h.descripcion)}</p>
+                        </div>
+                    </div>
+                `).join('');
+            }
+            
+            // Stats
+            if (data.estadisticas && data.estadisticas.length > 0) {
+                document.getElementById('statsSection').style.display = 'block';
+                document.getElementById('statsContainer').innerHTML = data.estadisticas.map((s, i) => `
+                    <div class="col-md-3" data-aos="zoom-in" data-aos-delay="${(i+1)*100}">
+                        <div class="stat-number"><span class="counter" data-target="${s.numero}">0</span>${s.sufijo || '+'}</div>
+                        <p>${escapeHtml(s.etiqueta)}</p>
+                    </div>
+                `).join('');
+                
+                // Iniciar contadores
+                setTimeout(initCounters, 500);
+            }
+            
+            // Equipo
+            if (data.equipo && data.equipo.length > 0) {
+                document.getElementById('equipoSection').style.display = 'block';
+                document.getElementById('equipoContainer').innerHTML = data.equipo.map((e, i) => `
+                    <div class="col-md-4" data-aos="fade-up" data-aos-delay="${(i+1)*100}">
+                        <div class="team-card">
+                            <img src="${escapeHtml(e.imagen || 'https://via.placeholder.com/400x280/1e3c72/ffffff?text=Equipo')}" 
+                                 alt="${escapeHtml(e.nombre)}" class="team-img" loading="lazy"
+                                 onerror="this.src='https://via.placeholder.com/400x280/1e3c72/ffffff?text=Equipo'">
+                            <div class="team-info">
+                                <h4 class="team-name">${escapeHtml(e.nombre)}</h4>
+                                <p class="team-role">${escapeHtml(e.cargo)}</p>
+                                <p class="text-secondary">${escapeHtml(e.descripcion || '')}</p>
+                                <div class="team-social">
+                                    ${e.linkedin ? `<a href="${escapeHtml(e.linkedin)}" target="_blank" rel="noopener" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>` : ''}
+                                    ${e.github ? `<a href="${escapeHtml(e.github)}" target="_blank" rel="noopener" aria-label="GitHub"><i class="fab fa-github"></i></a>` : ''}
+                                    ${e.twitter ? `<a href="${escapeHtml(e.twitter)}" target="_blank" rel="noopener" aria-label="Twitter"><i class="fab fa-twitter"></i></a>` : ''}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+            }
+        }
+        
+        function showError() {
+            document.getElementById('heroTitle').textContent = 'FG-Studio';
+            document.getElementById('heroSubtitle').textContent = 'Información no disponible momentáneamente';
+            document.getElementById('misionVisionContainer').innerHTML = `
+                <div class="col-12 text-center py-5">
+                    <i class="fas fa-info-circle fa-3x text-muted mb-3"></i>
+                    <p>La información está siendo actualizada. Vuelve pronto.</p>
+                </div>
+            `;
+        }
+        
+        function escapeHtml(str) {
+            if (!str) return '';
+            const div = document.createElement('div');
+            div.textContent = str;
+            return div.innerHTML;
+        }
+        
+        function initAOS() {
+            if (typeof AOS !== 'undefined') {
+                AOS.init({ duration: 1000, once: true, offset: 100 });
+                setTimeout(() => AOS.refresh(), 100);
+            }
+        }
+        
+        function initCounters() {
+            const counters = document.querySelectorAll('.counter');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const target = parseInt(entry.target.getAttribute('data-target'));
+                        animateCounter(entry.target, target);
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.5 });
+            
+            counters.forEach(c => observer.observe(c));
+        }
+        
+        function animateCounter(element, target) {
+            if (!target || isNaN(target)) return;
+            let current = 0;
+            const increment = target / 50;
+            const timer = setInterval(() => {
+                current += increment;
+                if (current >= target) {
+                    element.textContent = target;
+                    clearInterval(timer);
+                } else {
+                    element.textContent = Math.floor(current);
+                }
+            }, 30);
+        }
+        
+        // Navbar scroll
+        window.addEventListener('scroll', () => {
+            const navbar = document.getElementById('navbar');
+            if (navbar) {
+                navbar.classList.toggle('navbar-scrolled', window.scrollY > 50);
+            }
+        }, { passive: true });
+        
+        // Iniciar
+        loadAcercaDe();
+    </script>
+</body>
+</html>

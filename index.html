@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>FG-Studio | Catálogos Digitales Futuristas</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&family=Playfair+Display:wght@400;500;600;700;800&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+    
+    <meta property="og:title" content="FG-Studio - Catálogos Digitales Profesionales">
+    <meta property="og:description" content="Automatiza tu negocio, vende más con catálogos digitales modernos.">
+    <meta property="og:image" content="https://i.ibb.co/LDG7Gf2d/fotor-ai-2025020222510.jpg">
+    <meta property="og:url" content="https://fgstudio.onrender.com">
+    <meta property="og:type" content="website">
+    
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --primary: #2dd4bf;
+            --primary-dark: #14b8a6;
+            --secondary: #3b82f6;
+            --dark-bg: #0a0c15;
+            --card-bg: rgba(17, 24, 39, 0.7);
+            --light-text: #f9fafb;
+            --gray-text: #cbd5e1;
+            --shadow-xl: 0 25px 40px -12px rgba(0, 0, 0, 0.7);
+            --radius: 1.25rem;
+        }
+        body {
+            background: radial-gradient(circle at 20% 30%, #0b0e1a, #020408);
+            color: var(--light-text);
+            font-family: 'Space Grotesk', 'Inter', sans-serif;
+            overflow-x: hidden;
+        }
+        #particles-canvas {
+            position: fixed; top: 0; left: 0;
+            width: 100%; height: 100%;
+            pointer-events: none; z-index: 0; opacity: 0.5;
+        }
+        .blob {
+            position: fixed; width: 45vw; height: 45vw;
+            background: radial-gradient(circle, rgba(45, 212, 191, 0.2), transparent 70%);
+            border-radius: 50%; filter: blur(90px);
+            z-index: -1; pointer-events: none;
+            animation: floatBlob 20s infinite alternate;
+        }
+        .blob-1 { top: -15%; left: -10%; }
+        .blob-2 { bottom: -10%; right: -5%; width: 50vw; height: 50vw; background: radial-gradient(circle, rgba(59,130,246,0.2), transparent); animation-duration: 25s; }
+        @keyframes floatBlob {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(5%, 8%) scale(1.2); }
+        }
+        .hero { padding: 3rem 0 1rem; text-align: center; position: relative; z-index: 2; }
+        .badge-modern {
+            background: rgba(45, 212, 191, 0.2); backdrop-filter: blur(8px);
+            border: 1px solid rgba(45, 212, 191, 0.6);
+            padding: 0.5rem 1.2rem; border-radius: 60px;
+            font-size: 0.85rem; font-weight: 600;
+        }
+        .hero-title {
+            font-size: 3.5rem; font-weight: 800;
+            background: linear-gradient(to right, #ffffff, var(--secondary), var(--primary));
+            -webkit-background-clip: text; background-clip: text;
+            color: transparent; font-family: 'Playfair Display', serif;
+        }
+        @media (max-width: 768px) { .hero-title { font-size: 2.4rem; } }
+        
+        .flip-container {
+            perspective: 1500px; margin: 1.5rem auto;
+            max-width: 750px; cursor: pointer;
+        }
+        .flipper {
+            transition: transform 0.8s cubic-bezier(0.23, 1, 0.32, 1);
+            transform-style: preserve-3d; position: relative;
+            width: 100%; border-radius: var(--radius);
+        }
+        .flip-container:hover .flipper { transform: rotateY(180deg); }
+        .front, .back {
+            backface-visibility: hidden; position: absolute;
+            top: 0; left: 0; width: 100%;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-xl);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        .front { z-index: 2; transform: rotateY(0deg); }
+        .back { transform: rotateY(180deg); overflow: hidden; }
+        .banner-img { width: 100%; border-radius: var(--radius); display: block; }
+        
+        .section-title {
+            font-size: 2.5rem; font-weight: 700; margin-bottom: 1rem;
+            background: linear-gradient(135deg, #fff, var(--primary));
+            -webkit-background-clip: text; background-clip: text;
+            color: transparent;
+        }
+        
+        .catalog-swiper { width: 100%; padding: 40px 0 60px; overflow: hidden; }
+        .catalog-swiper .swiper-slide {
+            width: 320px; transition: all 0.5s ease;
+            opacity: 0.5; transform: scale(0.85);
+        }
+        .catalog-swiper .swiper-slide-active {
+            opacity: 1; transform: scale(1); z-index: 10;
+        }
+        .catalog-card {
+            background: var(--card-bg); backdrop-filter: blur(12px);
+            border-radius: var(--radius); overflow: hidden;
+            border: 1px solid rgba(45,212,191,0.4);
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 25px -5px rgba(0,0,0,0.5);
+        }
+        .catalog-card:hover {
+            transform: translateY(-5px); border-color: var(--secondary);
+            box-shadow: 0 0 20px rgba(45,212,191,0.4);
+        }
+        .catalog-img { width: 100%; height: 240px; object-fit: cover; }
+        .catalog-info { padding: 1.3rem; }
+        .catalog-title { font-weight: 700; font-size: 1.2rem; }
+        .catalog-desc { font-size: 0.8rem; color: var(--gray-text); margin-top: 6px; }
+        
+        .feature-card {
+            background: rgba(17, 24, 39, 0.6); backdrop-filter: blur(8px);
+            border-radius: var(--radius); padding: 2rem; text-align: center;
+            border: 1px solid rgba(45,212,191,0.3); height: 100%;
+            transition: all 0.4s;
+        }
+        .feature-card:hover {
+            transform: translateY(-8px); border-color: var(--secondary);
+            box-shadow: 0 0 25px rgba(45,212,191,0.3);
+        }
+        .feature-icon { font-size: 2.8rem; color: var(--primary); }
+        
+        .manifesto-block {
+            background: linear-gradient(125deg, rgba(15,23,42,0.8), rgba(17,24,39,0.8));
+            backdrop-filter: blur(12px); border-radius: var(--radius);
+            padding: 3rem 2rem; border: 1px solid rgba(45,212,191,0.5);
+        }
+        
+        .footer {
+            background: #010101cc; backdrop-filter: blur(8px);
+            border-top: 1px solid var(--primary); padding: 3rem 0 1.5rem; margin-top: 4rem;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            border: none; transition: all 0.3s;
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(45,212,191,0.4);
+        }
+        
+        .scroll-top {
+            position: fixed; bottom: 25px; right: 25px;
+            background: var(--primary); width: 45px; height: 45px;
+            border-radius: 50%; display: flex; align-items: center;
+            justify-content: center; cursor: pointer; opacity: 0;
+            transition: 0.3s; z-index: 99;
+        }
+        .scroll-top.active { opacity: 1; }
+    </style>
+</head>
+<body>
+
+<canvas id="particles-canvas"></canvas>
+<div class="blob blob-1"></div>
+<div class="blob blob-2"></div>
+
+<main>
+    <div class="container">
+        <div class="hero">
+            <span class="badge-modern"><i class="fas fa-crown me-1"></i> Innovación 4.0</span>
+            <h1 class="hero-title">Revolucione su Negocio con<br>Catálogos Digitales Inteligentes</h1>
+            <p class="text-secondary mt-3 fs-5">Automatización con IA · Diseño 3D · Conversión asegurada</p>
+            
+            <div class="flip-container">
+                <div class="flipper" style="position: relative; width:100%; padding-bottom: 56%;">
+                    <div class="front" style="position: absolute; top:0; left:0; width:100%; height:100%;">
+                        <img src="https://i.ibb.co/LDG7Gf2d/fotor-ai-2025020222510.jpg" alt="FG-Studio" class="banner-img">
+                    </div>
+                    <div class="back" style="position: absolute; top:0; left:0; width:100%; height:100%;">
+                        <img src="https://image2url.com/r2/default/images/1774574969101-c816d5fe-1e85-4cd1-9075-77a8006efbfd.png" alt="FG-Studio back" style="width:100%; height:100%; object-fit: cover;">
+                    </div>
+                </div>
+            </div>
+            
+            <div class="d-flex flex-wrap justify-content-center gap-3 mt-3">
+                <a href="hacercade.html" class="btn btn-primary px-4 py-2 rounded-pill">
+                    <i class="fas fa-info-circle me-2"></i>Conoce más
+                </a>
+                <a href="contactar.html" class="btn btn-outline-light px-4 py-2 rounded-pill">
+                    <i class="fas fa-envelope me-2"></i>Contáctanos
+                </a>
+            </div>
+        </div>
+
+        <div class="mt-4">
+            <div class="text-center">
+                <h2 class="section-title">Catálogos Experienciales</h2>
+                <div style="width: 80px; height: 3px; background: linear-gradient(90deg, var(--primary), var(--secondary)); margin: 0.5rem auto;"></div>
+                <p class="text-secondary">Desliza para explorar nuestros servicios</p>
+            </div>
+
+            <div class="catalog-swiper swiper">
+                <div class="swiper-wrapper" id="catalogSwiperWrapper">
+                    <div class="swiper-slide">
+                        <div class="text-center p-5">
+                            <i class="fas fa-spinner fa-spin fa-3x" style="color: var(--primary);"></i>
+                            <p class="mt-3">Cargando catálogos...</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="swiper-pagination mt-3"></div>
+            </div>
+        </div>
+
+        <div class="row g-4 my-5">
+            <div class="col-md-4">
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fas fa-brain"></i></div>
+                    <h4>IA Predictiva</h4>
+                    <p class="text-secondary">Algoritmos que anticipan tendencias y optimizan tu inventario.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fas fa-vr-cardboard"></i></div>
+                    <h4>Realidad Aumentada</h4>
+                    <p class="text-secondary">Visualiza productos en 3D antes de comprar.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fas fa-chart-network"></i></div>
+                    <h4>Automatización Total</h4>
+                    <p class="text-secondary">Integración con WhatsApp, redes y e-commerce.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="manifesto-block text-center my-5">
+            <h3 class="fw-bold"><i class="fas fa-satellite-dish text-warning me-2"></i>Misión 2030</h3>
+            <p class="fs-5 mt-3">Automatizamos tu negocio con catálogos que venden por ti.</p>
+            <div class="mt-4">
+                <span class="badge bg-primary px-3 py-2">
+                    <i class="fas fa-bolt me-1"></i>FG-Studio: potencia imparable
+                </span>
+            </div>
+        </div>
+    </div>
+</main>
+
+<footer class="footer">
+    <div class="container">
+        <div class="row gy-4">
+            <div class="col-md-4">
+                <h5><i class="fas fa-cube text-primary"></i> FG-Studio</h5>
+                <p class="text-secondary">Catálogos digitales profesionales y automatización comercial.</p>
+                <div class="d-flex gap-3">
+                    <a href="https://www.facebook.com/share/18aBXWunUa/" target="_blank" rel="noopener" class="text-white fs-4"><i class="fab fa-facebook"></i></a>
+                    <a href="https://www.instagram.com/fgstudio" target="_blank" rel="noopener" class="text-white fs-4"><i class="fab fa-instagram"></i></a>
+                    <a href="https://wa.me/5353571569" target="_blank" rel="noopener" class="text-white fs-4"><i class="fab fa-whatsapp"></i></a>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <h6>Enlaces</h6>
+                <ul class="list-unstyled">
+                    <li><a href="/" class="text-secondary">Inicio</a></li>
+                    <li><a href="hacercade.html" class="text-secondary">Nosotros</a></li>
+                    <li><a href="contactar.html" class="text-secondary">Contacto</a></li>
+                </ul>
+            </div>
+            <div class="col-md-3">
+                <h6>Contacto</h6>
+                <ul class="list-unstyled text-secondary">
+                    <li><i class="fas fa-envelope me-2"></i>webstudioxz@gmail.com</li>
+                    <li><i class="fas fa-phone-alt me-2"></i>+53 5357-15-69</li>
+                    <li><i class="fas fa-map-marker-alt me-2"></i>Centro Habana, Manrrique #563</li>
+                </ul>
+            </div>
+        </div>
+        <hr class="bg-secondary mt-4">
+        <div class="text-center text-secondary small">© 2026 FG-Studio. Futuro digital con propósito.</div>
+    </div>
+</footer>
+
+<div class="scroll-top" id="scrollTop"><i class="fas fa-arrow-up"></i></div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+
+<script>
+let catalogSwiper = null;
+const API_URL = window.location.origin;
+
+async function loadCatalogos() {
+    const wrapper = document.getElementById('catalogSwiperWrapper');
+    
+    try {
+        const response = await fetch(`${API_URL}/api/catalogos`);
+        if (!response.ok) throw new Error('Error al cargar');
+        
+        const catalogos = await response.json();
+        
+        if (!catalogos || catalogos.length === 0) {
+            wrapper.innerHTML = `
+                <div class="swiper-slide">
+                    <div class="text-center p-5" style="background: rgba(17,24,39,0.7); border-radius: 20px;">
+                        <i class="fas fa-store-slash fa-4x mb-3" style="color: #666;"></i>
+                        <h5>No hay catálogos disponibles</h5>
+                        <p class="text-secondary">Pronto agregaremos nuevos servicios</p>
+                    </div>
+                </div>`;
+            return;
+        }
+        
+        wrapper.innerHTML = catalogos.map(cat => `
+            <div class="swiper-slide">
+                <a href="${escapeHtml(cat.link)}" class="text-decoration-none" target="_blank" rel="noopener">
+                    <div class="catalog-card">
+                        <img src="${escapeHtml(cat.image)}" class="catalog-img" alt="${escapeHtml(cat.name)}" 
+                             onerror="this.src='https://via.placeholder.com/400x240/1e3c72/ffffff?text=Sin+Imagen'">
+                        <div class="catalog-info">
+                            <span class="badge bg-secondary mb-1">${escapeHtml(cat.category).toUpperCase()}</span>
+                            <h3 class="catalog-title text-white">${escapeHtml(cat.name)}</h3>
+                            <p class="catalog-desc">${escapeHtml(cat.descripcion || 'Sin descripción')}</p>
+                            <div class="mt-2">
+                                <i class="fas fa-arrow-right text-primary"></i>
+                                <span class="small text-white">Explorar</span>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        `).join('');
+        
+        initSwiper(catalogos.length);
+    } catch (error) {
+        console.error('Error:', error);
+        wrapper.innerHTML = `
+            <div class="swiper-slide">
+                <div class="text-center p-5" style="background: rgba(17,24,39,0.7); border-radius: 20px;">
+                    <i class="fas fa-exclamation-triangle fa-4x mb-3 text-warning"></i>
+                    <h5>Error al cargar</h5>
+                    <button class="btn btn-primary btn-sm mt-2" onclick="loadCatalogos()">
+                        <i class="fas fa-sync-alt me-2"></i>Reintentar
+                    </button>
+                </div>
+            </div>`;
+    }
+}
+
+function initSwiper(totalSlides) {
+    if (catalogSwiper) catalogSwiper.destroy(true, true);
+    
+    catalogSwiper = new Swiper('.catalog-swiper', {
+        effect: 'coverflow', grabCursor: true, centeredSlides: true,
+        slidesPerView: 'auto',
+        coverflowEffect: { rotate: 30, stretch: 0, depth: 150, modifier: 1.5, slideShadows: true },
+        loop: totalSlides >= 3,
+        autoplay: { delay: 4000, disableOnInteraction: false },
+        speed: 1000,
+        pagination: { el: '.swiper-pagination', clickable: true },
+        spaceBetween: 20,
+        breakpoints: {
+            640: { slidesPerView: 2, centeredSlides: false },
+            1024: { slidesPerView: 3, centeredSlides: true }
+        }
+    });
+}
+
+function escapeHtml(str) {
+    if (!str) return '';
+    const div = document.createElement('div');
+    div.textContent = str;
+    return div.innerHTML;
+}
+
+function initParticles() {
+    const canvas = document.getElementById('particles-canvas');
+    const ctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    
+    const particles = [];
+    for (let i = 0; i < 120; i++) {
+        particles.push({
+            x: Math.random() * canvas.width, y: Math.random() * canvas.height,
+            radius: Math.random() * 2 + 1, alpha: Math.random() * 0.5,
+            speedX: (Math.random() - 0.5) * 0.3, speedY: (Math.random() - 0.5) * 0.2
+        });
+    }
+    
+    function animate() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        particles.forEach(p => {
+            p.x += p.speedX; p.y += p.speedY;
+            if (p.x < 0) p.x = canvas.width;
+            if (p.x > canvas.width) p.x = 0;
+            if (p.y < 0) p.y = canvas.height;
+            if (p.y > canvas.height) p.y = 0;
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+            ctx.fillStyle = `rgba(45, 212, 191, ${p.alpha})`;
+            ctx.fill();
+        });
+        requestAnimationFrame(animate);
+    }
+    animate();
+    
+    window.addEventListener('resize', () => {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+    });
+}
+
+window.addEventListener('load', () => {
+    loadCatalogos();
+    initParticles();
+    
+    const scrollTop = document.getElementById('scrollTop');
+    window.addEventListener('scroll', () => {
+        scrollTop.classList.toggle('active', window.scrollY > 400);
+    });
+    scrollTop.addEventListener('click', () => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+});
+
+setInterval(loadCatalogos, 300000);
+</script>
+</body>
+</html>

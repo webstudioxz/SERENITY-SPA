@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contactar | FG-Studio</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+            font-family: 'Inter', sans-serif;
+        }
+        
+        .contact-card {
+            background: white;
+            border-radius: 30px;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 40px;
+            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);
+        }
+        
+        h2 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #1e3c72;
+        }
+        
+        .form-control {
+            border-radius: 12px;
+            padding: 12px;
+            margin-bottom: 20px;
+            border: 2px solid #e5e7eb;
+            transition: all 0.3s ease;
+        }
+        
+        .form-control:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        
+        .form-control.is-invalid {
+            border-color: #ef4444;
+        }
+        
+        .form-control.is-valid {
+            border-color: #10b981;
+        }
+        
+        .btn-submit {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 12px;
+            border: none;
+            border-radius: 12px;
+            width: 100%;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-submit:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+        }
+        
+        .btn-submit:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        
+        .btn-back {
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+            color: #667eea;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-back:hover {
+            color: #764ba2;
+            transform: translateX(-5px);
+        }
+        
+        .invalid-feedback {
+            display: none;
+            color: #ef4444;
+            font-size: 0.85rem;
+            margin-top: -15px;
+            margin-bottom: 15px;
+        }
+        
+        .invalid-feedback.show {
+            display: block;
+        }
+        
+        .security-badge {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 20px;
+            padding: 10px;
+            background: #f0fdf4;
+            border-radius: 10px;
+            color: #166534;
+            font-size: 0.85rem;
+        }
+        
+        .loading-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .loading-overlay.show {
+            display: flex;
+        }
+        
+        .loading-spinner {
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            text-align: center;
+        }
+        
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid #e5e7eb;
+            border-top-color: #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        /* Honeypot invisible */
+        .honeypot {
+            position: absolute;
+            left: -9999px;
+            opacity: 0;
+            height: 0;
+            width: 0;
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body>
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-spinner">
+            <div class="spinner"></div>
+            <p class="mb-0">Enviando mensaje seguro...</p>
+        </div>
+    </div>
+
+    <div class="contact-card">
+        <h2><i class="fas fa-paper-plane me-2"></i>Contáctanos</h2>
+        
+        <div id="alertMessage" class="alert" style="display: none;"></div>
+        
+        <form id="contactForm" novalidate>
+            <!-- Campo Honeypot invisible para bots -->
+            <div class="honeypot">
+                <input type="text" id="website" name="website" tabindex="-1" autocomplete="off">
+            </div>
+            
+            <div class="mb-1">
+                <label class="form-label fw-semibold">Nombre completo *</label>
+                <input type="text" id="nombre" class="form-control" 
+                       placeholder="Ej: Juan Pérez" required 
+                       minlength="3" maxlength="100" autocomplete="name">
+                <div class="invalid-feedback" id="nombreError"></div>
+            </div>
+            
+            <div class="mb-1">
+                <label class="form-label fw-semibold">Teléfono / WhatsApp *</label>
+                <input type="tel" id="telefono" class="form-control" 
+                       placeholder="Ej: +53 5357-1569" required
+                       minlength="10" maxlength="15" autocomplete="tel">
+                <div class="invalid-feedback" id="telefonoError"></div>
+            </div>
+            
+            <div class="mb-1">
+                <label class="form-label fw-semibold">Correo electrónico</label>
+                <input type="email" id="email" class="form-control" 
+                       placeholder="Ej: correo@ejemplo.com"
+                       maxlength="100" autocomplete="email">
+                <div class="invalid-feedback" id="emailError"></div>
+            </div>
+            
+            <div class="mb-1">
+                <label class="form-label fw-semibold">Mensaje *</label>
+                <textarea id="mensaje" class="form-control" rows="4" 
+                          placeholder="Escribe tu mensaje aquí..." required
+                          minlength="5" maxlength="500"></textarea>
+                <div class="invalid-feedback" id="mensajeError"></div>
+            </div>
+            
+            <button type="submit" class="btn-submit" id="submitBtn">
+                <i class="fas fa-paper-plane me-2"></i> Enviar mensaje
+            </button>
+        </form>
+        
+        <a href="/" class="btn-back">
+            <i class="fas fa-arrow-left me-2"></i> Volver al inicio
+        </a>
+        
+        <div class="security-badge">
+            <i class="fas fa-shield-alt"></i>
+            <span>Conexión segura | Tus datos están protegidos</span>
+        </div>
+    </div>
+
+    <script>
+        // ============================================
+        // SISTEMA DE SEGURIDAD PARA FORMULARIO
+        // ============================================
+        
+        const API_URL = window.location.origin;
+        
+        // Rate limiting local
+        const RateLimiter = {
+            attempts: 0,
+            lastAttempt: 0,
+            cooldown: 10000, // 10 segundos entre envíos
+            maxAttempts: 3,   // Máximo 3 intentos en 5 minutos
+            resetTime: 300000, // 5 minutos para resetear
+            
+            canSubmit() {
+                const now = Date.now();
+                
+                // Resetear si pasó el tiempo
+                if (now - this.lastAttempt > this.resetTime) {
+                    this.attempts = 0;
+                }
+                
+                // Verificar cooldown
+                if (now - this.lastAttempt < this.cooldown) {
+                    return { allowed: false, reason: 'Espera unos segundos antes de enviar otro mensaje' };
+                }
+                
+                // Verificar máximo de intentos
+                if (this.attempts >= this.maxAttempts) {
+                    return { allowed: false, reason: 'Demasiados intentos. Intenta de nuevo en 5 minutos' };
+                }
+                
+                return { allowed: true };
+            },
+            
+            recordAttempt() {
+                this.attempts++;
+                this.lastAttempt = Date.now();
+            }
+        };
+        
+        // ============================================
+        // VALIDACIONES DE SEGURIDAD
+        // ============================================
+        
+        function validatePhone(phone) {
+            // Eliminar todo excepto dígitos y +
+            const clean = phone.replace(/[^\d+]/g, '');
+            
+            // Verificar longitud
+            if (clean.length < 10 || clean.length > 15) {
+                return { valid: false, error: 'El número debe tener entre 10 y 15 dígitos' };
+            }
+            
+            // Patrones fraudulentos
+            const fraudPatterns = [
+                /^(\d)\1{9,}$/,           // 1111111111
+                /^1234567890$/,           // Secuencia obvia
+                /^0987654321$/,           // Secuencia inversa
+                /^0{10,}$/                // Puros ceros
+            ];
+            
+            if (fraudPatterns.some(p => p.test(clean))) {
+                return { valid: false, error: 'Número de teléfono no válido' };
+            }
+            
+            // Validar prefijos premium (estafas)
+            if (/^(\+1)?900/.test(clean)) {
+                return { valid: false, error: 'Número no permitido' };
+            }
+            
+            // Algoritmo de Luhn básico
+            let sum = 0;
+            for (let i = 0; i < clean.replace('+', '').length; i++) {
+                let digit = parseInt(clean.replace('+', '')[i]);
+                if (i % 2 === 0) {
+                    digit *= 2;
+                    if (digit > 9) digit -= 9;
+                }
+                sum += digit;
+            }
+            
+            if (sum % 10 !== 0) {
+                return { valid: false, error: 'Número de teléfono inválido' };
+            }
+            
+            return { valid: true };
+        }
+        
+        function validateEmail(email) {
+            if (!email || email === '') return { valid: true }; // Email opcional
+            
+            // Patrones de email desechable
+            const disposableDomains = [
+                'tempmail.com', 'throwaway.com', 'mailinator.com',
+                'guerrillamail.com', 'sharklasers.com', '10minutemail.com'
+            ];
+            
+            const domain = email.split('@')[1];
+            if (domain && disposableDomains.includes(domain.toLowerCase())) {
+                return { valid: false, error: 'Email no permitido' };
+            }
+            
+            // Validación básica de formato
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                return { valid: false, error: 'Formato de email inválido' };
+            }
+            
+            return { valid: true };
+        }
+        
+        function validateNombre(nombre) {
+            // Sanitizar
+            const clean = nombre.replace(/[<>{}]/g, '').trim();
+            
+            if (clean.length < 3) {
+                return { valid: false, error: 'Nombre muy corto (mínimo 3 caracteres)' };
+            }
+            
+            if (clean.length > 100) {
+                return { valid: false, error: 'Nombre muy largo' };
+            }
+            
+            // Detectar patrones de inyección
+            const suspicious = /<script|javascript:|on\w+=/i;
+            if (suspicious.test(clean)) {
+                return { valid: false, error: 'Caracteres no permitidos' };
+            }
+            
+            return { valid: true, value: clean };
+        }
+        
+        function validateMensaje(mensaje) {
+            const clean = mensaje.trim();
+            
+            if (clean.length < 5) {
+                return { valid: false, error: 'Mensaje muy corto (mínimo 5 caracteres)' };
+            }
+            
+            if (clean.length > 500) {
+                return { valid: false, error: 'Mensaje muy largo (máximo 500 caracteres)' };
+            }
+            
+            // Detectar spam
+            const spamPatterns = [
+                /(viagra|cialis|casino|poker|lottery|prize)/i,
+                /(http|www\.)\S+/i,  // URLs en mensaje
+                /(.)\1{20,}/          // Caracteres repetidos excesivamente
+            ];
+            
+            if (spamPatterns.some(p => p.test(clean))) {
+                return { valid: false, error: 'El mensaje contiene contenido no permitido' };
+            }
+            
+            return { valid: true, value: clean };
+        }
+        
+        // ============================================
+        // MOSTRAR ERRORES
+        // ============================================
+        function showFieldError(fieldId, message) {
+            const field = document.getElementById(fieldId);
+            const errorDiv = document.getElementById(fieldId + 'Error');
+            
+            if (field) {
+                field.classList.add('is-invalid');
+                field.classList.remove('is-valid');
+            }
+            
+            if (errorDiv) {
+                errorDiv.textContent = message;
+                errorDiv.classList.add('show');
+            }
+        }
+        
+        function clearFieldError(fieldId) {
+            const field = document.getElementById(fieldId);
+            const errorDiv = document.getElementById(fieldId + 'Error');
+            
+            if (field) {
+                field.classList.remove('is-invalid');
+                field.classList.add('is-valid');
+            }
+            
+            if (errorDiv) {
+                errorDiv.classList.remove('show');
+            }
+        }
+        
+        function showMessage(message, type) {
+            const alertDiv = document.getElementById('alertMessage');
+            alertDiv.textContent = message;
+            alertDiv.className = 'alert alert-' + type;
+            alertDiv.style.display = 'block';
+            
+            // Auto-ocultar después de 5 segundos
+            setTimeout(() => {
+                alertDiv.style.display = 'none';
+            }, 5000);
+            
+            // Scroll al mensaje
+            alertDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+        
+        // ============================================
+        // MANEJAR ENVÍO DEL FORMULARIO
+        // ============================================
+        document.getElementById('contactForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            // Verificar rate limiting
+            const rateCheck = RateLimiter.canSubmit();
+            if (!rateCheck.allowed) {
+                showMessage('⚠️ ' + rateCheck.reason, 'warning');
+                return;
+            }
+            
+            // Verificar honeypot (anti-bot)
+            const honeypot = document.getElementById('website').value;
+            if (honeypot !== '') {
+                // Bot detectado, no mostrar error
+                console.log('Bot detectado y bloqueado');
+                showMessage('✅ Mensaje enviado con éxito! Te contactaremos pronto.', 'success');
+                document.getElementById('contactForm').reset();
+                return;
+            }
+            
+            // Obtener valores
+            const nombre = document.getElementById('nombre').value;
+            const telefono = document.getElementById('telefono').value;
+            const email = document.getElementById('email').value;
+            const mensaje = document.getElementById('mensaje').value;
+            
+            // Validar nombre
+            const nombreValidation = validateNombre(nombre);
+            if (!nombreValidation.valid) {
+                showFieldError('nombre', nombreValidation.error);
+                return;
+            }
+            clearFieldError('nombre');
+            
+            // Validar teléfono
+            const phoneValidation = validatePhone(telefono);
+            if (!phoneValidation.valid) {
+                showFieldError('telefono', phoneValidation.error);
+                return;
+            }
+            clearFieldError('telefono');
+            
+            // Validar email (opcional)
+            if (email) {
+                const emailValidation = validateEmail(email);
+                if (!emailValidation.valid) {
+                    showFieldError('email', emailValidation.error);
+                    return;
+                }
+                clearFieldError('email');
+            }
+            
+            // Validar mensaje
+            const mensajeValidation = validateMensaje(mensaje);
+            if (!mensajeValidation.valid) {
+                showFieldError('mensaje', mensajeValidation.error);
+                return;
+            }
+            clearFieldError('mensaje');
+            
+            // Registrar intento
+            RateLimiter.recordAttempt();
+            
+            // Mostrar loading
+            const submitBtn = document.getElementById('submitBtn');
+            const loadingOverlay = document.getElementById('loadingOverlay');
+            
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enviando...';
+            loadingOverlay.classList.add('show');
+            
+            try {
+                // Simular pequeño delay para evitar automatización
+                await new Promise(resolve => setTimeout(resolve, 1000));
+                
+                const response = await fetch(`${API_URL}/api/contactos`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-Token': generateCSRFToken()
+                    },
+                    body: JSON.stringify({
+                        nombre: nombreValidation.value || nombre,
+                        telefono: telefono,
+                        email: email || 'No especificado',
+                        mensaje: mensajeValidation.value || mensaje
+                    })
+                });
+                
+                if (response.ok) {
+                    showMessage('✅ Mensaje enviado con éxito! Te contactaremos pronto.', 'success');
+                    document.getElementById('contactForm').reset();
+                    
+                    // Limpiar validaciones visuales
+                    ['nombre', 'telefono', 'email', 'mensaje'].forEach(id => {
+                        clearFieldError(id);
+                        document.getElementById(id).classList.remove('is-valid', 'is-invalid');
+                    });
+                } else {
+                    const errorData = await response.json();
+                    showMessage('❌ ' + (errorData.error || 'Error al enviar el mensaje'), 'danger');
+                }
+            } catch (error) {
+                showMessage('❌ Error de conexión. Verifica tu internet.', 'danger');
+                console.error('Error:', error);
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<i class="fas fa-paper-plane me-2"></i> Enviar mensaje';
+                loadingOverlay.classList.remove('show');
+            }
+        });
+        
+        // ============================================
+        // VALIDACIÓN EN TIEMPO REAL
+        // ============================================
+        document.getElementById('nombre').addEventListener('input', function() {
+            if (this.value.length >= 3) {
+                clearFieldError('nombre');
+            }
+        });
+        
+        document.getElementById('telefono').addEventListener('input', function() {
+            if (this.value.length >= 10) {
+                const validation = validatePhone(this.value);
+                if (validation.valid) {
+                    clearFieldError('telefono');
+                }
+            }
+        });
+        
+        document.getElementById('email').addEventListener('input', function() {
+            if (this.value === '' || validateEmail(this.value).valid) {
+                clearFieldError('email');
+            }
+        });
+        
+        document.getElementById('mensaje').addEventListener('input', function() {
+            if (this.value.length >= 5) {
+                clearFieldError('mensaje');
+            }
+        });
+        
+        // ============================================
+        // GENERAR TOKEN CSRF SIMULADO
+        // ============================================
+        function generateCSRFToken() {
+            return 'csrf_' + Math.random().toString(36).substring(2) + Date.now().toString(36);
+        }
+        
+        // ============================================
+        // PREVENIR ENVÍO MÚLTIPLE CON ENTER
+        // ============================================
+        document.getElementById('contactForm').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter' && e.target.tagName !== 'TEXTAREA') {
+                e.preventDefault();
+                document.getElementById('submitBtn').click();
+            }
+        });
+    </script>
+</body>
+</html>
