@@ -1,0 +1,360 @@
+const express = require('express');
+const fs = require('fs').promises;
+const path = require('path');
+const crypto = require('crypto');
+
+const app = express();
+const PORT = process.env.PORT || 5001;
+const TURNOS_FILE = path.join(__dirname, 'turnos.json');
+
+// ==================== VARIABLES DE ENTORNO ====================
+// TODAS las siguientes variables DEBEN definirse en Render:
+// - ADMIN_PASSWORD_HASH (hash SHA256 de la contraseña)
+// - SESSION_SECRET (string aleatorio de 32+ caracteres)
+
+const ADMIN_PASSWORD_HASH = process.env.ADMIN_PASSWORD_HASH;
+const SESSION_SECRET = process.env.SESSION_SECRET;
+
+// Verificación crítica al inicio
+if (!ADMIN_PASSWORD_HASH) {
+    console.error('❌ ERROR CRÍTICO: Variable ADMIN_PASSWORD_HASH no definida en entorno');
+    process.exit(1);
+}
+
+if (!SESSION_SECRET) {
+    console.error('❌ ERROR CRÍTICO: Variable SESSION_SECRET no definida en entorno');
+    process.exit(1);
+}
+
+console.log('✅ Variables de entorno validadas correctamente');
+
+// ==================== RATE LIMITING ====================
+const loginAttempts = new Map();
+const RATE_LIMIT = {
+    MAX_ATTEMPTS: 5,
+    WINDOW_MS: 15 * 60 * 1000,
+    BLOCK_MS: 60 * 60 * 1000
+};
+
+function checkRateLimit(ip) {
+    const now = Date.now();
+    const record = loginAttempts.get(ip);
+    
+    if (!record) return { allowed: true, remaining: RATE_LIMIT.MAX_ATTEMPTS };
+    if (record.blockedUntil && now < record.blockedUntil) {
+        return { allowed: false, message: 'Demasiados intentos. Cuenta bloqueada.' };
+    }
+    if (now - record.firstAttempt > RATE_LIMIT.WINDOW_MS) {
+        loginAttempts.delete(ip);
+        return { allowed: true, remaining: RATE_LIMIT.MAX_ATTEMPTS };
+    }
+    if (record.count >= RATE_LIMIT.MAX_ATTEMPTS) {
+        loginAttempts.set(ip, { ...record, blockedUntil: now + RATE_LIMIT.BLOCK_MS });
+        return { allowed: false, message: 'Demasiados intentos. Bloqueado 1 hora.' };
+    }
+    return { allowed: true, remaining: RATE_LIMIT.MAX_ATTEMPTS - record.count };
+}
+
+function recordFailedAttempt(ip) {
+    const now = Date.now();
+    const record = loginAttempts.get(ip);
+    if (!record) {
+        loginAttempts.set(ip, { count: 1, firstAttempt: now, blockedUntil: null });
+    } else {
+        record.count++;
+    }
+}
+
+function resetRateLimit(ip) {
+    loginAttempts.delete(ip);
+}
+
+// ==================== MIDDLEWARES ====================
+app.use(express.json());
+app.use(express.static(__dirname, { maxAge: '2h', etag: true }));
+
+// Middleware de autenticación
+function authMiddleware(req, res, next) {
+    const publicPaths = ['/login.html', '/index.html', '/', '/health', '/turnos', '/api/login', '/api/verify', '/api/logout'];
+    if (publicPaths.includes(req.path) || req.path === '/') {
+        return next();
+    }
+    
+    if (req.path === '/turnos' && (req.method === 'GET' || req.method === 'POST')) {
+        return next();
+    }
+    
+    const authHeader = req.headers.authorization;
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+        return res.status(401).json({ error: 'No autorizado' });
+    }
+    
+    const token = authHeader.substring(7);
+    try {
+        const [prefix, timestamp, signature] = token.split('_');
+        if (prefix !== 'session') throw new Error();
+        
+        const now = Date.now();
+        if (now - parseInt(timestamp) > 8 * 60 * 60 * 1000) {
+            return res.status(401).json({ error: 'Sesión expirada' });
+        }
+        
+        const expectedSignature = crypto
+            .createHmac('sha256', SESSION_SECRET)
+            .update(`${prefix}_${timestamp}`)
+            .digest('hex');
+        
+        if (signature !== expectedSignature) {
+            return res.status(401).json({ error: 'Token inválido' });
+        }
+        next();
+    } catch {
+        return res.status(401).json({ error: 'Token inválido' });
+    }
+}
+
+app.use(authMiddleware);
+
+// ==================== RUTAS PÚBLICAS ====================
+app.get('/', (req, res) => res.sendFile(path.join(__dirname, 'index.html')));
+app.get('/1.html', (req, res) => res.sendFile(path.join(__dirname, 'admin.html')));
+app.get('/admin.html', (req, res) => res.sendFile(path.join(__dirname, 'admin.html')));
+app.get('/login.html', (req, res) => res.sendFile(path.join(__dirname, 'login.html')));
+
+// Endpoint de login con rate limiting
+app.post('/api/login', (req, res) => {
+    const clientIp = req.ip || req.connection.remoteAddress || req.socket.remoteAddress;
+    const rateCheck = checkRateLimit(clientIp);
+    
+    if (!rateCheck.allowed) {
+        return res.status(429).json({ error: rateCheck.message });
+    }
+    
+    const { password } = req.body;
+    if (!password) {
+        return res.status(400).json({ error: 'Contraseña requerida' });
+    }
+    
+    const hashedInput = crypto.createHash('sha256').update(password).digest('hex');
+    
+    if (hashedInput === ADMIN_PASSWORD_HASH) {
+        resetRateLimit(clientIp);
+        const timestamp = Date.now();
+        const signature = crypto.createHmac('sha256', SESSION_SECRET).update(`session_${timestamp}`).digest('hex');
+        const token = `session_${timestamp}_${signature}`;
+        res.json({ success: true, token, expiresIn: 8 * 60 * 60 });
+    } else {
+        recordFailedAttempt(clientIp);
+        res.status(401).json({ error: `Contraseña incorrecta. Intentos restantes: ${rateCheck.remaining - 1}` });
+    }
+});
+
+// Verificar estado de sesión
+app.get('/api/verify', (req, res) => {
+    const authHeader = req.headers.authorization;
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+        return res.status(401).json({ valid: false });
+    }
+    res.json({ valid: true });
+});
+
+// Logout
+app.post('/api/logout', (req, res) => res.json({ success: true }));
+
+// Health check para Render
+app.get('/health', (req, res) => res.json({ status: 'OK', timestamp: new Date().toISOString() }));
+
+// ==================== CRUD DE TURNOS ====================
+let turnosEnMemoria = [];
+
+async function inicializarArchivo() {
+    try {
+        await fs.access(TURNOS_FILE);
+        const data = await fs.readFile(TURNOS_FILE, 'utf8');
+        turnosEnMemoria = JSON.parse(data);
+        console.log(`📂 Cargados ${turnosEnMemoria.length} turnos desde archivo`);
+    } catch {
+        try {
+            await fs.writeFile(TURNOS_FILE, '[]', 'utf8');
+            turnosEnMemoria = [];
+            console.log('📁 Archivo turnos.json creado');
+        } catch (err) {
+            console.warn('⚠️ Usando memoria para turnos');
+            turnosEnMemoria = [];
+        }
+    }
+}
+
+async function cargarTurnos() {
+    try {
+        const data = await fs.readFile(TURNOS_FILE, 'utf8');
+        turnosEnMemoria = JSON.parse(data);
+        return turnosEnMemoria;
+    } catch {
+        return turnosEnMemoria;
+    }
+}
+
+async function guardarTurnos(turnos) {
+    try {
+        await fs.writeFile(TURNOS_FILE, JSON.stringify(turnos, null, 2), 'utf8');
+        turnosEnMemoria = turnos;
+        return true;
+    } catch {
+        turnosEnMemoria = turnos;
+        return true;
+    }
+}
+
+function escapeText(str) {
+    if (!str) return '';
+    return str.replace(/[&<>]/g, (m) => {
+        if (m === '&') return '&amp;';
+        if (m === '<') return '&lt;';
+        if (m === '>') return '&gt;';
+        return m;
+    });
+}
+
+// GET - Obtener todos los turnos
+app.get('/turnos', async (req, res) => {
+    try {
+        const turnos = await cargarTurnos();
+        res.json(turnos);
+    } catch (error) {
+        res.status(500).json({ error: 'Error al cargar turnos' });
+    }
+});
+
+// POST - Crear nuevo turno
+app.post('/turnos', async (req, res) => {
+    try {
+        const { nombre, dia, hora, massageType, telefono, ubicacion, tipoServicio } = req.body;
+        
+        if (!nombre || !dia || hora === undefined) {
+            return res.status(400).json({ error: 'Faltan campos obligatorios' });
+        }
+
+        const horaNum = parseInt(hora);
+        if (isNaN(horaNum) || horaNum < 8 || horaNum > 22) {
+            return res.status(400).json({ error: 'La hora debe estar entre 8 y 22' });
+        }
+
+        const diasValidos = ['lunes', 'martes', 'miercoles', 'jueves', 'viernes', 'sabado', 'domingo'];
+        if (!diasValidos.includes(dia.toLowerCase())) {
+            return res.status(400).json({ error: 'Día no válido' });
+        }
+
+        const turnos = await cargarTurnos();
+        
+        const turnosDelDia = turnos.filter(t => t.dia === dia.toLowerCase());
+        const esManana = horaNum >= 8 && horaNum < 14;
+        
+        if (esManana && turnosDelDia.some(t => t.hora >= 8 && t.hora < 14)) {
+            return res.status(400).json({ error: 'Ya hay un turno en la mañana de ese día' });
+        }
+        if (!esManana && turnosDelDia.some(t => t.hora >= 14 && t.hora < 22)) {
+            return res.status(400).json({ error: 'Ya hay un turno en la tarde de ese día' });
+        }
+
+        const nuevoTurno = {
+            nombre: escapeText(nombre.trim()),
+            dia: dia.toLowerCase(),
+            hora: horaNum,
+            massageType: massageType ? escapeText(massageType) : 'No especificado',
+            telefono: telefono ? escapeText(telefono) : 'No especificado',
+            ubicacion: ubicacion ? escapeText(ubicacion) : null,
+            tipoServicio: tipoServicio || 'salon',
+            fechaCreacion: new Date().toISOString(),
+            estado: 'confirmado'
+        };
+
+        turnos.push(nuevoTurno);
+        await guardarTurnos(turnos);
+        
+        res.status(201).json({ mensaje: 'Turno creado exitosamente', turno: nuevoTurno });
+    } catch (error) {
+        res.status(500).json({ error: 'Error al crear turno' });
+    }
+});
+
+// DELETE - Eliminar turno
+app.delete('/turnos/:index', async (req, res) => {
+    try {
+        const index = parseInt(req.params.index);
+        if (isNaN(index)) return res.status(400).json({ error: 'Índice inválido' });
+        
+        const turnos = await cargarTurnos();
+        if (index < 0 || index >= turnos.length) {
+            return res.status(404).json({ error: 'Turno no encontrado' });
+        }
+        
+        const eliminado = turnos.splice(index, 1)[0];
+        await guardarTurnos(turnos);
+        
+        res.json({ mensaje: 'Turno eliminado', turno: eliminado });
+    } catch (error) {
+        res.status(500).json({ error: 'Error al eliminar turno' });
+    }
+});
+
+// PUT - Actualizar turno
+app.put('/turnos/:index', async (req, res) => {
+    try {
+        const index = parseInt(req.params.index);
+        if (isNaN(index)) return res.status(400).json({ error: 'Índice inválido' });
+        
+        const { dia, hora, estado } = req.body;
+        const turnos = await cargarTurnos();
+        
+        if (index < 0 || index >= turnos.length) {
+            return res.status(404).json({ error: 'Turno no encontrado' });
+        }
+        
+        if (dia) turnos[index].dia = dia.toLowerCase();
+        if (hora !== undefined) turnos[index].hora = parseInt(hora);
+        if (estado) turnos[index].estado = estado;
+        
+        await guardarTurnos(turnos);
+        res.json({ mensaje: 'Turno actualizado', turno: turnos[index] });
+    } catch (error) {
+        res.status(500).json({ error: 'Error al actualizar turno' });
+    }
+});
+
+// POST - Notificar WhatsApp
+app.post('/turnos/notificar-whatsapp/:index', async (req, res) => {
+    try {
+        const index = parseInt(req.params.index);
+        if (isNaN(index)) return res.status(400).json({ error: 'Índice inválido' });
+        
+        const turnos = await cargarTurnos();
+        if (index < 0 || index >= turnos.length) {
+            return res.status(404).json({ error: 'Turno no encontrado' });
+        }
+        
+        const turno = turnos[index];
+        const mensaje = `Hola ${turno.nombre}, tu turno de ${turno.massageType} está confirmado para el ${turno.dia} a las ${turno.hora}:00 hs. ¡Gracias por elegirnos!`;
+        
+        res.json({ mensaje: 'Notificación enviada', numero: turno.telefono, texto: mensaje });
+    } catch (error) {
+        res.status(500).json({ error: 'Error al enviar notificación' });
+    }
+});
+
+// ==================== INICIAR SERVIDOR ====================
+async function startServer() {
+    await inicializarArchivo();
+    
+    app.listen(PORT, '0.0.0.0', () => {
+        console.log('='.repeat(50));
+        console.log('  🌿 SERENITY SPA - MODO SEGURO');
+        console.log('='.repeat(50));
+        console.log(`  📍 Puerto: ${PORT}`);
+        console.log(`  🔐 Rate limiting: ${RATE_LIMIT.MAX_ATTEMPTS} intentos / ${RATE_LIMIT.WINDOW_MS / 60000} min`);
+        console.log(`  ✅ Servidor listo`);
+        console.log('='.repeat(50));
+    });
+}
+
+startServer();
