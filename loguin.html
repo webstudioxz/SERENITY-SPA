@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Admin | Serenity Spa</title>
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com; connect-src 'self'; img-src 'self' data: https://images.unsplash.com https://i.ibb.co; frame-src 'none'; form-action 'self'; base-uri 'self';">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* (estilos iguales a los que ya tenía, mantenerlos) */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: #1a2332; min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 1rem; }
+        .login-container { background: rgba(255,255,255,0.03); backdrop-filter: blur(24px); border: 1px solid rgba(255,255,255,0.06); border-radius: 20px; padding: 3rem 2.5rem; width: 100%; max-width: 400px; }
+        /* ... resto de estilos iguales ... */
+        .error-message { color: #f87171; font-size: 0.8rem; margin-top: 0.75rem; text-align: center; display: none; }
+        .error-message.show { display: block; }
+        .rate-limit-warning { color: #fbbf24; font-size: 0.75rem; text-align: center; margin-top: 1rem; display: none; }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-header">
+            <div class="login-icon"><i class="fas fa-spa"></i></div>
+            <h2>Panel Administrativo</h2>
+            <p>Acceso exclusivo para administradores</p>
+        </div>
+        
+        <form id="loginForm">
+            <div class="form-group">
+                <label for="password">Contraseña de acceso</label>
+                <div class="password-input-wrapper">
+                    <input type="password" id="password" name="password" placeholder="••••••••" required autocomplete="off">
+                    <i class="fas fa-eye toggle-password" id="togglePassword"></i>
+                </div>
+            </div>
+            
+            <div class="error-message" id="errorMessage"></div>
+            <div class="rate-limit-warning" id="rateLimitWarning"></div>
+            
+            <button type="submit" class="btn-login" id="loginBtn">
+                <i class="fas fa-lock"></i> Acceder al Panel
+            </button>
+        </form>
+        
+        <a href="/" class="back-link"><i class="fas fa-arrow-left"></i> Volver al sitio principal</a>
+    </div>
+
+    <script>
+        (function() {
+            // Verificar si ya hay sesión activa
+            const token = sessionStorage.getItem('adminToken');
+            if (token) {
+                // Validar token con el servidor
+                fetch('/api/verify', {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                }).then(res => {
+                    if (res.ok) window.location.href = '/1.html';
+                    else sessionStorage.removeItem('adminToken');
+                }).catch(() => sessionStorage.removeItem('adminToken'));
+            }
+            
+            let isLoggingIn = false;
+            const form = document.getElementById('loginForm');
+            const passwordInput = document.getElementById('password');
+            const errorDiv = document.getElementById('errorMessage');
+            const rateLimitDiv = document.getElementById('rateLimitWarning');
+            const loginBtn = document.getElementById('loginBtn');
+            
+            document.getElementById('togglePassword').addEventListener('click', function() {
+                const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+                passwordInput.setAttribute('type', type);
+                this.classList.toggle('fa-eye');
+                this.classList.toggle('fa-eye-slash');
+            });
+            
+            form.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                if (isLoggingIn) return;
+                
+                const password = passwordInput.value;
+                if (!password) {
+                    showError('Ingrese la contraseña');
+                    return;
+                }
+                
+                isLoggingIn = true;
+                loginBtn.disabled = true;
+                loginBtn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> Verificando...';
+                
+                try {
+                    const response = await fetch('/api/login', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ password })
+                    });
+                    
+                    const data = await response.json();
+                    
+                    if (response.ok && data.success) {
+                        sessionStorage.setItem('adminToken', data.token);
+                        window.location.href = '/1.html';
+                    } else {
+                        showError(data.error || 'Contraseña incorrecta');
+                        passwordInput.value = '';
+                        passwordInput.focus();
+                        
+                        if (response.status === 429) {
+                            rateLimitDiv.style.display = 'block';
+                            rateLimitDiv.textContent = data.error;
+                            setTimeout(() => {
+                                rateLimitDiv.style.display = 'none';
+                            }, 10000);
+                        }
+                    }
+                } catch (err) {
+                    showError('Error de conexión. Intente nuevamente.');
+                } finally {
+                    isLoggingIn = false;
+                    loginBtn.disabled = false;
+                    loginBtn.innerHTML = '<i class="fas fa-lock"></i> Acceder al Panel';
+                }
+            });
+            
+            function showError(msg) {
+                errorDiv.textContent = msg;
+                errorDiv.classList.add('show');
+                setTimeout(() => {
+                    errorDiv.classList.remove('show');
+                }, 3000);
+            }
+            
+            passwordInput.addEventListener('input', () => {
+                errorDiv.classList.remove('show');
+                rateLimitDiv.style.display = 'none';
+            });
+        })();
+    </script>
+</body>
+</html>
