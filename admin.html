@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Admin Panel | Serenity Spa</title>
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com; connect-src 'self'; img-src 'self' data: https://images.unsplash.com; frame-src 'none'; base-uri 'self';">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box}
+        :root{
+            --bg:#f3f4f8;
+            --surface:#ffffff;
+            --primary:#1a2332;
+            --accent:#C9A961;
+            --accent-dark:#A8883F;
+            --accent-soft:rgba(201,169,97,0.08);
+            --text-dark:#111827;
+            --text-medium:#4b5563;
+            --text-muted:#9ca3af;
+            --border:#e5e7eb;
+            --success:#059669;
+            --danger:#dc2626;
+            --radius-md:14px;
+            --radius-lg:20px;
+            --shadow-sm:0 1px 3px rgba(0,0,0,0.05);
+        }
+        body{font-family:'Inter',sans-serif;background:var(--bg);padding:1.5rem;min-height:100vh;color:var(--text-dark);}
+        .dashboard{max-width:1400px;margin:0 auto}
+        .admin-header{background:var(--surface);padding:1.25rem 1.75rem;border-radius:var(--radius-lg);box-shadow:var(--shadow-sm);margin-bottom:1.5rem;display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:1rem;}
+        .title-section{display:flex;align-items:center;gap:0.85rem}
+        .title-icon{width:44px;height:44px;border-radius:var(--radius-md);background:linear-gradient(135deg,var(--accent),var(--accent-dark));display:flex;align-items:center;justify-content:center;color:white;}
+        h1{font-size:1.5rem;font-weight:700;color:var(--primary);}
+        .badge-total{background:var(--accent-soft);color:var(--accent-dark);padding:0.2rem 0.7rem;border-radius:40px;font-size:0.75rem;}
+        .header-actions{display:flex;gap:0.6rem;flex-wrap:wrap}
+        .search-box{position:relative}
+        .search-box i{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--text-muted);}
+        #searchInput{padding:0.6rem 1rem 0.6rem 2.3rem;border:1px solid var(--border);border-radius:40px;width:260px;background:var(--bg);}
+        .btn{padding:0.6rem 1.1rem;border-radius:40px;font-weight:600;font-size:0.8rem;cursor:pointer;border:none;display:inline-flex;align-items:center;gap:0.45rem;}
+        .btn-accent{background:var(--accent);color:white;}
+        .btn-accent:hover{background:var(--accent-dark);}
+        .btn-ghost{background:var(--surface);color:var(--text-medium);border:1px solid var(--border);}
+        .btn-danger-ghost{background:rgba(220,38,38,0.08);color:var(--danger);border:1px solid rgba(220,38,38,0.15);}
+        .stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:0.85rem;margin-bottom:1.5rem;}
+        .stat-card{background:var(--surface);padding:1rem 1.25rem;border-radius:var(--radius-md);border:1px solid var(--border);}
+        .stat-label{font-size:0.7rem;color:var(--text-muted);text-transform:uppercase;}
+        .stat-value{font-size:1.75rem;font-weight:700;}
+        .cards-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:1rem;}
+        .turno-card{background:var(--surface);border-radius:var(--radius-lg);border:1px solid var(--border);overflow:hidden;}
+        .card-top{padding:1rem 1.25rem;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border);}
+        .client-avatar{width:38px;height:38px;border-radius:10px;background:linear-gradient(135deg,var(--accent),var(--accent-dark));display:flex;align-items:center;justify-content:center;color:white;font-weight:700;}
+        .client-name{font-weight:600;font-size:0.9rem;}
+        .massage-tag{background:var(--accent-soft);color:var(--accent-dark);padding:0.2rem 0.65rem;border-radius:40px;font-size:0.68rem;}
+        .card-mid{padding:1rem 1.25rem;}
+        .info-line{display:flex;align-items:center;gap:0.6rem;margin-bottom:0.5rem;font-size:0.85rem;}
+        .info-line i{color:var(--accent);width:16px;}
+        .svc-badge{display:inline-flex;align-items:center;gap:0.35rem;padding:0.2rem 0.6rem;border-radius:6px;font-size:0.7rem;background:var(--accent-soft);}
+        .card-bottom{padding:0.75rem 1.25rem;border-top:1px solid var(--border);display:flex;justify-content:space-between;}
+        .act-btn{width:34px;height:34px;border-radius:8px;background:transparent;border:none;cursor:pointer;color:var(--text-muted);}
+        .act-btn:hover{background:var(--accent-soft);color:var(--accent);}
+        .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.5);backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;z-index:1000;opacity:0;visibility:hidden;transition:all 0.2s;}
+        .modal-overlay.active{opacity:1;visibility:visible;}
+        .modal-box{background:var(--surface);border-radius:var(--radius-lg);max-width:500px;width:90%;max-height:80vh;overflow-y:auto;}
+        .modal-top{padding:1rem 1.5rem;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;}
+        .modal-content{padding:1.5rem;}
+        .detail-row{display:flex;gap:0.6rem;margin-bottom:0.7rem;font-size:0.85rem;}
+        .detail-row i{color:var(--accent);width:18px;}
+        .modal-foot{padding:1rem 1.5rem;border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:0.6rem;}
+        .toast{position:fixed;bottom:1.5rem;right:1.5rem;background:var(--surface);padding:0.75rem 1.25rem;border-radius:var(--radius-md);box-shadow:0 4px 12px rgba(0,0,0,0.15);display:flex;align-items:center;gap:0.6rem;transform:translateX(150%);transition:transform 0.3s;z-index:2000;}
+        .toast.show{transform:translateX(0);}
+        .loader{text-align:center;padding:3rem;color:var(--text-muted);}
+        @media(max-width:768px){body{padding:0.75rem}.stats-grid{grid-template-columns:repeat(2,1fr)}#searchInput{width:100%}}
+    </style>
+</head>
+<body>
+<div class="dashboard">
+    <div class="admin-header">
+        <div class="title-section">
+            <div class="title-icon"><i class="fas fa-spa"></i></div>
+            <h1>Panel de Administración</h1>
+            <span class="badge-total" id="totalTurnosBadge">0 turnos</span>
+        </div>
+        <div class="header-actions">
+            <div class="search-box">
+                <i class="fas fa-search"></i>
+                <input type="text" id="searchInput" placeholder="Buscar..." autocomplete="off">
+            </div>
+            <button class="btn btn-ghost" id="refreshBtn"><i class="fas fa-sync-alt"></i> Actualizar</button>
+            <button class="btn btn-accent" id="exportBtn"><i class="fas fa-download"></i> Exportar</button>
+            <button class="btn btn-danger-ghost" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Salir</button>
+        </div>
+    </div>
+
+    <div class="stats-grid">
+        <div class="stat-card"><div class="stat-label">Total Turnos</div><div class="stat-value" id="totalStats">0</div></div>
+        <div class="stat-card"><div class="stat-label">Hoy</div><div class="stat-value" id="todayStats">0</div></div>
+        <div class="stat-card"><div class="stat-label">Esta Semana</div><div class="stat-value" id="weekStats">0</div></div>
+        <div class="stat-card"><div class="stat-label">Domicilios</div><div class="stat-value" id="homeStats">0</div></div>
+    </div>
+
+    <div id="turnosContainer"><div class="loader"><i class="fas fa-circle-notch fa-spin"></i> Cargando...</div></div>
+</div>
+
+<div class="modal-overlay" id="detailModal"><div class="modal-box"><div class="modal-top"><h3 id="modalTitle">Detalles</h3><button class="modal-x" onclick="closeModal()" style="background:none;border:none;font-size:1.2rem;cursor:pointer;">&times;</button></div><div class="modal-content" id="modalBody"></div><div class="modal-foot"><button class="btn btn-ghost" onclick="closeModal()">Cerrar</button><button class="btn btn-accent" id="modalWhatsAppBtn"><i class="fab fa-whatsapp"></i> WhatsApp</button></div></div></div>
+
+<div class="toast" id="toast"><i class="fas fa-check-circle"></i><span id="toastMessage"></span></div>
+
+<script>
+    const API_URL = '/turnos';
+    let turnosData = [];
+    let currentFilter = '';
+    let currentTurnoIndex = null;
+
+    function getToken() { return sessionStorage.getItem('adminToken'); }
+
+    function checkAuth() {
+        const token = getToken();
+        if (!token) { window.location.href = '/login.html'; return false; }
+        return token;
+    }
+
+    function logout() { sessionStorage.removeItem('adminToken'); window.location.href = '/login.html'; }
+
+    function showToast(msg, type = 'success') {
+        const toast = document.getElementById('toast');
+        document.getElementById('toastMessage').textContent = msg;
+        toast.classList.add('show');
+        setTimeout(() => toast.classList.remove('show'), 3000);
+    }
+
+    async function apiFetch(url, options = {}) {
+        const token = checkAuth();
+        if (!token) throw new Error('No auth');
+        const response = await fetch(url, {
+            ...options,
+            headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json', ...options.headers }
+        });
+        if (response.status === 401) { logout(); throw new Error('Sesión expirada'); }
+        return response;
+    }
+
+    async function cargarTurnos() {
+        const container = document.getElementById('turnosContainer');
+        try {
+            const response = await apiFetch(API_URL);
+            turnosData = await response.json();
+            actualizarVista();
+        } catch { container.innerHTML = '<div class="loader">Error de conexión</div>'; }
+    }
+
+    function actualizarVista() {
+        const filtered = currentFilter ? turnosData.filter(t => 
+            (t.nombre || '').toLowerCase().includes(currentFilter) ||
+            (t.telefono || '').includes(currentFilter) ||
+            (t.massageType || '').toLowerCase().includes(currentFilter)
+        ) : turnosData;
+        
+        document.getElementById('totalStats').textContent = turnosData.length;
+        document.getElementById('totalTurnosBadge').textContent = `${turnosData.length} turnos`;
+        
+        const container = document.getElementById('turnosContainer');
+        if (!filtered.length) { container.innerHTML = '<div class="loader">No hay turnos</div>'; return; }
+        
+        container.innerHTML = `<div class="cards-grid">${filtered.map((t, i) => {
+            const originalIndex = turnosData.findIndex(ot => ot.nombre === t.nombre && ot.dia === t.dia && ot.hora === t.hora);
+            return `<div class="turno-card">
+                <div class="card-top"><div style="display:flex;align-items:center;gap:0.7rem"><div class="client-avatar">${(t.nombre || '?')[0].toUpperCase()}</div><div><div class="client-name">${escapeHtml(t.nombre || 'Cliente')}</div><div style="font-size:0.7rem;color:var(--text-muted)">${escapeHtml(t.telefono || '')}</div></div></div><span class="massage-tag">${escapeHtml(t.massageType || 'Masaje')}</span></div>
+                <div class="card-mid"><div class="info-line"><i class="fas fa-calendar"></i> ${capitalize(t.dia || '')}</div><div class="info-line"><i class="fas fa-clock"></i> ${t.hora || ''}:00</div><span class="svc-badge"><i class="fas ${t.tipoServicio === 'domicilio' ? 'fa-home' : 'fa-store'}"></i> ${t.tipoServicio === 'domicilio' ? 'A domicilio' : 'En salón'}</span></div>
+                <div class="card-bottom"><span>✅ ${t.estado || 'Confirmado'}</span><div><button class="act-btn" onclick="verDetalle(${originalIndex})"><i class="fas fa-eye"></i></button><button class="act-btn" onclick="enviarWhatsApp(${originalIndex})"><i class="fab fa-whatsapp"></i></button><button class="act-btn" onclick="eliminarTurno(${originalIndex})"><i class="fas fa-trash"></i></button></div></div>
+            </div>`;}).join('')}</div>`;
+    }
+
+    function escapeHtml(str) { if (!str) return ''; return str.replace(/[&<>]/g, m => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;' }[m])); }
+    function capitalize(str) { if (!str) return ''; return str.charAt(0).toUpperCase() + str.slice(1); }
+
+    window.verDetalle = function(idx) {
+        const t = turnosData[idx];
+        if (!t) return;
+        currentTurnoIndex = idx;
+        document.getElementById('modalTitle').textContent = `Turno de ${t.nombre}`;
+        document.getElementById('modalBody').innerHTML = `
+            <div class="detail-row"><i class="fas fa-user"></i><span><strong>Cliente:</strong> ${escapeHtml(t.nombre)}</span></div>
+            <div class="detail-row"><i class="fas fa-phone"></i><span><strong>Teléfono:</strong> ${escapeHtml(t.telefono || 'No especificado')}</span></div>
+            <div class="detail-row"><i class="fas fa-calendar"></i><span><strong>Fecha:</strong> ${capitalize(t.dia)}</span></div>
+            <div class="detail-row"><i class="fas fa-clock"></i><span><strong>Hora:</strong> ${t.hora}:00</span></div>
+            <div class="detail-row"><i class="fas fa-spa"></i><span><strong>Masaje:</strong> ${escapeHtml(t.massageType || 'No especificado')}</span></div>
+            <div class="detail-row"><i class="fas fa-map-marker-alt"></i><span><strong>Servicio:</strong> ${t.tipoServicio === 'domicilio' ? 'A domicilio' : 'En salón'}</span></div>
+            ${t.ubicacion ? `<div class="detail-row"><i class="fas fa-location-dot"></i><span>${escapeHtml(t.ubicacion)}</span></div>` : ''}
+        `;
+        document.getElementById('modalWhatsAppBtn').onclick = () => { enviarWhatsApp(idx); closeModal(); };
+        document.getElementById('detailModal').classList.add('active');
+    };
+
+    window.closeModal = () => document.getElementById('detailModal').classList.remove('active');
+
+    window.enviarWhatsApp = async (idx) => {
+        const t = turnosData[idx];
+        const msg = `Hola ${t.nombre}, tu turno de ${t.massageType || 'masaje'} está confirmado para ${t.dia} a las ${t.hora}:00.`;
+        window.open(`https://wa.me/${t.telefono?.replace(/\D/g, '') || ''}?text=${encodeURIComponent(msg)}`, '_blank');
+    };
+
+    window.eliminarTurno = async (idx) => {
+        if (!confirm('¿Eliminar este turno?')) return;
+        try {
+            await apiFetch(`${API_URL}/${idx}`, { method: 'DELETE' });
+            showToast('Turno eliminado');
+            cargarTurnos();
+        } catch { showToast('Error al eliminar', 'error'); }
+    };
+
+    function exportarDatos() {
+        const csv = ['Nombre,Teléfono,Día,Hora,Masaje,Tipo,Ubicación,Estado'];
+        turnosData.forEach(t => csv.push(`"${t.nombre}","${t.telefono || ''}","${t.dia}","${t.hora}","${t.massageType || ''}","${t.tipoServicio}","${t.ubicacion || ''}","${t.estado}"`));
+        const blob = new Blob([csv.join('\n')], { type: 'text/csv' });
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = `turnos_${new Date().toISOString().split('T')[0]}.csv`;
+        link.click();
+    }
+
+    // Verificar sesión periódicamente
+    setInterval(async () => {
+        const token = getToken();
+        if (token) {
+            try {
+                const res = await fetch('/api/verify', { headers: { 'Authorization': `Bearer ${token}` } });
+                if (!res.ok) logout();
+            } catch { logout(); }
+        }
+    }, 60000);
+
+    document.getElementById('searchInput').addEventListener('input', e => { currentFilter = e.target.value.toLowerCase(); actualizarVista(); });
+    document.getElementById('refreshBtn').addEventListener('click', cargarTurnos);
+    document.getElementById('exportBtn').addEventListener('click', exportarDatos);
+    document.getElementById('logoutBtn').addEventListener('click', logout);
+    document.getElementById('detailModal').addEventListener('click', e => { if (e.target.classList.contains('modal-overlay')) closeModal(); });
+
+    cargarTurnos();
+</script>
+</body>
+</html>
