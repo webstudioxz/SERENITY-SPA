@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Admin | Serenity Spa</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #1a2332;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(ellipse at 30% 20%, rgba(201,169,97,0.06) 0%, transparent 50%),
+                        radial-gradient(ellipse at 70% 80%, rgba(58,84,109,0.08) 0%, transparent 50%);
+            animation: bgShift 20s ease-in-out infinite alternate;
+        }
+
+        @keyframes bgShift {
+            0% { transform: translate(0, 0) rotate(0deg); }
+            100% { transform: translate(-2%, -1%) rotate(1deg); }
+        }
+
+        .login-container {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(24px);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 20px;
+            padding: 3rem 2.5rem;
+            width: 100%;
+            max-width: 420px;
+            position: relative;
+            z-index: 1;
+            animation: fadeUp 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(24px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 2.5rem;
+        }
+
+        .login-icon {
+            width: 56px;
+            height: 56px;
+            border-radius: 16px;
+            background: linear-gradient(135deg, rgba(201,169,97,0.15), rgba(201,169,97,0.05));
+            border: 1px solid rgba(201,169,97,0.2);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.25rem;
+        }
+
+        .login-icon i {
+            font-size: 1.5rem;
+            color: #C9A961;
+        }
+
+        .login-header h2 {
+            color: #f0ece4;
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 0.4rem;
+            letter-spacing: -0.3px;
+        }
+
+        .login-header p {
+            color: rgba(255,255,255,0.35);
+            font-size: 0.82rem;
+            font-weight: 400;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: rgba(255,255,255,0.5);
+            font-weight: 500;
+            font-size: 0.8rem;
+            letter-spacing: 0.3px;
+            text-transform: uppercase;
+        }
+
+        .password-input-wrapper {
+            position: relative;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 0.85rem 2.8rem 0.85rem 1.1rem;
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 12px;
+            font-size: 0.95rem;
+            transition: all 0.25s ease;
+            font-family: 'Inter', sans-serif;
+            background: rgba(255,255,255,0.04);
+            color: #f0ece4;
+            letter-spacing: 0.5px;
+        }
+
+        .form-group input::placeholder {
+            color: rgba(255,255,255,0.2);
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: rgba(201, 169, 97, 0.5);
+            background: rgba(255,255,255,0.06);
+            box-shadow: 0 0 0 3px rgba(201, 169, 97, 0.08);
+        }
+
+        .toggle-password {
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: rgba(255,255,255,0.25);
+            transition: color 0.2s;
+            font-size: 0.9rem;
+        }
+
+        .toggle-password:hover {
+            color: rgba(201, 169, 97, 0.7);
+        }
+
+        .btn-login {
+            width: 100%;
+            padding: 0.9rem;
+            background: linear-gradient(135deg, #C9A961, #A8883F);
+            color: #1a2332;
+            border: none;
+            border-radius: 12px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            letter-spacing: 0.2px;
+        }
+
+        .btn-login:hover:not(:disabled) {
+            filter: brightness(1.1);
+            transform: translateY(-1px);
+            box-shadow: 0 8px 24px rgba(201, 169, 97, 0.2);
+        }
+
+        .btn-login:active:not(:disabled) {
+            transform: translateY(0);
+        }
+
+        .btn-login:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .error-message {
+            color: #f87171;
+            font-size: 0.8rem;
+            margin-top: 0.75rem;
+            text-align: center;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            gap: 0.4rem;
+            background: rgba(248, 113, 113, 0.08);
+            padding: 0.5rem 0.75rem;
+            border-radius: 8px;
+            border: 1px solid rgba(248, 113, 113, 0.15);
+        }
+
+        .error-message.show {
+            display: flex;
+        }
+
+        .info-message {
+            color: rgba(255,255,255,0.4);
+            font-size: 0.7rem;
+            text-align: center;
+            margin-top: 1rem;
+            padding: 0.5rem;
+            background: rgba(255,255,255,0.05);
+            border-radius: 8px;
+        }
+
+        .back-link {
+            display: block;
+            text-align: center;
+            margin-top: 1.5rem;
+            color: rgba(255,255,255,0.3);
+            text-decoration: none;
+            font-size: 0.82rem;
+            transition: color 0.2s;
+        }
+
+        .back-link:hover {
+            color: rgba(201, 169, 97, 0.7);
+        }
+
+        .back-link i {
+            margin-right: 0.3rem;
+            font-size: 0.75rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-header">
+            <div class="login-icon">
+                <i class="fas fa-spa"></i>
+            </div>
+            <h2>Panel Administrativo</h2>
+            <p>Acceso exclusivo para administradores</p>
+        </div>
+        
+        <form id="loginForm" autocomplete="off">
+            <div class="form-group">
+                <label for="password">Contraseña de acceso</label>
+                <div class="password-input-wrapper">
+                    <input type="password" id="password" name="password" placeholder="••••••••" required autocomplete="off">
+                    <i class="fas fa-eye toggle-password" id="togglePassword"></i>
+                </div>
+            </div>
+            
+            <div class="error-message" id="errorMessage">
+                <i class="fas fa-exclamation-circle"></i> <span id="errorText">Contraseña incorrecta</span>
+            </div>
+            
+            <button type="submit" class="btn-login" id="loginBtn">
+                <i class="fas fa-lock"></i> Acceder al Panel
+            </button>
+        </form>
+        
+        <div class="info-message">
+            <i class="fas fa-info-circle"></i> La contraseña está configurada en variables de entorno de Render
+        </div>
+        
+        <a href="/" class="back-link">
+            <i class="fas fa-arrow-left"></i> Volver al sitio principal
+        </a>
+    </div>
+
+    <script>
+        (function() {
+            // Verificar si ya hay sesión activa
+            const storedToken = sessionStorage.getItem('adminToken');
+            if (storedToken) {
+                // CORREGIDO: Redirigir a admin.html
+                window.location.href = '/admin.html';
+                return;
+            }
+            
+            const form = document.getElementById('loginForm');
+            const passwordInput = document.getElementById('password');
+            const loginBtn = document.getElementById('loginBtn');
+            const errorMessage = document.getElementById('errorMessage');
+            const errorText = document.getElementById('errorText');
+            
+            let isLoggingIn = false;
+            
+            // Toggle password
+            document.getElementById('togglePassword').addEventListener('click', function() {
+                const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+                passwordInput.setAttribute('type', type);
+                this.classList.toggle('fa-eye');
+                this.classList.toggle('fa-eye-slash');
+            });
+            
+            function showError(msg) {
+                errorText.textContent = msg;
+                errorMessage.classList.add('show');
+                setTimeout(() => {
+                    errorMessage.classList.remove('show');
+                }, 5000);
+            }
+            
+            passwordInput.addEventListener('input', function() {
+                errorMessage.classList.remove('show');
+            });
+            
+            async function realizarLogin(password) {
+                if (isLoggingIn) return false;
+                
+                isLoggingIn = true;
+                loginBtn.disabled = true;
+                loginBtn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> Verificando...';
+                
+                try {
+                    const response = await fetch('/api/login', {
+                        method: 'POST',
+                        headers: { 
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ password: password })
+                    });
+                    
+                    const data = await response.json();
+                    
+                    if (response.ok && data.success) {
+                        sessionStorage.setItem('adminToken', data.token);
+                        // CORREGIDO: Redirigir a admin.html
+                        window.location.href = '/admin.html';
+                        return true;
+                    } else {
+                        showError(data.error || 'Contraseña incorrecta');
+                        passwordInput.value = '';
+                        passwordInput.focus();
+                    }
+                } catch (err) {
+                    console.error('Error:', err);
+                    showError('Error de conexión. Intente nuevamente.');
+                } finally {
+                    isLoggingIn = false;
+                    loginBtn.disabled = false;
+                    loginBtn.innerHTML = '<i class="fas fa-lock"></i> Acceder al Panel';
+                }
+                return false;
+            }
+            
+            form.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                const password = passwordInput.value;
+                
+                if (!password) {
+                    showError('Ingrese la contraseña');
+                    return;
+                }
+                
+                await realizarLogin(password);
+            });
+            
+            // Limpiar al salir
+            window.addEventListener('beforeunload', function() {
+                passwordInput.value = '';
+            });
+        })();
+    </script>
+</body>
+</html>
