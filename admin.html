@@ -1,0 +1,1085 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel | Serenity Spa - Configuración Completa</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #f3f4f8;
+            padding: 1.5rem;
+            min-height: 100vh;
+        }
+
+        .dashboard {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* Header */
+        .admin-header {
+            background: white;
+            padding: 1.25rem 1.75rem;
+            border-radius: 20px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            margin-bottom: 1.5rem;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .title-section {
+            display: flex;
+            align-items: center;
+            gap: 0.85rem;
+        }
+
+        .title-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 14px;
+            background: linear-gradient(135deg, #C9A961, #A8883F);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+
+        h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1a2332;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 0.6rem 1.2rem;
+            border-radius: 40px;
+            font-weight: 600;
+            font-size: 0.8rem;
+            cursor: pointer;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: #C9A961;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #A8883F;
+            transform: translateY(-1px);
+        }
+
+        .btn-success {
+            background: #059669;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #047857;
+        }
+
+        .btn-outline {
+            background: white;
+            color: #4b5563;
+            border: 1px solid #e5e7eb;
+        }
+
+        .btn-outline:hover {
+            border-color: #C9A961;
+            color: #C9A961;
+        }
+
+        .btn-danger {
+            background: #dc2626;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #b91c1c;
+        }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            border-bottom: 1px solid #e5e7eb;
+            padding-bottom: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .tab {
+            padding: 0.6rem 1.2rem;
+            border-radius: 40px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.2s;
+            background: transparent;
+            border: none;
+        }
+
+        .tab.active {
+            background: #C9A961;
+            color: white;
+        }
+
+        .tab:hover:not(.active) {
+            background: rgba(201, 169, 97, 0.1);
+        }
+
+        /* Paneles de configuración */
+        .config-panel {
+            background: white;
+            border-radius: 20px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid #e5e7eb;
+        }
+
+        .config-panel h3 {
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+            color: #1a2332;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .config-panel h3 i {
+            color: #C9A961;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.4rem;
+            font-weight: 500;
+            font-size: 0.8rem;
+            color: #4b5563;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.6rem 0.8rem;
+            border: 1px solid #e5e7eb;
+            border-radius: 10px;
+            font-family: inherit;
+            font-size: 0.85rem;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #C9A961;
+            box-shadow: 0 0 0 3px rgba(201,169,97,0.1);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+        }
+
+        /* Grid de servicios */
+        .servicios-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .servicio-card {
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            border: 1px solid #e5e7eb;
+            transition: all 0.2s;
+        }
+
+        .servicio-card:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            transform: translateY(-2px);
+        }
+
+        .servicio-imagen {
+            width: 100%;
+            height: 160px;
+            object-fit: cover;
+        }
+
+        .servicio-info {
+            padding: 1rem;
+        }
+
+        .servicio-nombre {
+            font-size: 1rem;
+            font-weight: 700;
+            color: #1a2332;
+            margin-bottom: 0.25rem;
+        }
+
+        .servicio-precio {
+            color: #C9A961;
+            font-weight: 600;
+            font-size: 0.85rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .servicio-descripcion {
+            font-size: 0.75rem;
+            color: #6b7280;
+            margin-bottom: 0.5rem;
+            line-height: 1.4;
+        }
+
+        .servicio-beneficios, .servicio-efectos {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.3rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .tag {
+            background: #f3f4f8;
+            padding: 0.2rem 0.5rem;
+            border-radius: 20px;
+            font-size: 0.65rem;
+            color: #4b5563;
+        }
+
+        .tag-efecto {
+            background: rgba(201, 169, 97, 0.1);
+            color: #A8883F;
+        }
+
+        .servicio-acciones {
+            display: flex;
+            gap: 0.5rem;
+            padding-top: 0.5rem;
+            border-top: 1px solid #e5e7eb;
+        }
+
+        .accion-btn {
+            flex: 1;
+            padding: 0.4rem;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-size: 0.7rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.3rem;
+            transition: all 0.2s;
+        }
+
+        .accion-btn.editar {
+            background: rgba(201, 169, 97, 0.1);
+            color: #C9A961;
+        }
+
+        .accion-btn.eliminar {
+            background: rgba(220, 38, 38, 0.1);
+            color: #dc2626;
+        }
+
+        .accion-btn:hover {
+            filter: brightness(0.95);
+        }
+
+        /* Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(4px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.2s;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal {
+            background: white;
+            border-radius: 24px;
+            max-width: 700px;
+            width: 90%;
+            max-height: 85vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            padding: 1.25rem 1.5rem;
+            border-bottom: 1px solid #e5e7eb;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h3 {
+            font-size: 1.2rem;
+            color: #1a2332;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 1.2rem;
+            cursor: pointer;
+            color: #9ca3af;
+        }
+
+        .modal-body {
+            padding: 1.5rem;
+        }
+
+        .dynamic-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .dynamic-item {
+            background: #f3f4f8;
+            padding: 0.3rem 0.7rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .dynamic-item button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #dc2626;
+        }
+
+        .input-group {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .input-group input {
+            flex: 1;
+        }
+
+        .modal-footer {
+            padding: 1rem 1.5rem;
+            border-top: 1px solid #e5e7eb;
+            display: flex;
+            justify-content: flex-end;
+            gap: 0.75rem;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 1.5rem;
+            right: 1.5rem;
+            background: white;
+            padding: 0.75rem 1.25rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            transform: translateX(150%);
+            transition: transform 0.3s;
+            z-index: 2000;
+        }
+
+        .toast.show {
+            transform: translateX(0);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            background: white;
+            border-radius: 20px;
+            color: #9ca3af;
+        }
+
+        .turnos-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1rem;
+        }
+
+        .turno-card {
+            background: white;
+            border-radius: 16px;
+            padding: 1rem;
+            border: 1px solid #e5e7eb;
+        }
+
+        /* Previsualización de imagen */
+        .image-preview {
+            margin-top: 0.5rem;
+            width: 100%;
+            max-width: 200px;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid #e5e7eb;
+            display: none;
+        }
+
+        .image-preview img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        @media (max-width: 768px) {
+            body { padding: 0.75rem; }
+            .servicios-grid, .turnos-grid { grid-template-columns: 1fr; }
+            .form-row { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+<div class="dashboard">
+    <div class="admin-header">
+        <div class="title-section">
+            <div class="title-icon"><i class="fas fa-spa"></i></div>
+            <h1>Panel de Administración</h1>
+        </div>
+        <div class="header-actions">
+            <button class="btn btn-success" id="btnGuardarConfig"><i class="fas fa-save"></i> Guardar Configuración</button>
+            <button class="btn btn-primary" id="btnAgregarServicio"><i class="fas fa-plus"></i> Agregar Servicio</button>
+            <button class="btn btn-outline" id="btnLogout"><i class="fas fa-sign-out-alt"></i> Salir</button>
+        </div>
+    </div>
+
+    <div class="tabs">
+        <button class="tab active" data-tab="config"><i class="fas fa-sliders-h"></i> Configuración del Sitio</button>
+        <button class="tab" data-tab="servicios"><i class="fas fa-spa"></i> Servicios</button>
+        <button class="tab" data-tab="turnos"><i class="fas fa-calendar-check"></i> Turnos</button>
+    </div>
+
+    <!-- Pestaña Configuración -->
+    <div id="tabConfig" class="tab-content">
+        <div class="config-panel">
+            <h3><i class="fas fa-image"></i> Sección Hero (Encabezado Principal)</h3>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Título Principal</label>
+                    <input type="text" id="heroTitulo" placeholder="Ej: Renueva tu Energía">
+                </div>
+                <div class="form-group">
+                    <label>Subtítulo</label>
+                    <input type="text" id="heroSubtitulo" placeholder="Ej: Experiencias de bienestar...">
+                </div>
+            </div>
+            <div class="form-group">
+                <label>URL Imagen de Fondo</label>
+                <input type="text" id="heroImagen" placeholder="https://...">
+            </div>
+            <div class="form-group">
+                <label>Texto del Botón</label>
+                <input type="text" id="heroBoton" placeholder="Ej: Explorar Tratamientos">
+            </div>
+        </div>
+
+        <div class="config-panel">
+            <h3><i class="fas fa-tags"></i> Sección "Nuestros Servicios"</h3>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Etiqueta (texto pequeño)</label>
+                    <input type="text" id="serviciosEtiqueta" placeholder="Ej: Nuestros Servicios">
+                </div>
+                <div class="form-group">
+                    <label>Título Principal</label>
+                    <input type="text" id="serviciosTitulo" placeholder="Ej: Elige tu Masaje Ideal">
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Descripción</label>
+                <textarea id="serviciosDescripcion" rows="2" placeholder="Ej: Tratamientos personalizados..."></textarea>
+            </div>
+        </div>
+
+        <div class="config-panel">
+            <h3><i class="fas fa-comment-dots"></i> Sección Contacto / Chat</h3>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Título</label>
+                    <input type="text" id="contactoTitulo" placeholder="Ej: Asistente de Reservas">
+                </div>
+                <div class="form-group">
+                    <label>Subtítulo</label>
+                    <input type="text" id="contactoDescripcion" placeholder="Ej: Habla con nuestro asistente...">
+                </div>
+            </div>
+        </div>
+
+        <div class="config-panel">
+            <h3><i class="fas fa-share-alt"></i> Sección Compartir</h3>
+            <div class="form-group">
+                <label>Título</label>
+                <input type="text" id="shareTitulo" placeholder="Ej: Comparte Serenity Spa">
+            </div>
+        </div>
+    </div>
+
+    <!-- Pestaña Servicios -->
+    <div id="tabServicios" class="tab-content" style="display: none;">
+        <div class="servicios-grid" id="serviciosGrid"></div>
+    </div>
+
+    <!-- Pestaña Turnos -->
+    <div id="tabTurnos" class="tab-content" style="display: none;">
+        <div class="turnos-grid" id="turnosGrid"></div>
+    </div>
+</div>
+
+<!-- Modal para editar/agregar servicio -->
+<div class="modal-overlay" id="modalServicio">
+    <div class="modal">
+        <div class="modal-header">
+            <h3 id="modalTitle">Agregar Servicio</h3>
+            <button class="modal-close" onclick="closeModal()"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="modal-body">
+            <div class="form-group">
+                <label>Nombre del servicio</label>
+                <input type="text" id="servicioNombre" placeholder="Ej: Masaje Relajante">
+            </div>
+            <div class="form-group">
+                <label>Precio</label>
+                <input type="text" id="servicioPrecio" placeholder="Ej: $45">
+            </div>
+            <div class="form-group">
+                <label>Descripción</label>
+                <textarea id="servicioDescripcion" rows="2" placeholder="Descripción del servicio..."></textarea>
+            </div>
+            <!-- Input de imagen modificado: ahora es file input -->
+            <div class="form-group">
+                <label>Imagen del servicio</label>
+                <input type="file" id="servicioImagenFile" accept="image/*">
+                <div class="image-preview" id="imagePreviewContainer">
+                    <img id="imagePreview" src="" alt="Vista previa">
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Beneficios</label>
+                <div class="input-group">
+                    <input type="text" id="nuevoBeneficio" placeholder="Ej: 60 minutos">
+                    <button class="btn btn-outline" id="btnAgregarBeneficio" style="padding:0.6rem 1rem;">+ Agregar</button>
+                </div>
+                <div class="dynamic-list" id="beneficiosList"></div>
+            </div>
+            <div class="form-group">
+                <label>Efectos en el Cuerpo</label>
+                <div class="input-group">
+                    <input type="text" id="nuevoEfecto" placeholder="Ej: Relajación profunda">
+                    <button class="btn btn-outline" id="btnAgregarEfecto" style="padding:0.6rem 1rem;">+ Agregar</button>
+                </div>
+                <div class="dynamic-list" id="efectosList"></div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-outline" onclick="closeModal()">Cancelar</button>
+            <button class="btn btn-primary" id="btnGuardarServicio">Guardar</button>
+        </div>
+    </div>
+</div>
+
+<div class="toast" id="toast"><i class="fas fa-check-circle"></i><span id="toastMessage"></span></div>
+
+<script>
+    let servicios = [];
+    let turnos = [];
+    let configData = {};
+    let editandoId = null;
+    let beneficiosTemp = [];
+    let efectosTemp = [];
+    let imagenSeleccionada = null; // Almacena el archivo de imagen seleccionado (File)
+
+    function getToken() {
+        return sessionStorage.getItem('adminToken');
+    }
+
+    function checkAuth() {
+        const token = getToken();
+        if (!token) {
+            window.location.href = '/login.html';
+            return false;
+        }
+        return token;
+    }
+
+    function showToast(msg, type = 'success') {
+        const toast = document.getElementById('toast');
+        const icon = toast.querySelector('i');
+        document.getElementById('toastMessage').textContent = msg;
+        icon.className = type === 'success' ? 'fas fa-check-circle' : 'fas fa-exclamation-circle';
+        toast.classList.add('show');
+        setTimeout(() => toast.classList.remove('show'), 3000);
+    }
+
+    async function apiFetch(url, options = {}) {
+        const token = checkAuth();
+        const response = await fetch(url, {
+            ...options,
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json',
+                ...options.headers
+            }
+        });
+        if (response.status === 401) {
+            sessionStorage.removeItem('adminToken');
+            window.location.href = '/login.html';
+            throw new Error('Sesión expirada');
+        }
+        return response;
+    }
+
+    // Función para subir imagen a la carpeta uploads del servidor
+    async function subirImagen(archivo) {
+        const formData = new FormData();
+        formData.append('imagen', archivo);
+        
+        const token = getToken();
+        const response = await fetch('/api/upload', {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${token}`
+            },
+            body: formData
+        });
+        
+        if (!response.ok) {
+            throw new Error('Error al subir la imagen');
+        }
+        
+        const data = await response.json();
+        return data.url; // La URL pública de la imagen
+    }
+
+    // Cargar configuración
+    async function cargarConfiguracion() {
+        try {
+            const response = await fetch('/api/config');
+            configData = await response.json();
+            
+            document.getElementById('heroTitulo').value = configData.hero?.titulo || '';
+            document.getElementById('heroSubtitulo').value = configData.hero?.subtitulo || '';
+            document.getElementById('heroImagen').value = configData.hero?.imagenFondo || '';
+            document.getElementById('heroBoton').value = configData.hero?.botonTexto || '';
+            
+            document.getElementById('serviciosEtiqueta').value = configData.serviciosSection?.etiqueta || '';
+            document.getElementById('serviciosTitulo').value = configData.serviciosSection?.titulo || '';
+            document.getElementById('serviciosDescripcion').value = configData.serviciosSection?.descripcion || '';
+            
+            document.getElementById('contactoTitulo').value = configData.contactoSection?.titulo || '';
+            document.getElementById('contactoDescripcion').value = configData.contactoSection?.descripcion || '';
+            
+            document.getElementById('shareTitulo').value = configData.shareSection?.titulo || '';
+        } catch (error) {
+            showToast('Error al cargar configuración', 'error');
+        }
+    }
+
+    // Guardar configuración
+    async function guardarConfiguracion() {
+        const updatedConfig = {
+            hero: {
+                titulo: document.getElementById('heroTitulo').value,
+                subtitulo: document.getElementById('heroSubtitulo').value,
+                imagenFondo: document.getElementById('heroImagen').value,
+                botonTexto: document.getElementById('heroBoton').value
+            },
+            serviciosSection: {
+                etiqueta: document.getElementById('serviciosEtiqueta').value,
+                titulo: document.getElementById('serviciosTitulo').value,
+                descripcion: document.getElementById('serviciosDescripcion').value
+            },
+            contactoSection: {
+                titulo: document.getElementById('contactoTitulo').value,
+                descripcion: document.getElementById('contactoDescripcion').value
+            },
+            shareSection: {
+                titulo: document.getElementById('shareTitulo').value
+            }
+        };
+        
+        try {
+            await apiFetch('/api/config', { method: 'PUT', body: JSON.stringify(updatedConfig) });
+            showToast('Configuración guardada correctamente');
+        } catch (error) {
+            showToast('Error al guardar configuración', 'error');
+        }
+    }
+
+    // Cargar servicios
+    async function cargarServicios() {
+        try {
+            const response = await fetch('/api/servicios');
+            servicios = await response.json();
+            renderServicios();
+        } catch (error) {
+            showToast('Error al cargar servicios', 'error');
+        }
+    }
+
+    function renderServicios() {
+        const grid = document.getElementById('serviciosGrid');
+        if (!servicios.length) {
+            grid.innerHTML = '<div class="empty-state"><i class="fas fa-spa fa-2x"></i><p>No hay servicios. Agrega tu primer servicio.</p></div>';
+            return;
+        }
+
+        grid.innerHTML = servicios.map(s => `
+            <div class="servicio-card">
+                <img class="servicio-imagen" src="${s.imagen}" alt="${escapeHtml(s.nombre)}" onerror="this.src='https://images.unsplash.com/photo-1544161515-4ab6ce6db874?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80'">
+                <div class="servicio-info">
+                    <div class="servicio-nombre">${escapeHtml(s.nombre)}</div>
+                    <div class="servicio-precio">${escapeHtml(s.precio)}</div>
+                    <div class="servicio-descripcion">${escapeHtml(s.descripcion)}</div>
+                    <div class="servicio-beneficios">
+                        ${s.beneficios?.map(b => `<span class="tag">${escapeHtml(b)}</span>`).join('') || ''}
+                    </div>
+                    <div class="servicio-efectos">
+                        ${s.efectos?.map(e => `<span class="tag tag-efecto">✨ ${escapeHtml(e)}</span>`).join('') || ''}
+                    </div>
+                    <div class="servicio-acciones">
+                        <button class="accion-btn editar" onclick="editarServicio('${s.id}')"><i class="fas fa-edit"></i> Editar</button>
+                        <button class="accion-btn eliminar" onclick="eliminarServicio('${s.id}')"><i class="fas fa-trash"></i> Eliminar</button>
+                    </div>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    // Cargar turnos
+    async function cargarTurnos() {
+        try {
+            const response = await apiFetch('/turnos');
+            turnos = await response.json();
+            renderTurnos();
+        } catch (error) {
+            showToast('Error al cargar turnos', 'error');
+        }
+    }
+
+    function renderTurnos() {
+        const grid = document.getElementById('turnosGrid');
+        if (!turnos.length) {
+            grid.innerHTML = '<div class="empty-state"><i class="fas fa-calendar fa-2x"></i><p>No hay turnos reservados.</p></div>';
+            return;
+        }
+
+        grid.innerHTML = turnos.map((t, idx) => `
+            <div class="turno-card">
+                <div class="servicio-nombre">${escapeHtml(t.nombre)}</div>
+                <div class="servicio-precio">${escapeHtml(t.massageType || 'Masaje')}</div>
+                <div class="servicio-descripcion">📅 ${escapeHtml(t.dia)} a las ${t.hora}:00</div>
+                <div class="servicio-descripcion">📞 ${escapeHtml(t.telefono || 'Sin teléfono')}</div>
+                ${t.tipoServicio === 'domicilio' ? `<div class="servicio-descripcion">📍 ${escapeHtml(t.ubicacion || 'A domicilio')}</div>` : ''}
+                <div class="servicio-acciones" style="margin-top:0.5rem;">
+                    <button class="accion-btn eliminar" onclick="eliminarTurno(${idx})"><i class="fas fa-trash"></i> Eliminar</button>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    function escapeHtml(str) {
+        if (!str) return '';
+        return str.replace(/[&<>]/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[m]));
+    }
+
+    function openModal(editando = false) {
+        document.getElementById('modalServicio').classList.add('active');
+        if (!editando) {
+            editandoId = null;
+            document.getElementById('modalTitle').textContent = 'Agregar Servicio';
+            document.getElementById('servicioNombre').value = '';
+            document.getElementById('servicioPrecio').value = '';
+            document.getElementById('servicioDescripcion').value = '';
+            // Resetear input file y vista previa
+            document.getElementById('servicioImagenFile').value = '';
+            const previewContainer = document.getElementById('imagePreviewContainer');
+            const previewImg = document.getElementById('imagePreview');
+            previewContainer.style.display = 'none';
+            previewImg.src = '';
+            imagenSeleccionada = null;
+            beneficiosTemp = [];
+            efectosTemp = [];
+            renderBeneficiosList();
+            renderEfectosList();
+        }
+    }
+
+    function closeModal() {
+        document.getElementById('modalServicio').classList.remove('active');
+        editandoId = null;
+        imagenSeleccionada = null;
+    }
+
+    function renderBeneficiosList() {
+        const container = document.getElementById('beneficiosList');
+        container.innerHTML = beneficiosTemp.map((b, i) => `
+            <div class="dynamic-item">
+                ${escapeHtml(b)}
+                <button onclick="eliminarBeneficio(${i})"><i class="fas fa-times-circle"></i></button>
+            </div>
+        `).join('');
+    }
+
+    function renderEfectosList() {
+        const container = document.getElementById('efectosList');
+        container.innerHTML = efectosTemp.map((e, i) => `
+            <div class="dynamic-item">
+                ✨ ${escapeHtml(e)}
+                <button onclick="eliminarEfecto(${i})"><i class="fas fa-times-circle"></i></button>
+            </div>
+        `).join('');
+    }
+
+    function agregarBeneficio() {
+        const input = document.getElementById('nuevoBeneficio');
+        const valor = input.value.trim();
+        if (valor) {
+            beneficiosTemp.push(valor);
+            renderBeneficiosList();
+            input.value = '';
+        }
+    }
+
+    function agregarEfecto() {
+        const input = document.getElementById('nuevoEfecto');
+        const valor = input.value.trim();
+        if (valor) {
+            efectosTemp.push(valor);
+            renderEfectosList();
+            input.value = '';
+        }
+    }
+
+    function eliminarBeneficio(index) {
+        beneficiosTemp.splice(index, 1);
+        renderBeneficiosList();
+    }
+
+    function eliminarEfecto(index) {
+        efectosTemp.splice(index, 1);
+        renderEfectosList();
+    }
+
+    window.editarServicio = async (id) => {
+        const servicio = servicios.find(s => s.id === id);
+        if (!servicio) return;
+        
+        editandoId = id;
+        document.getElementById('modalTitle').textContent = 'Editar Servicio';
+        document.getElementById('servicioNombre').value = servicio.nombre;
+        document.getElementById('servicioPrecio').value = servicio.precio;
+        document.getElementById('servicioDescripcion').value = servicio.descripcion;
+        
+        // Mostrar vista previa de la imagen actual si existe
+        if (servicio.imagen) {
+            const previewContainer = document.getElementById('imagePreviewContainer');
+            const previewImg = document.getElementById('imagePreview');
+            previewImg.src = servicio.imagen;
+            previewContainer.style.display = 'block';
+        } else {
+            document.getElementById('imagePreviewContainer').style.display = 'none';
+        }
+        
+        // Resetear input file
+        document.getElementById('servicioImagenFile').value = '';
+        imagenSeleccionada = null;
+        
+        beneficiosTemp = [...(servicio.beneficios || [])];
+        efectosTemp = [...(servicio.efectos || [])];
+        renderBeneficiosList();
+        renderEfectosList();
+        openModal(true);
+    };
+
+    window.eliminarServicio = async (id) => {
+        if (!confirm('¿Eliminar este servicio? Esta acción no se puede deshacer.')) return;
+        try {
+            await apiFetch(`/api/servicios/${id}`, { method: 'DELETE' });
+            showToast('Servicio eliminado');
+            cargarServicios();
+        } catch {
+            showToast('Error al eliminar', 'error');
+        }
+    };
+
+    window.eliminarTurno = async (index) => {
+        if (!confirm('¿Eliminar este turno?')) return;
+        try {
+            await apiFetch(`/turnos/${index}`, { method: 'DELETE' });
+            showToast('Turno eliminado');
+            cargarTurnos();
+        } catch {
+            showToast('Error al eliminar', 'error');
+        }
+    };
+
+    async function guardarServicio() {
+        const nombre = document.getElementById('servicioNombre').value.trim();
+        const precio = document.getElementById('servicioPrecio').value.trim();
+        const descripcion = document.getElementById('servicioDescripcion').value.trim();
+        
+        if (!nombre || !precio || !descripcion) {
+            showToast('Complete todos los campos', 'error');
+            return;
+        }
+
+        let imagenUrl = null;
+        
+        // Si hay una imagen seleccionada, subirla al servidor
+        if (imagenSeleccionada) {
+            try {
+                imagenUrl = await subirImagen(imagenSeleccionada);
+            } catch (error) {
+                showToast('Error al subir la imagen', 'error');
+                return;
+            }
+        } else if (editandoId) {
+            // Si estamos editando y no se seleccionó nueva imagen, mantener la existente
+            const servicioExistente = servicios.find(s => s.id === editandoId);
+            if (servicioExistente && servicioExistente.imagen) {
+                imagenUrl = servicioExistente.imagen;
+            }
+        }
+        
+        // Si no hay imagen, usar una por defecto
+        if (!imagenUrl) {
+            imagenUrl = "https://images.unsplash.com/photo-1544161515-4ab6ce6db874?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80";
+        }
+
+        const data = {
+            nombre, precio, descripcion,
+            beneficios: beneficiosTemp,
+            efectos: efectosTemp,
+            imagen: imagenUrl
+        };
+
+        try {
+            if (editandoId) {
+                await apiFetch(`/api/servicios/${editandoId}`, { method: 'PUT', body: JSON.stringify(data) });
+                showToast('Servicio actualizado');
+            } else {
+                await apiFetch('/api/servicios', { method: 'POST', body: JSON.stringify(data) });
+                showToast('Servicio creado');
+            }
+            closeModal();
+            cargarServicios();
+        } catch {
+            showToast('Error al guardar', 'error');
+        }
+    }
+
+    function cambiarTab(tab) {
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        document.querySelector(`.tab[data-tab="${tab}"]`).classList.add('active');
+        
+        document.getElementById('tabConfig').style.display = tab === 'config' ? 'block' : 'none';
+        document.getElementById('tabServicios').style.display = tab === 'servicios' ? 'block' : 'none';
+        document.getElementById('tabTurnos').style.display = tab === 'turnos' ? 'block' : 'none';
+        
+        if (tab === 'servicios') cargarServicios();
+        if (tab === 'turnos') cargarTurnos();
+    }
+
+    function logout() {
+        sessionStorage.removeItem('adminToken');
+        window.location.href = '/login.html';
+    }
+
+    // Previsualizar imagen al seleccionar archivo
+    function setupImagePreview() {
+        const fileInput = document.getElementById('servicioImagenFile');
+        const previewContainer = document.getElementById('imagePreviewContainer');
+        const previewImg = document.getElementById('imagePreview');
+        
+        fileInput.addEventListener('change', (event) => {
+            const file = event.target.files[0];
+            if (file) {
+                imagenSeleccionada = file;
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    previewImg.src = e.target.result;
+                    previewContainer.style.display = 'block';
+                };
+                reader.readAsDataURL(file);
+            } else {
+                imagenSeleccionada = null;
+                previewContainer.style.display = 'none';
+                previewImg.src = '';
+            }
+        });
+    }
+
+    // Eventos
+    document.getElementById('btnGuardarConfig').onclick = guardarConfiguracion;
+    document.getElementById('btnAgregarServicio').onclick = () => openModal(false);
+    document.getElementById('btnGuardarServicio').onclick = guardarServicio;
+    document.getElementById('btnAgregarBeneficio').onclick = agregarBeneficio;
+    document.getElementById('btnAgregarEfecto').onclick = agregarEfecto;
+    document.getElementById('btnLogout').onclick = logout;
+    
+    document.querySelectorAll('.tab').forEach(tab => {
+        tab.onclick = () => cambiarTab(tab.dataset.tab);
+    });
+
+    // Configurar previsualización de imagen
+    setupImagePreview();
+
+    // Inicializar
+    if (checkAuth()) {
+        cargarConfiguracion();
+        cargarServicios();
+        cargarTurnos();
+    }
+</script>
+</body>
+</html>
