@@ -1,0 +1,746 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel | Serenity Spa</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: #f3f4f8; padding: 1.5rem; min-height: 100vh; }
+        .dashboard { max-width: 1400px; margin: 0 auto; }
+        .admin-header { background: white; padding: 1.25rem 1.75rem; border-radius: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); margin-bottom: 1.5rem; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 1rem; }
+        .title-section { display: flex; align-items: center; gap: 0.85rem; }
+        .title-icon { width: 44px; height: 44px; border-radius: 14px; background: linear-gradient(135deg, #C9A961, #A8883F); display: flex; align-items: center; justify-content: center; color: white; }
+        h1 { font-size: 1.5rem; font-weight: 700; color: #1a2332; }
+        .header-actions { display: flex; gap: 0.75rem; flex-wrap: wrap; }
+        .btn { padding: 0.6rem 1.2rem; border-radius: 40px; font-weight: 600; font-size: 0.8rem; cursor: pointer; border: none; display: inline-flex; align-items: center; gap: 0.5rem; transition: all 0.2s; text-decoration: none; font-family: inherit; }
+        .btn-primary { background: #C9A961; color: white; }
+        .btn-primary:hover { background: #A8883F; transform: translateY(-1px); }
+        .btn-success { background: #059669; color: white; }
+        .btn-success:hover { background: #047857; }
+        .btn-outline { background: white; color: #4b5563; border: 1px solid #e5e7eb; }
+        .btn-outline:hover { border-color: #C9A961; color: #C9A961; }
+        .btn-danger { background: #dc2626; color: white; }
+        .btn-danger:hover { background: #b91c1c; }
+        .btn-warning { background: #f59e0b; color: white; }
+        .btn-warning:hover { background: #d97706; }
+        .btn-whatsapp { background: #25D366; color: white; }
+        .btn-whatsapp:hover { background: #128C7E; }
+        .btn-info { background: #3B82F6; color: white; }
+        .btn-info:hover { background: #2563EB; }
+        .btn-security { background: #7c3aed; color: white; }
+        .btn-security:hover { background: #6d28d9; }
+        .tabs { display: flex; gap: 0.5rem; margin-bottom: 1.5rem; border-bottom: 1px solid #e5e7eb; padding-bottom: 0.5rem; flex-wrap: wrap; }
+        .tab { padding: 0.6rem 1.2rem; border-radius: 40px; cursor: pointer; font-weight: 500; transition: all 0.2s; background: transparent; border: none; font-size: 0.85rem; font-family: inherit; }
+        .tab.active { background: #C9A961; color: white; }
+        .tab:hover:not(.active) { background: rgba(201, 169, 97, 0.1); }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        .config-panel { background: white; border-radius: 20px; padding: 1.5rem; margin-bottom: 1.5rem; border: 1px solid #e5e7eb; }
+        .config-panel h3 { font-size: 1.1rem; margin-bottom: 1rem; color: #1a2332; display: flex; align-items: center; gap: 0.5rem; }
+        .config-panel h3 i { color: #C9A961; }
+        .form-group { margin-bottom: 1rem; }
+        .form-group label { display: block; margin-bottom: 0.4rem; font-weight: 500; font-size: 0.8rem; color: #4b5563; }
+        .form-group input, .form-group textarea, .form-group select { width: 100%; padding: 0.6rem 0.8rem; border: 1px solid #e5e7eb; border-radius: 10px; font-family: inherit; font-size: 0.85rem; }
+        .form-group input:focus, .form-group textarea:focus { outline: none; border-color: #C9A961; box-shadow: 0 0 0 3px rgba(201,169,97,0.1); }
+        .form-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem; }
+        .servicios-grid, .turnos-grid, .seguridad-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 1rem; margin-top: 1rem; }
+        .servicio-card, .turno-card, .bloqueo-card { background: white; border-radius: 16px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.05); border: 1px solid #e5e7eb; transition: all 0.2s; }
+        .servicio-card:hover, .turno-card:hover, .bloqueo-card:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.1); transform: translateY(-2px); }
+        .servicio-imagen { width: 100%; height: 160px; object-fit: cover; }
+        .servicio-info, .turno-info, .bloqueo-info { padding: 1rem; }
+        .servicio-nombre, .turno-nombre, .bloqueo-ip { font-size: 1rem; font-weight: 700; color: #1a2332; margin-bottom: 0.25rem; }
+        .servicio-precio, .turno-hora { color: #C9A961; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.5rem; }
+        .servicio-descripcion, .turno-detalle, .bloqueo-detalle { font-size: 0.75rem; color: #6b7280; margin-bottom: 0.5rem; line-height: 1.4; }
+        .servicio-beneficios { display: flex; flex-wrap: wrap; gap: 0.3rem; margin-bottom: 0.5rem; }
+        .tag { background: #f3f4f8; padding: 0.2rem 0.5rem; border-radius: 20px; font-size: 0.65rem; color: #4b5563; }
+        .tag-danger { background: rgba(220,38,38,0.1); color: #dc2626; font-weight: 600; }
+        .tag-warning { background: rgba(245,158,11,0.1); color: #d97706; font-weight: 600; }
+        .tag-success { background: rgba(16,185,129,0.1); color: #059669; font-weight: 600; }
+        .servicio-acciones, .turno-acciones, .bloqueo-acciones { display: flex; gap: 0.5rem; padding-top: 0.5rem; border-top: 1px solid #e5e7eb; flex-wrap: wrap; }
+        .accion-btn { flex: 1; min-width: 80px; padding: 0.4rem; border-radius: 8px; border: none; cursor: pointer; font-size: 0.7rem; font-weight: 500; display: flex; align-items: center; justify-content: center; gap: 0.3rem; transition: all 0.2s; font-family: inherit; }
+        .accion-btn.editar { background: rgba(201,169,97,0.1); color: #C9A961; }
+        .accion-btn.eliminar { background: rgba(220,38,38,0.1); color: #dc2626; }
+        .accion-btn.whatsapp { background: rgba(37,211,102,0.1); color: #25D366; }
+        .accion-btn.desbloquear { background: rgba(16,185,129,0.1); color: #059669; }
+        .accion-btn.bloquear-perm { background: rgba(220,38,38,0.1); color: #dc2626; }
+        .accion-btn.eliminar-reg { background: rgba(239,68,68,0.15); color: #dc2626; }
+        .accion-btn:hover { filter: brightness(0.9); transform: scale(1.02); }
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); backdrop-filter: blur(4px); display: flex; align-items: center; justify-content: center; z-index: 1000; opacity: 0; visibility: hidden; transition: all 0.2s; }
+        .modal-overlay.active { opacity: 1; visibility: visible; }
+        .modal { background: white; border-radius: 24px; max-width: 700px; width: 90%; max-height: 85vh; overflow-y: auto; }
+        .modal-header { padding: 1.25rem 1.5rem; border-bottom: 1px solid #e5e7eb; display: flex; justify-content: space-between; align-items: center; }
+        .modal-header h3 { font-size: 1.2rem; color: #1a2332; }
+        .modal-close { background: none; border: none; font-size: 1.2rem; cursor: pointer; color: #9ca3af; transition: all 0.2s; }
+        .modal-close:hover { color: #dc2626; transform: rotate(90deg); }
+        .modal-body { padding: 1.5rem; }
+        .modal-footer { padding: 1rem 1.5rem; border-top: 1px solid #e5e7eb; display: flex; justify-content: flex-end; gap: 0.75rem; }
+        .dynamic-list { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.5rem; }
+        .dynamic-item { background: #f3f4f8; padding: 0.3rem 0.7rem; border-radius: 20px; font-size: 0.75rem; display: flex; align-items: center; gap: 0.5rem; }
+        .dynamic-item button { background: none; border: none; cursor: pointer; color: #dc2626; }
+        .input-group { display: flex; gap: 0.5rem; margin-bottom: 0.5rem; }
+        .input-group input { flex: 1; }
+        .toast { position: fixed; bottom: 1.5rem; right: 1.5rem; background: white; padding: 0.75rem 1.25rem; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); display: flex; align-items: center; gap: 0.6rem; transform: translateX(150%); transition: transform 0.3s; z-index: 2000; font-size: 0.85rem; }
+        .toast.show { transform: translateX(0); }
+        .toast.error { border-left: 4px solid #dc2626; }
+        .toast.success { border-left: 4px solid #059669; }
+        .empty-state { text-align: center; padding: 3rem; background: white; border-radius: 20px; color: #9ca3af; }
+        .stats-bar { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 1.5rem; }
+        .stat-card { background: white; border-radius: 16px; padding: 1.25rem; border: 1px solid #e5e7eb; text-align: center; transition: all 0.2s; }
+        .stat-card:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+        .stat-card .stat-value { font-size: 2rem; font-weight: 700; color: #1a2332; }
+        .stat-card .stat-label { font-size: 0.75rem; color: #6b7280; margin-top: 0.25rem; }
+        .stat-card.danger .stat-value { color: #dc2626; }
+        .stat-card.warning .stat-value { color: #f59e0b; }
+        .stat-card.success .stat-value { color: #059669; }
+        .image-upload-area { border: 2px dashed #e5e7eb; border-radius: 12px; padding: 1.5rem; text-align: center; cursor: pointer; transition: all 0.2s; background: #f9fafb; margin-bottom: 0.5rem; }
+        .image-upload-area:hover { border-color: #C9A961; background: rgba(201,169,97,0.05); }
+        .image-upload-area i { font-size: 2rem; color: #C9A961; margin-bottom: 0.5rem; }
+        .image-upload-area p { font-size: 0.8rem; color: #6b7280; }
+        .image-upload-area input[type="file"] { display: none; }
+        .image-preview-container { display: flex; gap: 1rem; flex-wrap: wrap; margin-top: 0.5rem; }
+        .image-preview-box { flex: 1; min-width: 150px; border-radius: 10px; border: 2px solid #e5e7eb; overflow: hidden; background: #f9fafb; position: relative; }
+        .image-preview-box img { width: 100%; height: 120px; object-fit: cover; }
+        .image-preview-box .preview-label { position: absolute; bottom: 0; left: 0; right: 0; background: rgba(0,0,0,0.7); color: white; padding: 0.3rem; font-size: 0.65rem; text-align: center; }
+        .image-preview-box.empty { display: flex; align-items: center; justify-content: center; height: 120px; color: #9ca3af; font-size: 0.75rem; }
+        .url-input-group { display: flex; gap: 0.5rem; align-items: center; }
+        .url-input-group input { flex: 1; }
+        .url-input-group button { white-space: nowrap; padding: 0.6rem 1rem; font-size: 0.75rem; }
+        .url-warning { background: rgba(245,158,11,0.1); border: 1px solid rgba(245,158,11,0.3); border-radius: 8px; padding: 0.5rem 0.75rem; font-size: 0.7rem; color: #92400e; margin-top: 0.5rem; display: none; }
+        .url-warning.show { display: flex; align-items: center; gap: 0.5rem; }
+        table { width: 100%; border-collapse: collapse; font-size: 0.8rem; }
+        table th { background: #f9fafb; padding: 0.75rem; text-align: left; font-weight: 600; color: #4b5563; border-bottom: 2px solid #e5e7eb; position: sticky; top: 0; }
+        table td { padding: 0.75rem; border-bottom: 1px solid #e5e7eb; color: #6b7280; }
+        table tr:hover td { background: #f9fafb; }
+        .table-container { max-height: 400px; overflow-y: auto; border-radius: 10px; border: 1px solid #e5e7eb; }
+        .section-actions { display: flex; gap: 0.75rem; margin-bottom: 1rem; flex-wrap: wrap; }
+        @media (max-width: 768px) {
+            body { padding: 0.75rem; }
+            .servicios-grid, .turnos-grid, .seguridad-grid { grid-template-columns: 1fr; }
+            .form-row { grid-template-columns: 1fr; }
+            .stats-bar { grid-template-columns: repeat(2, 1fr); }
+            .image-preview-container { flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+<div class="dashboard">
+    <div class="admin-header">
+        <div class="title-section">
+            <div class="title-icon"><i class="fas fa-spa"></i></div>
+            <h1>Panel de Administración</h1>
+        </div>
+        <div class="header-actions">
+            <!-- PUNTO 1: Botón seguridad ahora cambia a la pestaña, NO redirige a página rota -->
+            <button class="btn btn-security" id="btnSeguridadHeader"><i class="fas fa-shield-alt"></i> Seguridad</button>
+            <button class="btn btn-success" id="btnGuardarConfig"><i class="fas fa-save"></i> Guardar Config</button>
+            <button class="btn btn-primary" id="btnAgregarServicio"><i class="fas fa-plus"></i> Agregar Servicio</button>
+            <button class="btn btn-outline" id="btnLogout"><i class="fas fa-sign-out-alt"></i> Salir</button>
+        </div>
+    </div>
+
+    <div class="tabs">
+        <button class="tab active" data-tab="config"><i class="fas fa-sliders-h"></i> Configuración</button>
+        <button class="tab" data-tab="servicios"><i class="fas fa-spa"></i> Servicios</button>
+        <button class="tab" data-tab="turnos"><i class="fas fa-calendar-check"></i> Turnos</button>
+        <button class="tab" data-tab="seguridad"><i class="fas fa-shield-alt"></i> Seguridad</button>
+    </div>
+
+    <!-- Pestaña Configuración -->
+    <div id="tabConfig" class="tab-content active">
+        <div class="config-panel">
+            <h3><i class="fas fa-image"></i> Sección Hero</h3>
+            <div class="form-row">
+                <div class="form-group"><label>Título</label><input type="text" id="heroTitulo" placeholder="Renueva tu Energía"></div>
+                <div class="form-group"><label>Subtítulo</label><input type="text" id="heroSubtitulo" placeholder="Experiencias de bienestar..."></div>
+            </div>
+            <div class="form-group"><label>URL Imagen de Fondo</label><input type="text" id="heroImagen" placeholder="https://..."></div>
+            <div class="form-group"><label>Texto Botón</label><input type="text" id="heroBoton" placeholder="Explorar Tratamientos"></div>
+        </div>
+        <div class="config-panel">
+            <h3><i class="fas fa-tags"></i> Sección Servicios</h3>
+            <div class="form-row">
+                <div class="form-group"><label>Etiqueta</label><input type="text" id="serviciosEtiqueta" placeholder="Nuestros Servicios"></div>
+                <div class="form-group"><label>Título</label><input type="text" id="serviciosTitulo" placeholder="Elige tu Masaje Ideal"></div>
+            </div>
+            <div class="form-group"><label>Descripción</label><textarea id="serviciosDescripcion" rows="2"></textarea></div>
+        </div>
+        <div class="config-panel">
+            <h3><i class="fas fa-comment-dots"></i> Sección Contacto</h3>
+            <div class="form-row">
+                <div class="form-group"><label>Título</label><input type="text" id="contactoTitulo" placeholder="Asistente de Reservas"></div>
+                <div class="form-group"><label>Subtítulo</label><input type="text" id="contactoDescripcion" placeholder="Habla con nuestro asistente..."></div>
+            </div>
+        </div>
+        <div class="config-panel">
+            <h3><i class="fas fa-share-alt"></i> Sección Compartir</h3>
+            <div class="form-group"><label>Título</label><input type="text" id="shareTitulo" placeholder="Comparte Serenity Spa"></div>
+        </div>
+    </div>
+
+    <!-- Pestaña Servicios -->
+    <div id="tabServicios" class="tab-content">
+        <div class="servicios-grid" id="serviciosGrid"></div>
+    </div>
+
+    <!-- Pestaña Turnos -->
+    <div id="tabTurnos" class="tab-content">
+        <div class="turnos-grid" id="turnosGrid"></div>
+    </div>
+
+    <!-- Pestaña Seguridad -->
+    <div id="tabSeguridad" class="tab-content">
+        <div class="stats-bar">
+            <div class="stat-card danger"><div class="stat-value" id="statBloqueosActivos">0</div><div class="stat-label"><i class="fas fa-ban"></i> Bloqueadas Activas</div></div>
+            <div class="stat-card warning"><div class="stat-value" id="statIntentosFallidos">0</div><div class="stat-label"><i class="fas fa-exclamation-triangle"></i> Intentos Fallidos</div></div>
+            <div class="stat-card"><div class="stat-value" id="statHistorial">0</div><div class="stat-label"><i class="fas fa-history"></i> Históricos</div></div>
+        </div>
+
+        <!-- PUNTO 2: Botón para eliminar bloqueos expirados -->
+        <div class="section-actions">
+            <button class="btn btn-warning" id="btnLimpiarExpirados"><i class="fas fa-broom"></i> Limpiar Expirados</button>
+        </div>
+
+        <div class="config-panel">
+            <h3><i class="fas fa-ban"></i> IPs Bloqueadas Activas</h3>
+            <div id="bloqueosActivosContainer">
+                <div class="empty-state"><i class="fas fa-check-circle fa-2x" style="color:#059669;"></i><p>No hay IPs bloqueadas</p></div>
+            </div>
+        </div>
+
+        <div class="config-panel">
+            <h3><i class="fas fa-history"></i> Historial de Bloqueos</h3>
+            <div class="table-container">
+                <table>
+                    <thead><tr><th>IP</th><th>Tipo</th><th>Motivo</th><th>Fecha</th><th>Intentos</th><th>Estado</th><th>Acción</th></tr></thead>
+                    <tbody id="tablaHistorialBody"><tr><td colspan="7" style="text-align:center; padding:2rem;">Sin registros</td></tr></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Servicio -->
+<div class="modal-overlay" id="modalServicio">
+    <div class="modal">
+        <div class="modal-header">
+            <h3 id="modalTitle">Agregar Servicio</h3>
+            <button class="modal-close" onclick="closeModal()"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="modal-body">
+            <div class="form-group"><label>Nombre del Servicio *</label><input type="text" id="servicioNombre" placeholder="Ej: Masaje Relajante"></div>
+            <div class="form-group"><label>Precio *</label><input type="text" id="servicioPrecio" placeholder="Ej: $45"></div>
+            <div class="form-group"><label>Descripción *</label><textarea id="servicioDescripcion" rows="2"></textarea></div>
+
+            <!-- PUNTO 3.1: Imagen Web SOLO mediante input (file o URL) -->
+            <div class="config-panel" style="background: #f9fafb; border: 1px solid #e5e7eb;">
+                <h3 style="font-size: 0.95rem;"><i class="fas fa-globe"></i> Imagen para la Web</h3>
+                <p style="font-size: 0.7rem; color: #6b7280; margin-bottom: 1rem;">Sube desde tu dispositivo o ingresa una URL</p>
+                <div class="form-group">
+                    <label>Subir imagen</label>
+                    <div class="image-upload-area" id="uploadAreaWeb" onclick="document.getElementById('inputFileWeb').click()">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                        <p>Haz clic para seleccionar</p>
+                        <p style="font-size: 0.65rem; color: #9ca3af;">JPG, PNG, WEBP - Máx 5MB</p>
+                        <input type="file" id="inputFileWeb" accept="image/jpeg,image/png,image/webp,image/gif" onchange="handleFileUpload('web', this)">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>O ingresar URL</label>
+                    <div class="url-input-group">
+                        <input type="text" id="servicioImagenWeb" placeholder="https://ejemplo.com/imagen.jpg" oninput="previewImageFromUrl('web')">
+                        <button class="btn btn-info" onclick="previewImageFromUrl('web')"><i class="fas fa-eye"></i></button>
+                    </div>
+                </div>
+                <div class="image-preview-container">
+                    <div class="image-preview-box empty" id="previewBoxWeb">Sin previsualización</div>
+                </div>
+                <input type="hidden" id="servicioImagenWebFinal">
+            </div>
+
+            <!-- PUNTO 3.2: Imagen WhatsApp SOLO por URL pública -->
+            <div class="config-panel" style="background: #f0fdf4; border: 1px solid #bbf7d0;">
+                <h3 style="font-size: 0.95rem;"><i class="fab fa-whatsapp" style="color:#25D366;"></i> Imagen para WhatsApp</h3>
+                <p style="font-size: 0.7rem; color: #6b7280; margin-bottom: 0.5rem;">Esta imagen se envía en el mensaje de confirmación al cliente. Debe ser una URL pública accesible desde internet.</p>
+                <div class="url-warning" id="waUrlWarning">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <span>Solo se aceptan URLs que comiencen con http:// o https://. Las imágenes subidas desde el dispositivo no funcionan en WhatsApp.</span>
+                </div>
+                <div class="form-group" style="margin-top: 0.75rem;">
+                    <label>URL de imagen pública *</label>
+                    <div class="url-input-group">
+                        <input type="text" id="servicioImagenWhatsApp" placeholder="https://ejemplo.com/imagen-para-whatsapp.jpg" oninput="validarUrlWhatsApp()">
+                        <button class="btn btn-info" onclick="validarUrlWhatsApp()"><i class="fas fa-check"></i></button>
+                    </div>
+                </div>
+                <div class="image-preview-container">
+                    <div class="image-preview-box empty" id="previewBoxWhatsApp">Sin previsualización</div>
+                </div>
+                <input type="hidden" id="servicioImagenWhatsAppFinal">
+            </div>
+
+            <div class="form-group">
+                <label>Beneficios</label>
+                <div class="input-group"><input type="text" id="nuevoBeneficio" placeholder="Ej: 60 minutos"><button class="btn btn-outline" id="btnAgregarBeneficio">+</button></div>
+                <div class="dynamic-list" id="beneficiosList"></div>
+            </div>
+            <div class="form-group">
+                <label>Efectos</label>
+                <div class="input-group"><input type="text" id="nuevoEfecto" placeholder="Ej: Relajación"><button class="btn btn-outline" id="btnAgregarEfecto">+</button></div>
+                <div class="dynamic-list" id="efectosList"></div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-outline" onclick="closeModal()">Cancelar</button>
+            <button class="btn btn-primary" id="btnGuardarServicio"><i class="fas fa-save"></i> Guardar</button>
+        </div>
+    </div>
+</div>
+
+<!-- Modal WhatsApp -->
+<div class="modal-overlay" id="modalWhatsApp">
+    <div class="modal">
+        <div class="modal-header">
+            <h3><i class="fab fa-whatsapp"></i> Mensaje para el Cliente</h3>
+            <button class="modal-close" onclick="closeWhatsAppModal()"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="modal-body">
+            <div class="form-group"><label>Teléfono</label><input type="text" id="whatsappNumero" readonly style="background:#f3f4f8;"></div>
+            <div class="form-group"><label>Mensaje</label><textarea id="whatsappMensaje" rows="10" readonly style="background:#f3f4f8; font-family:monospace; font-size:0.75rem;"></textarea></div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-outline" onclick="closeWhatsAppModal()">Cerrar</button>
+            <button class="btn btn-whatsapp" id="btnEnviarWhatsAppReal"><i class="fab fa-whatsapp"></i> Enviar</button>
+        </div>
+    </div>
+</div>
+
+<div class="toast" id="toast"><i class="fas fa-check-circle"></i><span id="toastMessage"></span></div>
+
+<script>
+    let servicios = [], turnos = [], configData = {}, editandoId = null;
+    let beneficiosTemp = [], efectosTemp = [];
+    let seguridadData = { activos: [], historial: [], intentosFallidos: {} };
+    let imagenWebBase64 = null;
+
+    function getToken() { return sessionStorage.getItem('adminToken'); }
+
+    function showToast(msg, type = 'success') {
+        const toast = document.getElementById('toast');
+        document.getElementById('toastMessage').textContent = msg;
+        toast.classList.remove('error', 'success');
+        toast.classList.add(type);
+        toast.querySelector('i').className = type === 'error' ? 'fas fa-exclamation-circle' : 'fas fa-check-circle';
+        toast.classList.add('show');
+        setTimeout(() => toast.classList.remove('show'), 3500);
+    }
+
+    async function apiFetch(url, options = {}) {
+        const token = getToken();
+        if (!token) { window.location.href = '/login.html'; throw new Error('No autenticado'); }
+        const response = await fetch(url, { ...options, headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json', ...options.headers } });
+        if (response.status === 401) { sessionStorage.removeItem('adminToken'); window.location.href = '/login.html'; throw new Error('Sesión expirada'); }
+        return response;
+    }
+
+    function escapeHtml(str) { if (!str) return ''; const d = document.createElement('div'); d.textContent = str; return d.innerHTML; }
+
+    // ==================== IMÁGENES ====================
+
+    function handleFileUpload(tipo, input) {
+        const file = input.files[0];
+        if (!file) return;
+        if (file.size > 5 * 1024 * 1024) { showToast('La imagen no debe superar 5MB', 'error'); input.value = ''; return; }
+        if (!['image/jpeg','image/png','image/webp','image/gif'].includes(file.type)) { showToast('Formato no permitido', 'error'); input.value = ''; return; }
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            if (tipo === 'web') {
+                imagenWebBase64 = e.target.result;
+                document.getElementById('servicioImagenWeb').value = '[Imagen subida]';
+                document.getElementById('servicioImagenWebFinal').value = e.target.result;
+                updatePreview('web', e.target.result);
+                showToast('Imagen web cargada');
+            }
+        };
+        reader.readAsDataURL(file);
+    }
+
+    function previewImageFromUrl(tipo) {
+        if (tipo === 'web') {
+            const url = document.getElementById('servicioImagenWeb').value.trim();
+            if (url && url !== '[Imagen subida]') {
+                imagenWebBase64 = null;
+                document.getElementById('servicioImagenWebFinal').value = url;
+                updatePreview('web', url);
+            }
+        }
+    }
+
+    // PUNTO 3.2: Validar URL de WhatsApp
+    function validarUrlWhatsApp() {
+        const input = document.getElementById('servicioImagenWhatsApp');
+        const warning = document.getElementById('waUrlWarning');
+        const url = input.value.trim();
+        const hidden = document.getElementById('servicioImagenWhatsAppFinal');
+
+        if (!url) {
+            warning.classList.remove('show');
+            hidden.value = '';
+            document.getElementById('previewBoxWhatsApp').innerHTML = 'Sin previsualización';
+            document.getElementById('previewBoxWhatsApp').classList.add('empty');
+            return;
+        }
+
+        if (url.startsWith('data:')) {
+            warning.classList.add('show');
+            hidden.value = '';
+            return;
+        }
+
+        try {
+            const parsed = new URL(url);
+            if (parsed.protocol === 'http:' || parsed.protocol === 'https:') {
+                warning.classList.remove('show');
+                hidden.value = url;
+                updatePreview('whatsapp', url);
+                return;
+            }
+        } catch {}
+
+        warning.classList.add('show');
+        hidden.value = '';
+    }
+
+    function updatePreview(tipo, src) {
+        const box = document.getElementById(tipo === 'web' ? 'previewBoxWeb' : 'previewBoxWhatsApp');
+        if (src) {
+            box.innerHTML = `<img src="${src}" alt="Preview" onerror="this.style.display='none'; this.parentElement.innerHTML='Error al cargar'; this.parentElement.classList.add('empty');"><div class="preview-label">${tipo === 'web' ? 'Web' : 'WhatsApp'}</div>`;
+            box.classList.remove('empty');
+        } else {
+            box.innerHTML = 'Sin previsualización';
+            box.classList.add('empty');
+        }
+    }
+
+    function resetImageFields() {
+        imagenWebBase64 = null;
+        document.getElementById('servicioImagenWeb').value = '';
+        document.getElementById('servicioImagenWebFinal').value = '';
+        document.getElementById('servicioImagenWhatsApp').value = '';
+        document.getElementById('servicioImagenWhatsAppFinal').value = '';
+        document.getElementById('inputFileWeb').value = '';
+        document.getElementById('waUrlWarning').classList.remove('show');
+        document.getElementById('previewBoxWeb').innerHTML = 'Sin previsualización';
+        document.getElementById('previewBoxWeb').classList.add('empty');
+        document.getElementById('previewBoxWhatsApp').innerHTML = 'Sin previsualización';
+        document.getElementById('previewBoxWhatsApp').classList.add('empty');
+    }
+
+    // ==================== CONFIGURACIÓN ====================
+
+    async function cargarConfiguracion() {
+        try {
+            const r = await fetch('/api/config');
+            configData = await r.json();
+            document.getElementById('heroTitulo').value = configData.hero?.titulo || '';
+            document.getElementById('heroSubtitulo').value = configData.hero?.subtitulo || '';
+            document.getElementById('heroImagen').value = configData.hero?.imagenFondo || '';
+            document.getElementById('heroBoton').value = configData.hero?.botonTexto || '';
+            document.getElementById('serviciosEtiqueta').value = configData.serviciosSection?.etiqueta || '';
+            document.getElementById('serviciosTitulo').value = configData.serviciosSection?.titulo || '';
+            document.getElementById('serviciosDescripcion').value = configData.serviciosSection?.descripcion || '';
+            document.getElementById('contactoTitulo').value = configData.contactoSection?.titulo || '';
+            document.getElementById('contactoDescripcion').value = configData.contactoSection?.descripcion || '';
+            document.getElementById('shareTitulo').value = configData.shareSection?.titulo || '';
+        } catch { showToast('Error al cargar configuración', 'error'); }
+    }
+
+    async function guardarConfiguracion() {
+        const cfg = {
+            hero: { titulo: document.getElementById('heroTitulo').value, subtitulo: document.getElementById('heroSubtitulo').value, imagenFondo: document.getElementById('heroImagen').value, botonTexto: document.getElementById('heroBoton').value },
+            serviciosSection: { etiqueta: document.getElementById('serviciosEtiqueta').value, titulo: document.getElementById('serviciosTitulo').value, descripcion: document.getElementById('serviciosDescripcion').value },
+            contactoSection: { titulo: document.getElementById('contactoTitulo').value, descripcion: document.getElementById('contactoDescripcion').value },
+            shareSection: { titulo: document.getElementById('shareTitulo').value }
+        };
+        try { await apiFetch('/api/config', { method: 'PUT', body: JSON.stringify(cfg) }); showToast('Configuración guardada'); }
+        catch { showToast('Error al guardar', 'error'); }
+    }
+
+    // ==================== SERVICIOS ====================
+
+    async function cargarServicios() {
+        try { const r = await fetch('/api/servicios'); servicios = await r.json(); renderServicios(); }
+        catch { showToast('Error al cargar servicios', 'error'); }
+    }
+
+    function renderServicios() {
+        const grid = document.getElementById('serviciosGrid');
+        if (!servicios.length) { grid.innerHTML = '<div class="empty-state"><i class="fas fa-spa fa-2x"></i><p>No hay servicios</p></div>'; return; }
+        grid.innerHTML = servicios.map(s => {
+            const img = s.imagenWeb || "https://images.unsplash.com/photo-1544161515-4ab6ce6db874?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80";
+            const waStatus = s.imagenWhatsApp ? '<span class="tag tag-success">WA: OK</span>' : '<span class="tag tag-warning">WA: Sin URL</span>';
+            return `<div class="servicio-card">
+                <img class="servicio-imagen" src="${img}" onerror="this.src='https://images.unsplash.com/photo-1544161515-4ab6ce6db874?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80'">
+                <div class="servicio-info">
+                    <div class="servicio-nombre">${escapeHtml(s.nombre)}</div>
+                    <div class="servicio-precio">${escapeHtml(s.precio)}</div>
+                    <div class="servicio-descripcion">${escapeHtml(s.descripcion)}</div>
+                    <div class="servicio-beneficios">${(s.beneficios||[]).map(b=>`<span class="tag">${escapeHtml(b)}</span>`).join('')} ${waStatus}</div>
+                    <div class="servicio-acciones">
+                        <button class="accion-btn editar" onclick="editarServicio('${s.id}')"><i class="fas fa-edit"></i> Editar</button>
+                        <button class="accion-btn eliminar" onclick="eliminarServicio('${s.id}')"><i class="fas fa-trash"></i> Eliminar</button>
+                    </div>
+                </div>
+            </div>`;
+        }).join('');
+    }
+
+    window.editarServicio = async (id) => {
+        const s = servicios.find(x => x.id === id);
+        if (!s) return;
+        editandoId = id;
+        resetImageFields();
+        document.getElementById('modalTitle').textContent = 'Editar Servicio';
+        document.getElementById('servicioNombre').value = s.nombre;
+        document.getElementById('servicioPrecio').value = s.precio;
+        document.getElementById('servicioDescripcion').value = s.descripcion;
+        // Web: puede ser base64 o URL
+        if (s.imagenWeb) {
+            if (s.imagenWeb.startsWith('data:')) {
+                imagenWebBase64 = s.imagenWeb;
+                document.getElementById('servicioImagenWeb').value = '[Imagen subida]';
+            } else {
+                document.getElementById('servicioImagenWeb').value = s.imagenWeb;
+            }
+            document.getElementById('servicioImagenWebFinal').value = s.imagenWeb;
+            updatePreview('web', s.imagenWeb);
+        }
+        // WhatsApp: solo URL
+        document.getElementById('servicioImagenWhatsApp').value = s.imagenWhatsApp || '';
+        document.getElementById('servicioImagenWhatsAppFinal').value = s.imagenWhatsApp || '';
+        if (s.imagenWhatsApp) updatePreview('whatsapp', s.imagenWhatsApp);
+        beneficiosTemp = [...(s.beneficios||[])];
+        efectosTemp = [...(s.efectos||[])];
+        renderBeneficiosList(); renderEfectosList();
+        document.getElementById('modalServicio').classList.add('active');
+    };
+
+    window.eliminarServicio = async (id) => {
+        if (!confirm('¿Eliminar este servicio?')) return;
+        try { await apiFetch(`/api/servicios/${id}`, { method: 'DELETE' }); showToast('Servicio eliminado'); cargarServicios(); }
+        catch { showToast('Error al eliminar', 'error'); }
+    };
+
+    async function guardarServicio() {
+        const nombre = document.getElementById('servicioNombre').value.trim();
+        const precio = document.getElementById('servicioPrecio').value.trim();
+        const descripcion = document.getElementById('servicioDescripcion').value.trim();
+        const imagenWebFinal = document.getElementById('servicioImagenWebFinal').value;
+        const imagenWhatsAppFinal = document.getElementById('servicioImagenWhatsAppFinal').value;
+        if (!nombre || !precio || !descripcion) { showToast('Completa los campos obligatorios', 'error'); return; }
+        const data = {
+            nombre, precio, descripcion, beneficios: beneficiosTemp, efectos: efectosTemp,
+            imagenWeb: imagenWebFinal || "https://images.unsplash.com/photo-1544161515-4ab6ce6db874?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
+            imagenWhatsApp: imagenWhatsAppFinal || ''
+        };
+        try {
+            if (editandoId) { await apiFetch(`/api/servicios/${editandoId}`, { method: 'PUT', body: JSON.stringify(data) }); showToast('Servicio actualizado'); }
+            else { await apiFetch('/api/servicios', { method: 'POST', body: JSON.stringify(data) }); showToast('Servicio creado'); }
+            closeModal(); cargarServicios();
+        } catch { showToast('Error al guardar', 'error'); }
+    }
+
+    // ==================== TURNOS ====================
+
+    async function cargarTurnos() {
+        try { const r = await apiFetch('/turnos'); turnos = await r.json(); renderTurnos(); }
+        catch { showToast('Error al cargar turnos', 'error'); }
+    }
+
+    function renderTurnos() {
+        const grid = document.getElementById('turnosGrid');
+        if (!turnos.length) { grid.innerHTML = '<div class="empty-state"><i class="fas fa-calendar fa-2x"></i><p>No hay turnos</p></div>'; return; }
+        grid.innerHTML = turnos.map(t => `<div class="turno-card"><div class="turno-info">
+            <div class="turno-nombre">${escapeHtml(t.nombre)}</div>
+            <div class="turno-hora">💆‍♂️ ${escapeHtml(t.massageType||'Masaje')}</div>
+            <div class="turno-detalle">📅 ${escapeHtml(t.dia)} ${t.hora}:00 hs</div>
+            <div class="turno-detalle">📞 ${escapeHtml(t.telefono||'Sin teléfono')}</div>
+            ${t.tipoServicio==='domicilio'?`<div class="turno-detalle">📍 ${escapeHtml(t.ubicacion)}</div>`:'<div class="turno-detalle">📍 En el salón</div>'}
+            <div class="turno-acciones">
+                <button class="accion-btn whatsapp" onclick="prepararWhatsApp('${t.id}')"><i class="fab fa-whatsapp"></i> WhatsApp</button>
+                <button class="accion-btn eliminar" onclick="eliminarTurno('${t.id}')"><i class="fas fa-trash"></i> Eliminar</button>
+            </div>
+        </div></div>`).join('');
+    }
+
+    window.eliminarTurno = async (id) => {
+        if (!confirm('¿Eliminar este turno?')) return;
+        try { await apiFetch(`/turnos/${id}`, { method: 'DELETE' }); showToast('Turno eliminado'); cargarTurnos(); }
+        catch { showToast('Error', 'error'); }
+    };
+
+    async function prepararWhatsApp(id) {
+        try {
+            const r = await apiFetch(`/api/enviar-whatsapp/${id}`, { method: 'POST' });
+            const data = await r.json();
+            if (data.success) {
+                document.getElementById('whatsappNumero').value = data.numero;
+                document.getElementById('whatsappMensaje').value = data.mensaje;
+                document.getElementById('modalWhatsApp').classList.add('active');
+            } else showToast('Error al preparar mensaje', 'error');
+        } catch { showToast('Error', 'error'); }
+    }
+
+    // ==================== SEGURIDAD (PUNTO 1 y 2 CORREGIDOS) ====================
+
+    async function cargarSeguridad() {
+        try { const r = await apiFetch('/api/seguridad/bloqueos'); seguridadData = await r.json(); renderSeguridad(); }
+        catch (e) { console.error('Error seguridad:', e); }
+    }
+
+    function renderSeguridad() {
+        const activos = seguridadData.activos || [];
+        const historial = seguridadData.historial || [];
+        const intentos = seguridadData.intentosFallidos || {};
+        document.getElementById('statBloqueosActivos').textContent = activos.length;
+        document.getElementById('statIntentosFallidos').textContent = Object.keys(intentos).length;
+        document.getElementById('statHistorial').textContent = historial.length;
+
+        const container = document.getElementById('bloqueosActivosContainer');
+        if (!activos.length) {
+            container.innerHTML = '<div class="empty-state"><i class="fas fa-check-circle fa-2x" style="color:#059669;"></i><p>No hay IPs bloqueadas</p></div>';
+        } else {
+            container.innerHTML = '<div class="seguridad-grid">' + activos.map(b => `
+                <div class="bloqueo-card" style="border-left: 4px solid ${b.permanente ? '#dc2626' : '#f59e0b'};">
+                    <div class="bloqueo-info">
+                        <div class="bloqueo-ip"><i class="fas fa-globe"></i> ${escapeHtml(b.ip)}</div>
+                        <div style="margin:0.5rem 0;"><span class="tag tag-danger">${escapeHtml(b.tipoAtaque||'Desconocido')}</span>${b.permanente?'<span class="tag tag-danger">PERMANENTE</span>':''}</div>
+                        <div class="bloqueo-detalle"><strong>Motivo:</strong> ${escapeHtml(b.motivo)}</div>
+                        <div class="bloqueo-detalle"><strong>Restante:</strong> ${b.tiempoRestanteFormateado||'-'}</div>
+                        <div class="bloqueo-acciones">
+                            <button class="accion-btn desbloquear" onclick="desbloquearIP('${b.ip}')"><i class="fas fa-unlock"></i> Desbloquear</button>
+                            <button class="accion-btn eliminar-reg" onclick="eliminarBloqueo('${b.ip}')"><i class="fas fa-trash"></i> Eliminar</button>
+                            ${!b.permanente?`<button class="accion-btn bloquear-perm" onclick="bloquearPermanente('${b.ip}')"><i class="fas fa-ban"></i> Permanente</button>`:''}
+                        </div>
+                    </div>
+                </div>`).join('') + '</div>';
+        }
+
+        const tbody = document.getElementById('tablaHistorialBody');
+        if (!historial.length) {
+            tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:2rem;">Sin registros</td></tr>';
+        } else {
+            tbody.innerHTML = historial.slice(0, 100).map(h => {
+                const exp = Date.now() > h.hasta;
+                return `<tr>
+                    <td><code style="background:#f3f4f8;padding:0.2rem 0.4rem;border-radius:4px;">${escapeHtml(h.ip)}</code></td>
+                    <td><span class="tag tag-danger">${escapeHtml(h.tipoAtaque||'?')}</span></td>
+                    <td style="max-width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="${escapeHtml(h.motivo)}">${escapeHtml(h.motivo)}</td>
+                    <td>${new Date(h.fecha).toLocaleString()}</td>
+                    <td>${h.intentos||0}</td>
+                    <td>${exp?'<span class="tag tag-success">Expirado</span>':'<span class="tag tag-warning">Activo</span>'}</td>
+                    <td><button class="accion-btn eliminar-reg" style="min-width:auto;padding:0.3rem 0.5rem;" onclick="eliminarHistorial('${h.id}')"><i class="fas fa-trash"></i></button></td>
+                </tr>`;
+            }).join('');
+        }
+    }
+
+    // PUNTO 2: Eliminar un bloqueo activo completamente
+    window.eliminarBloqueo = async function(ip) {
+        if (!confirm(`¿Eliminar completamente el bloqueo de ${ip}?`)) return;
+        try { await apiFetch(`/api/seguridad/bloqueos/${ip}`, { method: 'DELETE' }); showToast(`Bloqueo de ${ip} eliminado`); cargarSeguridad(); }
+        catch { showToast('Error al eliminar', 'error'); }
+    };
+
+    // PUNTO 2: Eliminar un registro del historial
+    window.eliminarHistorial = async function(id) {
+        if (!confirm('¿Eliminar este registro del historial?')) return;
+        try { await apiFetch(`/api/seguridad/historial/${id}`, { method: 'DELETE' }); showToast('Registro eliminado'); cargarSeguridad(); }
+        catch { showToast('Error', 'error'); }
+    };
+
+    // PUNTO 2: Limpiar expirados
+    window.limpiarExpirados = async function() {
+        try {
+            const r = await apiFetch('/api/seguridad/limpiar-expirados', { method: 'POST' });
+            const data = await r.json();
+            showToast(data.mensaje);
+            cargarSeguridad();
+        } catch { showToast('Error', 'error'); }
+    };
+
+    window.desbloquearIP = async function(ip) {
+        if (!confirm(`¿Desbloquear ${ip}?`)) return;
+        try { await apiFetch(`/api/seguridad/desbloquear/${ip}`, { method: 'POST' }); showToast(`${ip} desbloqueada`); cargarSeguridad(); }
+        catch { showToast('Error', 'error'); }
+    };
+
+    window.bloquearPermanente = async function(ip) {
+        if (!confirm(`¿Bloquear PERMANENTEMENTE ${ip}?`)) return;
+        try { await apiFetch(`/api/seguridad/bloquear-permanente/${ip}`, { method: 'POST' }); showToast(`${ip} bloqueada permanentemente`); cargarSeguridad(); }
+        catch { showToast('Error', 'error'); }
+    };
+
+    // ==================== UTILIDADES ====================
+
+    function closeModal() {
+        document.getElementById('modalServicio').classList.remove('active');
+        editandoId = null; beneficiosTemp = []; efectosTemp = [];
+        resetImageFields(); renderBeneficiosList(); renderEfectosList();
+    }
+    function closeWhatsAppModal() { document.getElementById('modalWhatsApp').classList.remove('active'); }
+
+    function renderBeneficiosList() { document.getElementById('beneficiosList').innerHTML = beneficiosTemp.map((b,i)=>`<div class="dynamic-item">${escapeHtml(b)}<button onclick="eliminarBeneficio(${i})"><i class="fas fa-times-circle"></i></button></div>`).join(''); }
+    function renderEfectosList() { document.getElementById('efectosList').innerHTML = efectosTemp.map((e,i)=>`<div class="dynamic-item">✨ ${escapeHtml(e)}<button onclick="eliminarEfecto(${i})"><i class="fas fa-times-circle"></i></button></div>`).join(''); }
+    window.eliminarBeneficio = i => { beneficiosTemp.splice(i,1); renderBeneficiosList(); };
+    window.eliminarEfecto = i => { efectosTemp.splice(i,1); renderEfectosList(); };
+
+    function cambiarTab(tab) {
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        document.querySelector(`.tab[data-tab="${tab}"]`).classList.add('active');
+        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+        const map = { config:'tabConfig', servicios:'tabServicios', turnos:'tabTurnos', seguridad:'tabSeguridad' };
+        if (map[tab]) document.getElementById(map[tab]).classList.add('active');
+        if (tab === 'servicios') cargarServicios();
+        if (tab === 'turnos') cargarTurnos();
+        if (tab === 'seguridad') cargarSeguridad();
+    }
+
+    // ==================== EVENT LISTENERS ====================
+
+    // PUNTO 1: Botón seguridad cambia a pestaña, NO redirige
+    document.getElementById('btnSeguridadHeader').onclick = () => cambiarTab('seguridad');
+    document.getElementById('btnGuardarConfig').onclick = guardarConfiguracion;
+    document.getElementById('btnAgregarServicio').onclick = () => {
+        editandoId = null; beneficiosTemp = []; efectosTemp = []; resetImageFields();
+        document.getElementById('modalTitle').textContent = 'Agregar Servicio';
+        document.getElementById('servicioNombre').value = '';
+        document.getElementById('servicioPrecio').value = '';
+        document.getElementById('servicioDescripcion').value = '';
+        renderBeneficiosList(); renderEfectosList();
+        document.getElementById('modalServicio').classList.add('active');
+    };
+    document.getElementById('btnGuardarServicio').onclick = guardarServicio;
+    document.getElementById('btnAgregarBeneficio').onclick = () => { const i = document.getElementById('nuevoBeneficio'); if (i.value.trim()) { beneficiosTemp.push(i.value.trim()); renderBeneficiosList(); i.value = ''; } };
+    document.getElementById('btnAgregarEfecto').onclick = () => { const i = document.getElementById('nuevoEfecto'); if (i.value.trim()) { efectosTemp.push(i.value.trim()); renderEfectosList(); i.value = ''; } };
+    document.getElementById('btnLogout').onclick = () => { sessionStorage.removeItem('adminToken'); window.location.href = '/login.html'; };
+    document.getElementById('btnLimpiarExpirados').onclick = limpiarExpirados;
+
+    document.getElementById('btnEnviarWhatsAppReal').onclick = () => {
+        const num = document.getElementById('whatsappNumero').value;
+        const msg = document.getElementById('whatsappMensaje').value;
+        if (num && msg) { window.open(`https://wa.me/${num}?text=${encodeURIComponent(msg)}`, '_blank'); showToast('Abriendo WhatsApp...'); }
+        else showToast('Error', 'error');
+    };
+
+    document.querySelectorAll('.tab').forEach(t => t.onclick = () => cambiarTab(t.dataset.tab));
+
+    // ==================== INICIAR ====================
+    cargarConfiguracion();
+    cargarServicios();
+    cargarTurnos();
+</script>
+</body>
+</html>
