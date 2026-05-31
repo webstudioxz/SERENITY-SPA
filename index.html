@@ -1,0 +1,1671 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <title>Serenity Spa | Masajes Profesionales</title>
+    <meta name="description" content="Descubre la mejor experiencia de bienestar en Serenity Spa. Masajes personalizados en un entorno profesional y relajante.">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Manrope:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <meta property="og:title" content="Serenity Spa">
+    <meta property="og:image" content="https://images.unsplash.com/photo-1544161515-4ab6ce6db874?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80">
+    <meta property="og:description" content="Relaja tu cuerpo con nosotros - Horarios: 12:00, 16:00, 20:00">
+    <meta property="og:type" content="website">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #2C3E50;
+            --primary-light: #3A546D;
+            --secondary: #FDFBF7;
+            --accent: #C9A961;
+            --accent-dark: #B28B4E;
+            --accent-soft: rgba(201, 169, 97, 0.1);
+            --text-dark: #1E2A36;
+            --text-medium: #4A5B6E;
+            --text-light: #7C8B9C;
+            --white: #FFFFFF;
+            --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.03);
+            --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.06), 0 2px 4px rgba(0, 0, 0, 0.04);
+            --shadow-lg: 0 12px 28px rgba(0, 0, 0, 0.08), 0 4px 10px rgba(0, 0, 0, 0.04);
+            --shadow-glow: 0 0 24px rgba(201, 169, 97, 0.25);
+            --radius-sm: 12px;
+            --radius-md: 20px;
+            --radius-lg: 28px;
+            --radius-full: 999px;
+            --transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        body {
+            font-family: 'Manrope', sans-serif;
+            background-color: var(--secondary);
+            color: var(--text-dark);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        h1, h2, h3, h4 {
+            font-family: 'Cormorant Garamond', serif;
+            font-weight: 600;
+            line-height: 1.2;
+            color: var(--primary);
+        }
+
+        header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(253, 251, 247, 0.88);
+            backdrop-filter: blur(16px);
+            z-index: 1000;
+            padding: 1rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: var(--transition);
+            border-bottom: 1px solid rgba(0,0,0,0.04);
+        }
+
+        header.scrolled {
+            padding: 0.65rem 5%;
+            background: rgba(253, 251, 247, 0.95);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.85rem;
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .logo i {
+            color: var(--accent);
+            font-size: 1.4rem;
+        }
+
+        .logo-img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 1.5px solid rgba(201, 169, 97, 0.5);
+        }
+
+        nav ul {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        nav a {
+            font-weight: 500;
+            position: relative;
+            padding: 0.5rem 0;
+            font-size: 0.9rem;
+            color: var(--text-medium);
+            transition: color 0.25s ease;
+            text-decoration: none;
+        }
+
+        nav a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 1.5px;
+            background: var(--accent);
+            transition: width 0.3s ease;
+        }
+
+        nav a:hover::after {
+            width: 100%;
+        }
+
+        nav a:hover {
+            color: var(--primary);
+        }
+
+        .hero {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            color: white;
+            position: relative;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(160deg, rgba(26, 35, 50, 0.9) 0%, rgba(44, 62, 80, 0.82) 50%, rgba(201, 169, 97, 0.6) 100%);
+        }
+
+        .hero-content {
+            max-width: 760px;
+            padding: 2rem;
+            animation: fadeUp 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-content h1 {
+            font-size: clamp(2.5rem, 6vw, 4.2rem);
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #FFFFFF 20%, #F5E6C8 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .hero-content p {
+            font-size: clamp(0.95rem, 1.8vw, 1.15rem);
+            margin-bottom: 2rem;
+            opacity: 0.8;
+            color: rgba(255,255,255,0.85);
+        }
+
+        .btn-hero {
+            background: var(--white);
+            color: var(--primary);
+            padding: 0.85rem 2rem;
+            border-radius: var(--radius-full);
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.6rem;
+            transition: var(--transition);
+            text-decoration: none;
+        }
+
+        .btn-hero:hover {
+            background: var(--accent);
+            color: var(--white);
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-lg), var(--shadow-glow);
+        }
+
+        .services {
+            padding: 6rem 5%;
+            background: var(--white);
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 3.5rem;
+        }
+
+        .section-title span {
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            display: block;
+            margin-bottom: 0.8rem;
+        }
+
+        .section-title h2 {
+            font-size: clamp(1.8rem, 4vw, 2.6rem);
+            position: relative;
+            display: inline-block;
+        }
+
+        .section-title h2::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 48px;
+            height: 2px;
+            background: var(--accent);
+            border-radius: 2px;
+        }
+
+        .section-title p {
+            color: var(--text-light);
+            max-width: 620px;
+            margin: 1.5rem auto 0;
+            font-size: 0.95rem;
+        }
+
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .card {
+            background: var(--white);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+            transition: var(--transition);
+            cursor: pointer;
+            border: 1px solid rgba(0,0,0,0.04);
+        }
+
+        .card:hover {
+            transform: translateY(-6px);
+            box-shadow: var(--shadow-lg);
+            border-color: rgba(201, 169, 97, 0.15);
+        }
+
+        .card-img {
+            width: 100%;
+            height: 210px;
+            object-fit: cover;
+            transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        .card:hover .card-img {
+            transform: scale(1.04);
+        }
+
+        .card-content {
+            padding: 1.4rem;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.7rem;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .card-header h3 {
+            font-size: 1.3rem;
+        }
+
+        .price {
+            background: var(--accent-soft);
+            color: var(--accent-dark);
+            padding: 0.25rem 0.85rem;
+            border-radius: var(--radius-full);
+            font-weight: 700;
+            font-size: 0.82rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+            border: 1px solid rgba(201, 169, 97, 0.12);
+        }
+
+        .description {
+            color: var(--text-medium);
+            margin-bottom: 0.8rem;
+            font-size: 0.88rem;
+            line-height: 1.5;
+        }
+
+        .benefits-list {
+            list-style: none;
+            margin-top: 0.8rem;
+        }
+
+        .benefits-list li {
+            display: flex;
+            align-items: center;
+            gap: 0.55rem;
+            margin-bottom: 0.5rem;
+            font-size: 0.82rem;
+            color: var(--text-light);
+        }
+
+        .benefits-list i {
+            color: var(--accent);
+            font-size: 0.7rem;
+        }
+
+        .card-cta {
+            margin-top: 1rem;
+            padding-top: 0.8rem;
+            border-top: 1px solid rgba(0,0,0,0.04);
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .btn-details {
+            color: var(--text-medium);
+            font-weight: 600;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            transition: var(--transition);
+            text-decoration: none;
+        }
+
+        .btn-details:hover {
+            color: var(--accent);
+            gap: 0.65rem;
+        }
+
+        /* Botones Flotantes */
+        .voice-float-btn {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #C9A961, #A8883F);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 1000;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+            border: none;
+            margin-bottom: 70px;
+        }
+
+        .voice-float-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 20px rgba(201,169,97,0.4);
+        }
+
+        .voice-float-btn i {
+            font-size: 1.8rem;
+            color: white;
+        }
+
+        .voice-float-btn.pulsing {
+            animation: pulseVoice 1.5s infinite;
+        }
+
+        @keyframes pulseVoice {
+            0% { box-shadow: 0 0 0 0 rgba(201,169,97,0.4); }
+            70% { box-shadow: 0 0 0 15px rgba(201,169,97,0); }
+            100% { box-shadow: 0 0 0 0 rgba(201,169,97,0); }
+        }
+
+        .voice-call-btn {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #25D366, #128C7E);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 1000;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            border: none;
+            transition: all 0.3s ease;
+        }
+
+        .voice-call-btn:hover { transform: scale(1.1); }
+        .voice-call-btn i { font-size: 1.5rem; color: white; }
+
+        @media (max-width: 768px) {
+            .voice-float-btn, .voice-call-btn {
+                width: 50px;
+                height: 50px;
+                bottom: 1rem;
+                right: 1rem;
+            }
+            .voice-float-btn { margin-bottom: 60px; }
+            .voice-float-btn i { font-size: 1.5rem; }
+            .voice-call-btn i { font-size: 1.2rem; }
+        }
+
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(26, 35, 50, 0.7);
+            backdrop-filter: blur(8px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            padding: 1rem;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal {
+            background: var(--white);
+            border-radius: var(--radius-lg);
+            max-width: 860px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+            transform: scale(0.96) translateY(8px);
+            transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        .modal-overlay.active .modal {
+            transform: scale(1) translateY(0);
+        }
+
+        .modal-header {
+            position: relative;
+            height: 240px;
+            overflow: hidden;
+        }
+
+        .modal-header img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .modal-header::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, rgba(26,35,50,0.85) 0%, transparent 60%);
+        }
+
+        .modal-title {
+            position: absolute;
+            bottom: 1.5rem;
+            left: 2rem;
+            right: 2rem;
+            color: white;
+            z-index: 2;
+        }
+
+        .modal-title h2 {
+            font-size: 1.8rem;
+            color: white;
+            margin-bottom: 0.5rem;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.9);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            border: none;
+            transition: var(--transition);
+            z-index: 3;
+            color: var(--primary);
+        }
+
+        .modal-close:hover {
+            background: var(--accent);
+            color: white;
+            transform: rotate(90deg);
+        }
+
+        .modal-body {
+            padding: 2rem;
+        }
+
+        .modal-section {
+            margin-bottom: 2rem;
+        }
+
+        .modal-section h3 {
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            font-size: 1.3rem;
+        }
+
+        .modal-section h3 i {
+            color: var(--accent);
+        }
+
+        .benefits-grid, .effects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 0.75rem;
+        }
+
+        .benefit-item, .effect-item {
+            background: var(--secondary);
+            padding: 0.85rem 1rem;
+            border-radius: var(--radius-sm);
+            display: flex;
+            align-items: center;
+            gap: 0.7rem;
+            transition: var(--transition);
+            border: 1px solid transparent;
+        }
+
+        .benefit-item:hover, .effect-item:hover {
+            background: var(--accent-soft);
+            border-color: rgba(201, 169, 97, 0.15);
+        }
+
+        .benefit-item i, .effect-item i {
+            color: var(--accent);
+        }
+
+        .modal-footer {
+            padding: 1.5rem 2rem 2rem;
+            border-top: 1px solid rgba(0,0,0,0.04);
+            display: flex;
+            justify-content: center;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+
+        .btn-book-now, .btn-share {
+            padding: 0.75rem 1.6rem;
+            border-radius: var(--radius-full);
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+            transition: var(--transition);
+            border: none;
+            font-size: 0.88rem;
+        }
+
+        .btn-book-now {
+            background: var(--accent);
+            color: white;
+        }
+
+        .btn-book-now:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .btn-share {
+            background: var(--white);
+            color: var(--primary);
+            border: 1px solid rgba(0,0,0,0.1);
+        }
+
+        .btn-share:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        .contact {
+            padding: 5rem 5%;
+            background: linear-gradient(160deg, #1a2332 0%, #2C3E50 60%, #3A546D 100%);
+            color: white;
+            text-align: center;
+        }
+
+        .contact .section-title h2,
+        .contact .section-title p {
+            color: white;
+        }
+
+        .contact .section-title h2::after {
+            background: var(--accent);
+        }
+
+        .horarios-info {
+            background: rgba(255,255,255,0.1);
+            border-radius: var(--radius-md);
+            padding: 1rem;
+            margin: 1rem auto;
+            max-width: 500px;
+            font-size: 0.85rem;
+            display: inline-flex;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .horarios-info span {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .horarios-info i {
+            color: var(--accent);
+        }
+
+        .chat-container {
+            max-width: 820px;
+            margin: 2rem auto 0;
+            background: rgba(255,255,255,0.06);
+            backdrop-filter: blur(16px);
+            border-radius: var(--radius-lg);
+            padding: 1.25rem;
+            border: 1px solid rgba(255,255,255,0.08);
+        }
+
+        .chat-panel {
+            background: rgba(255,255,255,0.97);
+            border-radius: var(--radius-md);
+            display: flex;
+            flex-direction: column;
+            height: 520px;
+            overflow: hidden;
+        }
+
+        .chat-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.9rem 1.4rem;
+            background: white;
+            border-bottom: 1px solid rgba(0,0,0,0.06);
+        }
+
+        .chat-header h2 {
+            font-size: 1.15rem;
+            margin: 0;
+            color: var(--primary);
+        }
+
+        .chat-header h2 i {
+            color: var(--accent);
+            margin-right: 0.4rem;
+        }
+
+        .status {
+            background: rgba(16, 185, 129, 0.1);
+            color: #10B981;
+            padding: 0.2rem 0.7rem;
+            border-radius: var(--radius-full);
+            font-size: 0.7rem;
+            font-weight: 600;
+        }
+
+        .messages-area {
+            flex: 1;
+            overflow-y: auto;
+            padding: 1.2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+            background: #f8f9fb;
+        }
+
+        .message {
+            display: flex;
+            gap: 0.7rem;
+            max-width: 85%;
+        }
+
+        .message.bot {
+            align-self: flex-start;
+        }
+
+        .message.user {
+            align-self: flex-end;
+            flex-direction: row-reverse;
+        }
+
+        .avatar {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            background: #eef0f4;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+        .avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .message-bubble {
+            padding: 0.7rem 1.1rem;
+            border-radius: 16px;
+            font-size: 0.88rem;
+            line-height: 1.5;
+            word-break: break-word;
+            white-space: pre-wrap;
+        }
+
+        .message.bot .message-bubble {
+            background: white;
+            color: var(--text-dark);
+            border-bottom-left-radius: 4px;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+        }
+
+        .message.user .message-bubble {
+            background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+            color: white;
+            border-bottom-right-radius: 4px;
+        }
+
+        .typing-indicator {
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+            padding: 0.7rem 1.1rem;
+            background: white;
+            border-radius: 16px;
+            width: fit-content;
+        }
+
+        .typing-indicator span {
+            width: 7px;
+            height: 7px;
+            background: #c0c6cf;
+            border-radius: 50%;
+            animation: typing 1.4s infinite ease-in-out;
+        }
+
+        .typing-indicator span:nth-child(2) { animation-delay: 0.2s; }
+        .typing-indicator span:nth-child(3) { animation-delay: 0.4s; }
+
+        .input-area {
+            display: flex;
+            gap: 0.5rem;
+            padding: 0.9rem;
+            background: white;
+            border-top: 1px solid rgba(0,0,0,0.06);
+        }
+
+        .input-area input {
+            flex: 1;
+            border: 1px solid rgba(0,0,0,0.08);
+            border-radius: var(--radius-full);
+            padding: 0.75rem 1rem;
+            outline: none;
+            font-size: 0.88rem;
+            font-family: 'Manrope', sans-serif;
+            background: #f8f9fb;
+        }
+
+        .input-area input:focus {
+            border-color: var(--accent);
+            background: white;
+            box-shadow: 0 0 0 3px rgba(201, 169, 97, 0.08);
+        }
+
+        .input-area button {
+            background: var(--accent);
+            border: none;
+            color: white;
+            padding: 0 1.1rem;
+            border-radius: var(--radius-full);
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .input-area button:hover {
+            background: var(--accent-dark);
+        }
+
+        .input-area.disabled {
+            opacity: 0.5;
+            pointer-events: none;
+        }
+
+        .share-section {
+            background: var(--white);
+            padding: 3rem 5%;
+            text-align: center;
+            border-top: 1px solid rgba(0,0,0,0.04);
+        }
+
+        .share-title {
+            font-size: 1.2rem;
+            margin-bottom: 1.25rem;
+            color: var(--primary);
+        }
+
+        .share-bar {
+            display: flex;
+            justify-content: center;
+            gap: 0.75rem;
+        }
+
+        .share-btn {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.1rem;
+            transition: var(--transition);
+            border: none;
+            cursor: pointer;
+        }
+
+        .share-btn.facebook { background: #1877F2; }
+        .share-btn.whatsapp { background: #25D366; }
+        .share-btn.instagram { background: radial-gradient(circle at 30% 110%, #ffdb8a, #f46f30, #d62976); }
+
+        .share-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 16px rgba(0,0,0,0.15);
+        }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes typing {
+            0%, 80%, 100% { transform: scale(0.6); opacity: 0.3; }
+            40% { transform: scale(1); opacity: 1; }
+        }
+
+        .scroll-reveal {
+            opacity: 0;
+            transform: translateY(24px);
+            transition: all 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        .scroll-reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        @media (max-width: 768px) {
+            header { padding: 0.8rem 1.5rem; }
+            nav ul { display: none; }
+            .services-grid { grid-template-columns: 1fr; }
+            .chat-container { padding: 0.75rem; }
+            .chat-panel { height: 480px; }
+            .modal-header { height: 180px; }
+            .modal-title h2 { font-size: 1.4rem; }
+            .modal-body { padding: 1.25rem; }
+        }
+    </style>
+</head>
+<body>
+    <header id="header">
+        <div class="logo">
+            <i class="fas fa-spa"></i> SERENITY SPA
+            <img class="logo-img" src="https://i.ibb.co/LDG7Gf2d/fotor-ai-2025020222510.jpg" alt="Serenity Spa Logo">
+        </div>
+        <nav>
+            <ul>
+                <li><a href="#inicio">Inicio</a></li>
+                <li><a href="#servicios">Masajes</a></li>
+                <li><a href="#contacto">Contacto</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section id="inicio" class="hero" id="heroSection">
+            <div class="hero-content">
+                <h1 id="heroTitulo">Cargando...</h1>
+                <p id="heroSubtitulo"></p>
+                <a href="#servicios" class="btn-hero" id="heroBoton"><i class="fas fa-arrow-down"></i> Explorar Tratamientos</a>
+            </div>
+        </section>
+
+        <section id="servicios" class="services">
+            <div class="section-title scroll-reveal">
+                <span id="serviciosEtiqueta">Cargando...</span>
+                <h2 id="serviciosTitulo"></h2>
+                <p id="serviciosDescripcion"></p>
+            </div>
+            <div class="services-grid" id="servicesGrid">
+                <div style="text-align:center; padding:2rem;">Cargando servicios...</div>
+            </div>
+        </section>
+
+        <section id="contacto" class="contact">
+            <div class="section-title scroll-reveal">
+                <h2 id="contactoTitulo">Cargando...</h2>
+                <p id="contactoDescripcion"></p>
+            </div>
+            <div class="horarios-info scroll-reveal">
+                <span><i class="fas fa-clock"></i> 12:00 hs</span>
+                <span><i class="fas fa-clock"></i> 16:00 hs</span>
+                <span><i class="fas fa-clock"></i> 20:00 hs</span>
+                <span><i class="fas fa-calendar"></i> Lunes a Sábado</span>
+                <span><i class="fas fa-calendar-week"></i> Reserva con 2 semanas</span>
+            </div>
+            <div class="chat-container scroll-reveal">
+                <div class="chat-panel">
+                    <div class="chat-header">
+                        <h2><i class="fas fa-comment-dots"></i> Asistente de Masajes</h2>
+                        <div class="status">en línea</div>
+                    </div>
+                    <div class="messages-area" id="chatMessages"></div>
+                    <div class="input-area" id="inputArea">
+                        <input type="text" id="userInput" placeholder="Escribe tu mensaje..." autocomplete="off">
+                        <button id="sendBtn"><i class="fas fa-paper-plane"></i></button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="share-section">
+            <h3 class="share-title" id="shareTitulo">Cargando...</h3>
+            <div class="share-bar">
+                <button class="share-btn facebook" data-social="facebook"><i class="fab fa-facebook-f"></i></button>
+                <button class="share-btn whatsapp" data-social="whatsapp"><i class="fab fa-whatsapp"></i></button>
+                <button class="share-btn instagram" data-social="instagram"><i class="fab fa-instagram"></i></button>
+            </div>
+        </section>
+    </main>
+
+    <!-- Botón Flotante para Chat de Voz -->
+    <button class="voice-float-btn" id="voiceFloatBtn" title="Habla con nuestro asistente">
+        <i class="fas fa-microphone-alt"></i>
+    </button>
+
+    <!-- Botón de llamada directa -->
+    <button class="voice-call-btn" id="voiceCallBtn" title="Llamar al asistente">
+        <i class="fas fa-phone-alt"></i>
+    </button>
+
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal">
+            <button class="modal-close" id="modalClose"><i class="fas fa-times"></i></button>
+            <div class="modal-header">
+                <img id="modalImg" src="" alt="Detalle del masaje">
+                <div class="modal-title">
+                    <h2 id="modalTitle"></h2>
+                    <span class="price" id="modalPrice"></span>
+                </div>
+            </div>
+            <div class="modal-body">
+                <div class="modal-section">
+                    <h3><i class="fas fa-star"></i> Beneficios Principales</h3>
+                    <div class="benefits-grid" id="modalBenefits"></div>
+                </div>
+                <div class="modal-section">
+                    <h3><i class="fas fa-heartbeat"></i> Efectos en el Cuerpo</h3>
+                    <div class="effects-grid" id="modalEffects"></div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-book-now" id="modalReserveBtn"><i class="fas fa-calendar-plus"></i> Reservar Ahora</button>
+                <button class="btn-share" id="modalShareBtn"><i class="fas fa-share-alt"></i> Compartir</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        (function(){
+            const API_URL = '/turnos';
+            const SERVICIOS_API = '/api/servicios';
+            const CONFIG_API = '/api/config';
+            const HORAS_VALIDAS = [12, 16, 20];
+            const DIAS_VALIDOS = ['lunes', 'martes', 'miercoles', 'jueves', 'viernes', 'sabado'];
+
+            function escapeHtml(str) {
+                if (!str) return '';
+                const div = document.createElement('div');
+                div.textContent = str;
+                return div.innerHTML;
+            }
+
+            class SerenitySpaApp {
+                constructor() {
+                    this.turnos = [];
+                    this.servicios = [];
+                    this.config = null;
+                    this.clientName = null;
+                    this.clientPhone = null;
+                    this.selectedMassageType = null;
+                    this.bookingState = null;
+                    this.pendingBooking = { 
+                        nombre: '', dia: '', hora: null, massageType: null, 
+                        telefono: null, ubicacion: null, tipoServicio: 'salon',
+                        codigoPais: '54'
+                    };
+                    this.isBotTyping = false;
+                    this.messageQueue = [];
+                    this.availableMassages = [];
+
+                    this.initDOM();
+                    this.bindEvents();
+                    this.cargarConfiguracion();
+                    this.cargarServicios();
+                    this.cargarTurnos();
+                    this.initScrollReveal();
+                    
+                    setTimeout(() => {
+                        this.addMessage('🌿 *Bienvenido a Serenity Spa* 🌿\n\n✨ *Horarios:* 12:00, 16:00 y 20:00 hs ✨\n📅 Lunes a Sábado\n💆‍♂️ Un masaje por persona por día\n\nPara comenzar, ¿cuál es tu nombre?', 'bot');
+                    }, 500);
+                }
+
+                initDOM() {
+                    this.servicesGrid = document.getElementById('servicesGrid');
+                    this.chatMessages = document.getElementById('chatMessages');
+                    this.userInput = document.getElementById('userInput');
+                    this.sendBtn = document.getElementById('sendBtn');
+                    this.modalOverlay = document.getElementById('modalOverlay');
+                    this.modalClose = document.getElementById('modalClose');
+                    this.modalReserveBtn = document.getElementById('modalReserveBtn');
+                    this.modalShareBtn = document.getElementById('modalShareBtn');
+                    this.modalImg = document.getElementById('modalImg');
+                    this.modalTitle = document.getElementById('modalTitle');
+                    this.modalPrice = document.getElementById('modalPrice');
+                    this.modalBenefits = document.getElementById('modalBenefits');
+                    this.modalEffects = document.getElementById('modalEffects');
+                    this.inputArea = document.getElementById('inputArea');
+                    this.header = document.getElementById('header');
+                    
+                    this.heroTitulo = document.getElementById('heroTitulo');
+                    this.heroSubtitulo = document.getElementById('heroSubtitulo');
+                    this.heroBoton = document.getElementById('heroBoton');
+                    this.serviciosEtiqueta = document.getElementById('serviciosEtiqueta');
+                    this.serviciosTitulo = document.getElementById('serviciosTitulo');
+                    this.serviciosDescripcion = document.getElementById('serviciosDescripcion');
+                    this.contactoTitulo = document.getElementById('contactoTitulo');
+                    this.contactoDescripcion = document.getElementById('contactoDescripcion');
+                    this.shareTitulo = document.getElementById('shareTitulo');
+                }
+
+                bindEvents() {
+                    this.sendBtn.addEventListener('click', () => this.sendMessage());
+                    this.userInput.addEventListener('keypress', (e) => { 
+                        if (e.key === 'Enter') this.sendMessage(); 
+                    });
+                    this.modalClose.addEventListener('click', () => this.closeModal());
+                    this.modalOverlay.addEventListener('click', (e) => { 
+                        if (e.target === this.modalOverlay) this.closeModal(); 
+                    });
+                    this.modalReserveBtn.addEventListener('click', () => this.initReservationFromModal());
+                    this.modalShareBtn.addEventListener('click', () => this.shareOnWhatsApp());
+                    
+                    document.querySelectorAll('.share-btn').forEach(btn => {
+                        btn.addEventListener('click', (e) => {
+                            const social = btn.dataset.social;
+                            if (social === 'facebook') window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(window.location.href)}`, '_blank');
+                            else if (social === 'whatsapp') window.open(`https://wa.me/?text=${encodeURIComponent('🌟 Serenity Spa - ¡Reserva tu masaje! 🌟\nHorarios: 12:00, 16:00, 20:00 hs\n')}%20${encodeURIComponent(window.location.href)}`, '_blank');
+                            else if (social === 'instagram') { navigator.clipboard?.writeText(window.location.href).then(() => alert('✅ Enlace copiado para Instagram')); window.open('https://www.instagram.com/', '_blank'); }
+                        });
+                    });
+
+                    document.getElementById('voiceFloatBtn').addEventListener('click', () => {
+                        window.location.href = '/voice-assistant';
+                    });
+
+                    document.getElementById('voiceCallBtn').addEventListener('click', () => {
+                        window.location.href = '/voice-assistant';
+                    });
+
+                    window.addEventListener('scroll', () => {
+                        if (window.scrollY > 100) this.header.classList.add('scrolled');
+                        else this.header.classList.remove('scrolled');
+                    });
+                }
+
+                async cargarConfiguracion() {
+                    try {
+                        const response = await fetch(CONFIG_API);
+                        this.config = await response.json();
+                        this.aplicarConfiguracion();
+                    } catch (error) {
+                        console.error('Error al cargar configuración:', error);
+                        this.aplicarConfiguracionDefault();
+                    }
+                }
+
+                aplicarConfiguracion() {
+                    if (!this.config) { this.aplicarConfiguracionDefault(); return; }
+                    if (this.config.hero) {
+                        this.heroTitulo.textContent = this.config.hero.titulo || 'Renueva tu Energía';
+                        this.heroSubtitulo.textContent = this.config.hero.subtitulo || '';
+                        this.heroBoton.innerHTML = `<i class="fas fa-arrow-down"></i> ${this.config.hero.botonTexto || 'Explorar Tratamientos'}`;
+                        if (this.config.hero.imagenFondo) {
+                            document.getElementById('heroSection').style.backgroundImage = `linear-gradient(160deg, rgba(26, 35, 50, 0.9) 0%, rgba(44, 62, 80, 0.82) 50%, rgba(201, 169, 97, 0.6) 100%), url('${this.config.hero.imagenFondo}')`;
+                        }
+                    }
+                    if (this.config.serviciosSection) {
+                        this.serviciosEtiqueta.textContent = this.config.serviciosSection.etiqueta || 'Nuestros Servicios';
+                        this.serviciosTitulo.textContent = this.config.serviciosSection.titulo || 'Elige tu Masaje Ideal';
+                        this.serviciosDescripcion.textContent = this.config.serviciosSection.descripcion || '';
+                    }
+                    if (this.config.contactoSection) {
+                        this.contactoTitulo.textContent = this.config.contactoSection.titulo || 'Asistente de Reservas';
+                        this.contactoDescripcion.textContent = this.config.contactoSection.descripcion || '';
+                    }
+                    if (this.config.shareSection) {
+                        this.shareTitulo.textContent = this.config.shareSection.titulo || 'Comparte Serenity Spa';
+                    }
+                }
+
+                aplicarConfiguracionDefault() {
+                    this.heroTitulo.textContent = 'Renueva tu Energía';
+                    this.heroSubtitulo.textContent = 'Experiencias de bienestar';
+                    this.heroBoton.innerHTML = '<i class="fas fa-arrow-down"></i> Explorar Tratamientos';
+                    this.serviciosEtiqueta.textContent = 'Nuestros Servicios';
+                    this.serviciosTitulo.textContent = 'Elige tu Masaje Ideal';
+                    this.serviciosDescripcion.textContent = 'Tratamientos personalizados';
+                    this.contactoTitulo.textContent = 'Asistente de Reservas';
+                    this.contactoDescripcion.textContent = 'Habla con nuestro asistente virtual.';
+                    this.shareTitulo.textContent = 'Comparte Serenity Spa';
+                }
+
+                async cargarServicios() {
+                    try {
+                        const response = await fetch(SERVICIOS_API);
+                        this.servicios = await response.json();
+                        this.availableMassages = this.servicios;
+                        this.renderServices();
+                    } catch (error) {
+                        console.error('Error al cargar servicios:', error);
+                        if (this.servicesGrid) {
+                            this.servicesGrid.innerHTML = '<div style="text-align:center; padding:2rem;">Error al cargar servicios.</div>';
+                        }
+                    }
+                }
+
+                async cargarTurnos() {
+                    try {
+                        const resp = await fetch(API_URL);
+                        if (!resp.ok) throw new Error();
+                        this.turnos = await resp.json();
+                    } catch (error) {
+                        this.turnos = [];
+                    }
+                }
+
+                renderServices() {
+                    if (!this.servicesGrid) return;
+                    if (!this.servicios || this.servicios.length === 0) {
+                        this.servicesGrid.innerHTML = '<div style="text-align:center; padding:2rem;">No hay servicios disponibles.</div>';
+                        return;
+                    }
+
+                    this.servicesGrid.innerHTML = this.servicios.map(s => {
+                        const imagenUrl = s.imagenWeb || s.imagen || "https://images.unsplash.com/photo-1544161515-4ab6ce6db874?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80";
+                        return `
+                        <div class="card scroll-reveal" data-id="${s.id}" data-nombre="${escapeHtml(s.nombre)}">
+                            <img src="${imagenUrl}" alt="${escapeHtml(s.nombre)}" class="card-img" loading="lazy" onerror="this.src='https://images.unsplash.com/photo-1544161515-4ab6ce6db874?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80'">
+                            <div class="card-content">
+                                <div class="card-header">
+                                    <h3>${escapeHtml(s.nombre)}</h3>
+                                    <span class="price"><i class="fas fa-tag"></i> ${escapeHtml(s.precio)}</span>
+                                </div>
+                                <p class="description">${escapeHtml(s.descripcion)}</p>
+                                <ul class="benefits-list">
+                                    ${(s.beneficios || []).map(b => `<li><i class="fas fa-check-circle"></i> ${escapeHtml(b)}</li>`).join('')}
+                                </ul>
+                                <div class="card-cta">
+                                    <a href="#" class="btn-details">Ver detalles <i class="fas fa-arrow-right"></i></a>
+                                </div>
+                            </div>
+                        </div>`;
+                    }).join('');
+
+                    document.querySelectorAll('.card').forEach(card => {
+                        card.addEventListener('click', (e) => {
+                            if (e.target.closest('.btn-details')) return;
+                            const servicioId = card.dataset.id;
+                            if (servicioId) this.openModal(servicioId);
+                        });
+                    });
+                    
+                    document.querySelectorAll('.btn-details').forEach(btn => {
+                        btn.addEventListener('click', (e) => {
+                            e.preventDefault();
+                            const card = btn.closest('.card');
+                            if (card && card.dataset.id) this.openModal(card.dataset.id);
+                        });
+                    });
+                    
+                    this.initScrollReveal();
+                }
+
+                openModal(servicioId) {
+                    const servicio = this.servicios.find(s => s.id === servicioId);
+                    if (!servicio) return;
+                    
+                    const imagenUrl = servicio.imagenWeb || servicio.imagen || "https://images.unsplash.com/photo-1544161515-4ab6ce6db874?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80";
+                    
+                    this.modalTitle.textContent = servicio.nombre;
+                    this.modalPrice.textContent = servicio.precio;
+                    this.modalImg.src = imagenUrl;
+                    this.modalBenefits.innerHTML = (servicio.beneficios || []).map(b => `
+                        <div class="benefit-item"><i class="fas fa-check-circle"></i><span>${escapeHtml(b)}</span></div>
+                    `).join('');
+                    this.modalEffects.innerHTML = (servicio.efectos || []).map(e => `
+                        <div class="effect-item"><i class="fas fa-bolt"></i><span>${escapeHtml(e)}</span></div>
+                    `).join('');
+                    this.modalReserveBtn.setAttribute('data-massage-nombre', servicio.nombre);
+                    this.modalOverlay.classList.add('active');
+                    document.body.style.overflow = 'hidden';
+                }
+
+                closeModal() {
+                    this.modalOverlay.classList.remove('active');
+                    document.body.style.overflow = '';
+                }
+
+                initReservationFromModal() {
+                    const massageNombre = this.modalReserveBtn.getAttribute('data-massage-nombre');
+                    this.selectedMassageType = massageNombre;
+                    this.closeModal();
+                    document.getElementById('contacto').scrollIntoView({ behavior: 'smooth' });
+                    
+                    if (this.clientName && this.clientPhone) {
+                        this.startBookingWithMassage();
+                    } else if (this.clientName) {
+                        this.bookingState = 'awaiting_phone_with_massage';
+                        this.pendingBooking.massageType = this.selectedMassageType;
+                        this.addMessage(`✨ Has seleccionado *${this.selectedMassageType}*. ¿Cuál es tu número de teléfono?`, 'bot');
+                    } else {
+                        this.bookingState = 'awaiting_name_with_massage';
+                        this.pendingBooking.massageType = this.selectedMassageType;
+                        this.addMessage(`✨ Has seleccionado *${this.selectedMassageType}*. Para comenzar, ¿cuál es tu nombre?`, 'bot');
+                    }
+                }
+
+                startBookingWithMassage() {
+                    this.pendingBooking = {
+                        nombre: this.clientName,
+                        dia: '',
+                        hora: null,
+                        massageType: this.selectedMassageType,
+                        telefono: this.clientPhone,
+                        ubicacion: null,
+                        tipoServicio: 'salon',
+                        codigoPais: '54'
+                    };
+                    this.bookingState = 'awaiting_service_type';
+                    this.addMessage(`Gracias ${this.clientName}. ¿Dónde prefieres recibir el masaje?\n\n1️⃣ En el salón\n2️⃣ A domicilio\n\nResponde con el número 1 o 2.`, 'bot');
+                }
+
+                async iniciarReservaDirect() {
+                    if (this.clientName && this.clientPhone) {
+                        this.pendingBooking = {
+                            nombre: this.clientName,
+                            dia: '',
+                            hora: null,
+                            massageType: null,
+                            telefono: this.clientPhone,
+                            ubicacion: null,
+                            tipoServicio: 'salon',
+                            codigoPais: '54'
+                        };
+                        this.bookingState = 'selecting_massage_simple';
+                        this.showMassageMenu();
+                    } else if (this.clientName) {
+                        this.bookingState = 'awaiting_phone_simple';
+                        this.addMessage('Para reservar, necesito tu número de teléfono. ¿Cuál es?', 'bot');
+                    } else {
+                        this.bookingState = 'awaiting_name_simple';
+                        this.addMessage('Para reservar un turno, necesito tu nombre. ¿Cuál es?', 'bot');
+                    }
+                }
+
+                showMassageMenu() {
+                    let menu = '📋 *Nuestros masajes disponibles:*\n\n';
+                    this.availableMassages.forEach((m, i) => {
+                        menu += `${i+1}. *${m.nombre}* - ${m.precio}\n   ${m.descripcion.substring(0, 60)}...\n\n`;
+                    });
+                    menu += 'Responde con el *número* del masaje que deseas.';
+                    this.addMessage(menu, 'bot');
+                }
+
+                async procesarMensaje(msg) {
+                    const userMsg = msg.toLowerCase().trim();
+                    
+                    // Estados del chat
+                    if (this.bookingState === 'selecting_massage_simple') {
+                        const option = parseInt(msg);
+                        if (!isNaN(option) && option >= 1 && option <= this.availableMassages.length) {
+                            this.selectedMassageType = this.availableMassages[option - 1].nombre;
+                            this.pendingBooking.massageType = this.selectedMassageType;
+                            this.bookingState = 'awaiting_service_type';
+                            this.addMessage(`✨ Has seleccionado *${this.selectedMassageType}*. ¿Dónde prefieres recibirlo?\n\n1️⃣ En el salón\n2️⃣ A domicilio`, 'bot');
+                        } else {
+                            this.addMessage('Por favor, selecciona un número válido de la lista.', 'bot');
+                        }
+                        return;
+                    }
+                    
+                    if (this.bookingState === 'awaiting_name_simple') {
+                        if (!msg.trim()) { this.addMessage('Por favor, ingresa tu nombre.', 'bot'); return; }
+                        this.clientName = msg.trim();
+                        this.bookingState = 'awaiting_phone_simple';
+                        this.addMessage(`Gracias ${this.clientName}. ¿Cuál es tu número de teléfono?`, 'bot');
+                        return;
+                    }
+                    
+                    if (this.bookingState === 'awaiting_phone_simple' || this.bookingState === 'awaiting_phone_with_massage') {
+                        const telefono = msg.replace(/\D/g, '');
+                        if (telefono.length < 8) { this.addMessage('Número inválido. Ingresa al menos 8 dígitos.', 'bot'); return; }
+                        this.clientPhone = telefono;
+                        this.pendingBooking.telefono = telefono;
+                        
+                        if (this.bookingState === 'awaiting_phone_with_massage') {
+                            this.pendingBooking.nombre = this.clientName;
+                            this.pendingBooking.massageType = this.selectedMassageType;
+                            this.bookingState = 'awaiting_service_type';
+                            this.addMessage(`Teléfono registrado. ¿Dónde prefieres recibir el masaje?\n\n1️⃣ En el salón\n2️⃣ A domicilio`, 'bot');
+                        } else {
+                            this.pendingBooking.nombre = this.clientName;
+                            this.bookingState = 'selecting_massage_simple';
+                            this.showMassageMenu();
+                        }
+                        return;
+                    }
+                    
+                    if (this.bookingState === 'awaiting_name_with_massage') {
+                        if (!msg.trim()) { this.addMessage('Por favor, ingresa tu nombre.', 'bot'); return; }
+                        this.clientName = msg.trim();
+                        this.bookingState = 'awaiting_phone_with_massage';
+                        this.addMessage(`Gracias ${this.clientName}. ¿Cuál es tu número de teléfono?`, 'bot');
+                        return;
+                    }
+                    
+                    if (this.bookingState === 'awaiting_service_type') {
+                        if (msg === '1') {
+                            this.pendingBooking.tipoServicio = 'salon';
+                            this.pendingBooking.ubicacion = 'Salón Serenity Spa';
+                            this.bookingState = 'awaiting_day';
+                            this.addMessage(`✅ Servicio en el salón.\n\n📅 ¿Qué día prefieres? (Lunes a Sábado)`, 'bot');
+                        } else if (msg === '2') {
+                            this.pendingBooking.tipoServicio = 'domicilio';
+                            this.bookingState = 'awaiting_location';
+                            this.addMessage(`🚗 Servicio a domicilio. Por favor, ingresa tu dirección completa:`, 'bot');
+                        } else {
+                            this.addMessage(`Responde "1" para salón o "2" para domicilio.`, 'bot');
+                        }
+                        return;
+                    }
+                    
+                    if (this.bookingState === 'awaiting_location') {
+                        if (!msg.trim()) { this.addMessage('Por favor, ingresa una dirección válida.', 'bot'); return; }
+                        this.pendingBooking.ubicacion = msg.trim();
+                        this.bookingState = 'awaiting_day';
+                        this.addMessage(`📍 Dirección registrada.\n\n📅 ¿Qué día prefieres? (Lunes a Sábado)`, 'bot');
+                        return;
+                    }
+                    
+                    if (this.bookingState === 'awaiting_day') {
+                        const diaMap = { 'lunes':'lunes','martes':'martes','miercoles':'miercoles','jueves':'jueves','viernes':'viernes','sabado':'sabado' };
+                        let dia = userMsg;
+                        for (let key in diaMap) {
+                            if (dia.includes(key)) { dia = diaMap[key]; break; }
+                        }
+                        if (!diaMap[dia]) {
+                            this.addMessage(`❌ Día no reconocido. Días disponibles: Lunes a Sábado.`, 'bot');
+                            return;
+                        }
+                        this.pendingBooking.dia = dia;
+                        this.bookingState = 'awaiting_time';
+                        this.addMessage(`⏰ Horarios disponibles: 12:00, 16:00, 20:00 hs.\n\n¿A qué hora prefieres? (responde 12, 16 o 20)`, 'bot');
+                        return;
+                    }
+                    
+                    if (this.bookingState === 'awaiting_time') {
+                        const hora = parseInt(msg);
+                        if (!HORAS_VALIDAS.includes(hora)) {
+                            this.addMessage(`❌ Hora no válida. Horarios: 12:00, 16:00 o 20:00.`, 'bot');
+                            return;
+                        }
+                        
+                        await this.cargarTurnos();
+                        const ocupado = this.turnos.some(t => t.dia === this.pendingBooking.dia && t.hora === hora);
+                        
+                        if (!ocupado) {
+                            const yaTieneTurno = this.turnos.some(t => t.telefono === this.pendingBooking.telefono && t.dia === this.pendingBooking.dia);
+                            if (yaTieneTurno) {
+                                this.addMessage(`❌ Ya tienes un turno reservado para el ${this.pendingBooking.dia}. Solo se permite un masaje por día.`, 'bot');
+                                this.bookingState = null;
+                                return;
+                            }
+                            
+                            this.pendingBooking.hora = hora;
+                            await this.confirmarReserva();
+                        } else {
+                            // Buscar alternativa
+                            const diasSemana = ['lunes', 'martes', 'miercoles', 'jueves', 'viernes', 'sabado'];
+                            let encontrado = false;
+                            let diaIndex = diasSemana.indexOf(this.pendingBooking.dia);
+                            
+                            for (let d = 0; d < 7; d++) {
+                                let diaActual = diasSemana[(diaIndex + d) % diasSemana.length];
+                                let horasAConsultar = (d === 0) ? HORAS_VALIDAS.filter(h => h > hora) : HORAS_VALIDAS;
+                                
+                                for (let h of horasAConsultar) {
+                                    if (!this.turnos.some(t => t.dia === diaActual && t.hora === h)) {
+                                        const horaTexto = h === 12 ? '12:00' : (h === 16 ? '16:00' : '20:00');
+                                        this.addMessage(`⚠️ El horario de las ${hora}:00 del ${this.pendingBooking.dia} está ocupado.\n\n📅 ¿Te gustaría reservar para el *${diaActual}* a las *${horaTexto}*?\nResponde "si" o "no".`, 'bot');
+                                        this.bookingState = 'awaiting_alternative';
+                                        this.pendingBooking.alternativa = { dia: diaActual, hora: h };
+                                        encontrado = true;
+                                        break;
+                                    }
+                                }
+                                if (encontrado) break;
+                            }
+                            
+                            if (!encontrado) {
+                                this.addMessage(`❌ No hay disponibilidad en los próximos 7 días. Puedes intentar más tarde o elegir otro día.`, 'bot');
+                                this.bookingState = null;
+                            }
+                        }
+                        return;
+                    }
+                    
+                    if (this.bookingState === 'awaiting_alternative') {
+                        if (userMsg.includes('si') || userMsg.includes('sí') || userMsg.includes('ok')) {
+                            this.pendingBooking.dia = this.pendingBooking.alternativa.dia;
+                            this.pendingBooking.hora = this.pendingBooking.alternativa.hora;
+                            await this.confirmarReserva();
+                        } else {
+                            this.addMessage(`❌ Reserva cancelada. Puedes iniciar una nueva cuando quieras.`, 'bot');
+                            this.bookingState = null;
+                            this.pendingBooking = { 
+                                nombre: this.clientName, dia: '', hora: null, 
+                                massageType: this.selectedMassageType, telefono: this.clientPhone, 
+                                ubicacion: null, tipoServicio: 'salon', codigoPais: '54' 
+                            };
+                        }
+                        return;
+                    }
+                    
+                    // Mensajes generales
+                    if (userMsg.includes('turno') || userMsg.includes('reservar') || userMsg.includes('cita')) {
+                        this.iniciarReservaDirect();
+                    } else if (userMsg.includes('horario') || userMsg.includes('horarios')) {
+                        this.addMessage(`📅 *Horarios disponibles:*\n⏰ 12:00 hs\n⏰ 16:00 hs\n⏰ 20:00 hs\n\n📆 Días: Lunes a Sábado\n🗓️ Reserva con hasta 2 semanas de anticipación.`, 'bot');
+                    } else if (userMsg.includes('masaje') || userMsg.includes('tipos')) {
+                        let lista = '*📋 Tipos de masaje:*\n\n';
+                        this.availableMassages.forEach(m => {
+                            lista += `✨ *${m.nombre}* - ${m.precio}\n   ${m.descripcion.substring(0, 60)}...\n\n`;
+                        });
+                        this.addMessage(lista, 'bot');
+                    } else if (userMsg.includes('precio') || userMsg.includes('costo')) {
+                        let lista = '*💰 Precios:*\n\n';
+                        this.availableMassages.forEach(m => {
+                            lista += `• ${m.nombre}: ${m.precio}\n`;
+                        });
+                        this.addMessage(lista, 'bot');
+                    } else if (userMsg.includes('gracias')) {
+                        this.addMessage(`🌟 ¡Gracias a ti, ${this.clientName || 'cliente'}! ¿Necesitas algo más?`, 'bot');
+                    } else if (!this.bookingState) {
+                        // Si no hay estado y no se detectó intención, preguntar nombre
+                        if (!this.clientName) {
+                            this.addMessage(`¡Hola! Soy el asistente de Serenity Spa. ¿Cuál es tu nombre?`, 'bot');
+                        } else {
+                            this.addMessage(`Hola ${this.clientName}. Puedo ayudarte con:\n\n• 📅 *Reservar un turno*\n• ⏰ *Ver horarios*\n• 📋 *Conocer los masajes*\n• 💰 *Consultar precios*\n\n¿Qué necesitas?`, 'bot');
+                        }
+                    }
+                }
+
+                async confirmarReserva() {
+                    const datos = {
+                        nombre: this.pendingBooking.nombre,
+                        dia: this.pendingBooking.dia,
+                        hora: this.pendingBooking.hora,
+                        massageType: this.pendingBooking.massageType,
+                        telefono: this.pendingBooking.telefono,
+                        ubicacion: this.pendingBooking.ubicacion,
+                        tipoServicio: this.pendingBooking.tipoServicio,
+                        codigoPais: this.pendingBooking.codigoPais || '54'
+                    };
+                    
+                    try {
+                        const response = await fetch(API_URL, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(datos)
+                        });
+                        
+                        const data = await response.json();
+                        
+                        if (response.ok) {
+                            const tipoTexto = datos.tipoServicio === 'domicilio' ? `📍 *Dirección:* ${datos.ubicacion}` : '📍 *En nuestro salón*';
+                            
+                            this.addMessage(`✅ *¡TURNO CONFIRMADO!* ✅\n\n📅 *Día:* ${datos.dia}\n⏰ *Hora:* ${datos.hora}:00 hs\n💆‍♂️ *Masaje:* ${datos.massageType}\n${tipoTexto}\n📞 *Teléfono:* ${datos.telefono}\n\n🌸 *Te esperamos con aromaterapia y música suave.*`, 'bot');
+                            
+                            this.bookingState = null;
+                            this.pendingBooking = { 
+                                nombre: this.clientName, dia: '', hora: null, 
+                                massageType: null, telefono: this.clientPhone, 
+                                ubicacion: null, tipoServicio: 'salon', codigoPais: '54' 
+                            };
+                            await this.cargarTurnos();
+                        } else {
+                            this.addMessage(`❌ *Error:* ${data.error || 'No se pudo reservar'}`, 'bot');
+                        }
+                    } catch (error) {
+                        console.error(error);
+                        this.addMessage(`❌ Error de conexión. Intenta nuevamente.`, 'bot');
+                    }
+                }
+
+                addMessage(text, sender = 'bot') {
+                    if (!this.chatMessages) return;
+                    
+                    if (sender === 'user') {
+                        const msgDiv = document.createElement('div');
+                        msgDiv.className = 'message user';
+                        const avatar = document.createElement('div');
+                        avatar.className = 'avatar';
+                        avatar.textContent = this.clientName ? this.clientName.charAt(0).toUpperCase() : 'T';
+                        const bubble = document.createElement('div');
+                        bubble.className = 'message-bubble';
+                        bubble.innerHTML = text.replace(/\n/g, '<br>');
+                        msgDiv.appendChild(avatar);
+                        msgDiv.appendChild(bubble);
+                        this.chatMessages.appendChild(msgDiv);
+                        this.chatMessages.scrollTop = this.chatMessages.scrollHeight;
+                        return;
+                    }
+
+                    const typingDiv = document.createElement('div');
+                    typingDiv.className = 'message bot typing-placeholder';
+                    const avatar = document.createElement('div');
+                    avatar.className = 'avatar';
+                    avatar.innerHTML = '<i class="fas fa-spa" style="color:#C9A961;"></i>';
+                    const typingIndicator = document.createElement('div');
+                    typingIndicator.className = 'typing-indicator';
+                    for(let i=0;i<3;i++) typingIndicator.appendChild(document.createElement('span'));
+                    typingDiv.appendChild(avatar);
+                    typingDiv.appendChild(typingIndicator);
+                    this.chatMessages.appendChild(typingDiv);
+                    this.chatMessages.scrollTop = this.chatMessages.scrollHeight;
+                    this.isBotTyping = true;
+                    this.inputArea.classList.add('disabled');
+
+                    setTimeout(() => {
+                        if (typingDiv.parentNode) typingDiv.remove();
+                        const realMsgDiv = document.createElement('div');
+                        realMsgDiv.className = 'message bot';
+                        const realAvatar = document.createElement('div');
+                        realAvatar.className = 'avatar';
+                        realAvatar.innerHTML = '<i class="fas fa-spa" style="color:#C9A961;"></i>';
+                        const realBubble = document.createElement('div');
+                        realBubble.className = 'message-bubble';
+                        realBubble.innerHTML = text.replace(/\n/g, '<br>');
+                        realMsgDiv.appendChild(realAvatar);
+                        realMsgDiv.appendChild(realBubble);
+                        this.chatMessages.appendChild(realMsgDiv);
+                        this.chatMessages.scrollTop = this.chatMessages.scrollHeight;
+                        this.isBotTyping = false;
+                        this.inputArea.classList.remove('disabled');
+                        if (this.messageQueue.length > 0) {
+                            const nextMsg = this.messageQueue.shift();
+                            this.procesarMensaje(nextMsg);
+                        }
+                    }, 1000);
+                }
+
+                sendMessage() {
+                    const texto = this.userInput.value.trim();
+                    if (texto === '') return;
+                    
+                    // Si es la primera interacción y no hay nombre, guardarlo
+                    if (!this.clientName && !this.bookingState) {
+                        this.clientName = texto;
+                    }
+                    
+                    this.addMessage(texto, 'user');
+                    this.userInput.value = '';
+                    if (this.isBotTyping) {
+                        this.messageQueue.push(texto);
+                    } else {
+                        this.procesarMensaje(texto);
+                    }
+                }
+
+                shareOnWhatsApp() {
+                    window.open(`https://wa.me/?text=${encodeURIComponent('🌟 Serenity Spa - Masajes profesionales 🌟\nHorarios: 12:00, 16:00, 20:00 hs\n¡Te esperamos!')}%20${encodeURIComponent(window.location.href)}`, '_blank');
+                }
+
+                initScrollReveal() {
+                    const observer = new IntersectionObserver((entries) => {
+                        entries.forEach(entry => {
+                            if (entry.isIntersecting) entry.target.classList.add('visible');
+                        });
+                    }, { threshold: 0.1 });
+                    document.querySelectorAll('.scroll-reveal').forEach(el => observer.observe(el));
+                }
+            }
+
+            document.addEventListener('DOMContentLoaded', () => {
+                window.app = new SerenitySpaApp();
+            });
+        })();
+    </script>
+</body>
+</html>
