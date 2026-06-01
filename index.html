@@ -1,0 +1,884 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <title>Serenity Spa | Masajes Profesionales</title>
+    <meta name="description" content="Descubre la mejor experiencia de bienestar en Serenity Spa.">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Manrope:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box}
+        :root{--primary:#2C3E50;--accent:#C9A961;--accent-dark:#B28B4E;--text:#1E2A36;--text-m:#4A5B6E;--text-l:#7C8B9C;--white:#FFF;--bg:#FDFBF7}
+        body{font-family:'Manrope',sans-serif;background:var(--bg);color:var(--text);line-height:1.6;overflow-x:hidden}
+        h1,h2,h3{font-family:'Cormorant Garamond',serif;font-weight:600;line-height:1.2;color:var(--primary)}
+        
+        /* Header */
+        header{position:fixed;top:0;width:100%;background:rgba(253,251,247,.88);backdrop-filter:blur(16px);z-index:1000;padding:1rem 5%;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid rgba(0,0,0,.04)}
+        header.scrolled{background:rgba(253,251,247,.95);box-shadow:0 2px 12px rgba(0,0,0,.05)}
+        
+        /* Logo con link a FGStudio */
+        .logo{display:flex;align-items:center;gap:.85rem;text-decoration:none}
+        .logo-icon{width:44px;height:44px;background:linear-gradient(135deg,#C9A961,#A8883F);border-radius:12px;display:flex;align-items:center;justify-content:center;transition:all .3s}
+        .logo-icon i{color:white;font-size:1.3rem}
+        .logo-text{font-family:'Cormorant Garamond',serif;font-size:1.3rem;font-weight:700;color:var(--primary);letter-spacing:.02em}
+        .logo-sub{font-size:.6rem;color:var(--text-l);letter-spacing:.1em;text-transform:uppercase;display:block;margin-top:-2px}
+        .logo:hover .logo-icon{transform:scale(1.1)}
+        
+        nav ul{display:flex;gap:2rem;list-style:none}
+        nav a{font-weight:500;position:relative;padding:.5rem 0;font-size:.9rem;color:var(--text-m);transition:color .25s;text-decoration:none}
+        nav a:hover{color:var(--accent)}
+        
+        /* Hero */
+        .hero{height:100vh;display:flex;align-items:center;justify-content:center;text-align:center;background-image:linear-gradient(160deg,rgba(26,35,50,.9),rgba(44,62,80,.82) 50%,rgba(201,169,97,.6)),url('https://images.unsplash.com/photo-1544161515-4ab6ce6db874?ixlib=rb-1.2.1&auto=format&fit=crop&w=1920&q=80');background-size:cover;background-position:center;background-attachment:fixed;color:white;position:relative}
+        .hero-content{max-width:760px;padding:2rem;position:relative;z-index:1}
+        .hero-content h1{font-size:clamp(2.5rem,6vw,4.2rem);margin-bottom:1rem;background:linear-gradient(135deg,#FFF 20%,#F5E6C8 100%);-webkit-background-clip:text;background-clip:text;color:transparent}
+        .hero-content p{font-size:1.15rem;margin-bottom:2rem;color:rgba(255,255,255,.85)}
+        .btn-hero{background:white;color:var(--primary);padding:.85rem 2rem;border-radius:999px;font-weight:600;display:inline-flex;align-items:center;gap:.6rem;text-decoration:none;transition:all .3s}
+        .btn-hero:hover{background:var(--accent);color:white;transform:translateY(-3px)}
+        
+        /* Services */
+        .services{padding:6rem 5%;background:white}
+        .section-title{text-align:center;margin-bottom:3rem}
+        .section-title span{color:var(--accent);text-transform:uppercase;letter-spacing:3px;font-size:.7rem;font-weight:600}
+        .section-title h2{font-size:2.2rem;margin:.5rem 0}
+        .section-title p{color:var(--text-l);max-width:600px;margin:0 auto}
+        .services-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1.5rem}
+        .card{background:white;border-radius:24px;overflow:hidden;box-shadow:0 4px 12px rgba(0,0,0,.05);cursor:pointer;border:1px solid rgba(0,0,0,.04);transition:all .3s}
+        .card:hover{transform:translateY(-6px);box-shadow:0 20px 30px -12px rgba(0,0,0,.15);border-color:rgba(201,169,97,.15)}
+        .card-img{width:100%;height:200px;object-fit:cover}
+        .card-content{padding:1.4rem}
+        .card-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:.5rem}
+        .card-header h3{font-size:1.3rem}
+        .price{background:rgba(201,169,97,.1);color:var(--accent-dark);padding:.25rem .85rem;border-radius:999px;font-weight:700;font-size:.82rem}
+        .description{color:var(--text-m);font-size:.88rem;margin-bottom:.8rem}
+        .benefits-list{list-style:none}
+        .benefits-list li{display:flex;align-items:center;gap:.5rem;margin-bottom:.3rem;font-size:.82rem;color:var(--text-l)}
+        .benefits-list i{color:var(--accent);font-size:.7rem}
+        .card-cta{margin-top:1rem;padding-top:.8rem;border-top:1px solid rgba(0,0,0,.04);text-align:right}
+        .btn-details{color:var(--accent);font-weight:600;font-size:.85rem;text-decoration:none}
+        
+        /* Contact */
+        .contact{padding:5rem 5%;background:linear-gradient(160deg,#1a2332,#2C3E50 60%,#3A546D);color:white;text-align:center}
+        .contact .section-title h2,.contact .section-title p{color:white}
+        .horarios-info{background:rgba(255,255,255,.1);border-radius:16px;padding:1rem 2rem;margin:1.5rem auto;max-width:500px;display:inline-flex;gap:1.5rem;flex-wrap:wrap;justify-content:center}
+        .horarios-info span{display:inline-flex;align-items:center;gap:.4rem;font-size:.85rem}
+        .horarios-info i{color:var(--accent)}
+        
+        /* Chat */
+        .chat-container{max-width:800px;margin:2rem auto 0;background:rgba(255,255,255,.06);backdrop-filter:blur(16px);border-radius:24px;padding:1.25rem}
+        .chat-panel{background:rgba(255,255,255,.97);border-radius:16px;display:flex;flex-direction:column;height:500px;overflow:hidden}
+        .chat-header{padding:1rem 1.5rem;background:white;border-bottom:1px solid rgba(0,0,0,.06);display:flex;justify-content:space-between;align-items:center}
+        .chat-header h2{font-size:1.1rem;color:var(--primary);margin:0}
+        .chat-header h2 i{color:var(--accent);margin-right:.5rem}
+        .status{background:rgba(16,185,129,.1);color:#10B981;padding:.2rem .8rem;border-radius:999px;font-size:.7rem;font-weight:600}
+        .messages-area{flex:1;overflow-y:auto;padding:1.2rem;display:flex;flex-direction:column;gap:.8rem;background:#f8f9fb}
+        .message{display:flex;gap:.7rem;max-width:85%}
+        .message.bot{align-self:flex-start}
+        .message.user{align-self:flex-end;flex-direction:row-reverse}
+        .avatar{width:34px;height:34px;border-radius:50%;background:#eef0f4;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:.8rem}
+        .message-bubble{padding:.7rem 1.1rem;border-radius:16px;font-size:.88rem;line-height:1.5;word-break:break-word}
+        .message.bot .message-bubble{background:white;color:var(--text);border-bottom-left-radius:4px}
+        .message.user .message-bubble{background:linear-gradient(135deg,var(--accent),var(--accent-dark));color:white;border-bottom-right-radius:4px}
+        .input-area{display:flex;gap:.5rem;padding:.9rem;background:white;border-top:1px solid rgba(0,0,0,.06)}
+        .input-area input{flex:1;border:1px solid rgba(0,0,0,.08);border-radius:999px;padding:.75rem 1rem;outline:none;font-size:.88rem;font-family:'Manrope',sans-serif}
+        .input-area input:focus{border-color:var(--accent)}
+        .input-area button{background:var(--accent);border:none;color:white;padding:0 1.2rem;border-radius:999px;cursor:pointer;font-size:1.1rem}
+        .input-area button:hover{background:var(--accent-dark)}
+        
+        /* Voice button */
+        .voice-btn{position:fixed;bottom:2rem;right:2rem;width:62px;height:62px;background:linear-gradient(135deg,#C9A961,#A8883F);border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:999;box-shadow:0 4px 20px rgba(201,169,97,.4);border:none;color:white;font-size:1.4rem;animation:pulse 2s infinite}
+        .voice-btn:hover{transform:scale(1.1);animation:none}
+        @keyframes pulse{0%,100%{box-shadow:0 4px 20px rgba(201,169,97,.4)}50%{box-shadow:0 4px 30px rgba(201,169,97,.7)}}
+        
+        /* Share */
+        .share-section{background:white;padding:3rem 5%;text-align:center}
+        .share-title{font-size:1.2rem;margin-bottom:1.25rem;color:var(--primary)}
+        .share-bar{display:flex;justify-content:center;gap:.75rem}
+        .share-btn{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:white;font-size:1.1rem;border:none;cursor:pointer;transition:all .3s}
+        .share-btn:hover{transform:translateY(-3px)}
+        .share-btn.facebook{background:#1877F2}
+        .share-btn.whatsapp{background:#25D366}
+        .share-btn.instagram{background:radial-gradient(circle at 30% 110%,#ffdb8a,#f46f30,#d62976)}
+        
+        /* Scroll reveal */
+        .scroll-reveal{opacity:0;transform:translateY(24px);transition:all .7s cubic-bezier(.22,1,.36,1)}
+        .scroll-reveal.visible{opacity:1;transform:translateY(0)}
+        
+        @media(max-width:768px){
+            nav ul{display:none}
+            .services-grid{grid-template-columns:1fr}
+            .chat-panel{height:400px}
+        }
+    </style>
+</head>
+<body>
+    <!-- HEADER CON LOGO QUE REDIRIGE A FGSTUDIO -->
+    <header id="header">
+        <a href="https://pacho-fg.onrender.com" target="_blank" rel="noopener" class="logo" title="Desarrollado por FGStudio">
+            <div class="logo-icon">
+                <i class="fas fa-feather-alt"></i>
+            </div>
+            <div>
+                <span class="logo-text">Serenity Spa</span>
+                <span class="logo-sub">by FGStudio</span>
+            </div>
+        </a>
+        <nav>
+            <ul>
+                <li><a href="#inicio">Inicio</a></li>
+                <li><a href="#servicios">Masajes</a></li>
+                <li><a href="#contacto">Contacto</a></li>
+            </ul>
+        </nav>
+    </header>
+    
+    <main>
+        <!-- HERO -->
+        <section id="inicio" class="hero">
+            <div class="hero-content">
+                <h1 id="heroTitulo">Renueva tu Energía</h1>
+                <p id="heroSubtitulo">Experiencias de bienestar personalizadas</p>
+                <a href="#servicios" class="btn-hero">
+                    <i class="fas fa-arrow-down"></i> 
+                    <span id="heroBoton">Explorar Tratamientos</span>
+                </a>
+            </div>
+        </section>
+        
+        <!-- SERVICIOS -->
+        <section id="servicios" class="services">
+            <div class="section-title scroll-reveal">
+                <span id="serviciosEtiqueta">Nuestros Servicios</span>
+                <h2 id="serviciosTitulo">Elige tu Masaje Ideal</h2>
+                <p id="serviciosDescripcion">Turnos disponibles: 12:00, 16:00 y 20:00 hs</p>
+            </div>
+            <div class="services-grid" id="servicesGrid">
+                <div style="text-align:center;padding:3rem;grid-column:1/-1">
+                    <i class="fas fa-spinner fa-spin" style="font-size:2rem;color:#C9A961"></i>
+                    <p style="margin-top:1rem;color:#7C8B9C">Cargando servicios...</p>
+                </div>
+            </div>
+        </section>
+        
+        <!-- CONTACTO / CHAT -->
+        <section id="contacto" class="contact">
+            <div class="section-title scroll-reveal">
+                <h2 id="contactoTitulo">Asistente de Reservas</h2>
+                <p id="contactoDescripcion">Reserva tu turno de forma rápida y sencilla</p>
+            </div>
+            <div class="horarios-info scroll-reveal">
+                <span><i class="fas fa-clock"></i> 12:00 hs</span>
+                <span><i class="fas fa-clock"></i> 16:00 hs</span>
+                <span><i class="fas fa-clock"></i> 20:00 hs</span>
+                <span><i class="fas fa-calendar"></i> Lun a Sáb</span>
+            </div>
+            <div class="chat-container scroll-reveal">
+                <div class="chat-panel">
+                    <div class="chat-header">
+                        <h2><i class="fas fa-robot"></i> Asistente Virtual</h2>
+                        <div class="status" id="chatStatus">en línea</div>
+                    </div>
+                    <div class="messages-area" id="chatMessages"></div>
+                    <div class="input-area" id="inputArea">
+                        <input type="text" id="userInput" placeholder="Escribe tu mensaje..." autocomplete="off">
+                        <button id="sendBtn"><i class="fas fa-paper-plane"></i></button>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- COMPARTIR -->
+        <section class="share-section">
+            <h3 class="share-title" id="shareTitulo">Comparte Serenity Spa</h3>
+            <div class="share-bar">
+                <button class="share-btn facebook" onclick="window.open('https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),'_blank')"><i class="fab fa-facebook-f"></i></button>
+                <button class="share-btn whatsapp" onclick="window.open('https://wa.me/?text='+encodeURIComponent('🌟 Serenity Spa - Masajes Profesionales\n')+encodeURIComponent(location.href),'_blank')"><i class="fab fa-whatsapp"></i></button>
+                <button class="share-btn instagram" onclick="window.open('https://www.instagram.com/','_blank')"><i class="fab fa-instagram"></i></button>
+            </div>
+        </section>
+    </main>
+    
+    <!-- BOTÓN ASISTENTE DE VOZ -->
+    <a href="/voice-assistant" class="voice-btn" title="Asistente de Voz" aria-label="Abrir asistente de voz">
+        <i class="fas fa-microphone"></i>
+    </a>
+    
+    <!-- MODAL DE SERVICIO -->
+    <div id="modalOverlay" style="position:fixed;inset:0;background:rgba(0,0,0,.7);display:none;align-items:center;justify-content:center;z-index:2000;padding:1rem">
+        <div style="background:white;border-radius:24px;max-width:600px;width:100%;max-height:90vh;overflow-y:auto;position:relative">
+            <button id="modalClose" style="position:absolute;top:1rem;right:1rem;width:36px;height:36px;border-radius:50%;background:rgba(0,0,0,.5);color:white;border:none;cursor:pointer;font-size:1rem;z-index:2">✕</button>
+            <img id="modalImg" src="" alt="" style="width:100%;height:200px;object-fit:cover;border-radius:24px 24px 0 0">
+            <div style="padding:1.5rem">
+                <h2 id="modalTitle" style="font-size:1.5rem;margin-bottom:.5rem"></h2>
+                <span id="modalPrice" style="display:inline-block;background:rgba(201,169,97,.1);color:#B28B4E;padding:.25rem 1rem;border-radius:999px;font-weight:700;margin-bottom:1rem"></span>
+                <p id="modalDesc" style="color:#6b7280;margin-bottom:1rem;font-size:.9rem"></p>
+                <div id="modalBenefits" style="margin-bottom:1rem"></div>
+                <div style="display:flex;gap:.5rem;justify-content:center">
+                    <button id="modalReserve" style="background:#C9A961;color:white;border:none;padding:.7rem 1.5rem;border-radius:999px;cursor:pointer;font-weight:600">Reservar Ahora</button>
+                    <button id="modalShare" style="background:#f3f4f6;color:#1a2332;border:none;padding:.7rem 1.5rem;border-radius:999px;cursor:pointer">Compartir</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+    // ============================================================
+    // APP PRINCIPAL - CORREGIDA
+    // ============================================================
+    (function() {
+        console.log('🌿 Serenity Spa - Iniciando...');
+        
+        const API = {
+            config: '/api/config',
+            servicios: '/api/servicios',
+            turnos: '/turnos',
+            cancelar: '/api/cancelar-turno'
+        };
+        
+        const HORAS = [12, 16, 20];
+        const DIAS = ['lunes', 'martes', 'miercoles', 'jueves', 'viernes', 'sabado'];
+        
+        // Estado
+        let state = {
+            servicios: [],
+            turnos: [],
+            config: null,
+            clientName: null,
+            clientPhone: null,
+            bookingStep: null,
+            errorCount: 0,
+            isTyping: false,
+            messageQueue: [],
+            pendingBooking: {
+                nombre: '', dia: '', hora: null, massageType: null,
+                telefono: null, ubicacion: null, tipoServicio: 'salon', codigoPais: '54'
+            }
+        };
+        
+        // DOM elements
+        const $ = (id) => document.getElementById(id);
+        const grid = $('servicesGrid');
+        const chat = $('chatMessages');
+        const input = $('userInput');
+        const sendBtn = $('sendBtn');
+        const inputArea = $('inputArea');
+        const chatStatus = $('chatStatus');
+        const modalOverlay = $('modalOverlay');
+        
+        // ============================================================
+        // INICIALIZACIÓN
+        // ============================================================
+        async function init() {
+            await loadConfig();
+            await loadServicios();
+            await loadTurnos();
+            setupScrollReveal();
+            
+            // Mensaje inicial
+            setTimeout(() => {
+                addMessage('🌿 *¡Bienvenido a Serenity Spa!*\n\n✨ Horarios: 12:00, 16:00 y 20:00 hs\n📅 Lunes a Sábado\n💆 Un masaje por persona por día\n\n¿Cuál es tu nombre para comenzar?', 'bot');
+            }, 500);
+        }
+        
+        // ============================================================
+        // CARGA DE DATOS
+        // ============================================================
+        async function loadConfig() {
+            try {
+                const res = await fetch(API.config);
+                if (res.ok) {
+                    state.config = await res.json();
+                    applyConfig(state.config);
+                    console.log('✅ Configuración cargada');
+                }
+            } catch(e) {
+                console.warn('⚠️ Usando configuración por defecto');
+            }
+        }
+        
+        function applyConfig(cfg) {
+            if (!cfg) return;
+            if (cfg.hero) {
+                $('heroTitulo').textContent = cfg.hero.titulo || 'Renueva tu Energía';
+                $('heroSubtitulo').textContent = cfg.hero.subtitulo || 'Experiencias de bienestar';
+                $('heroBoton').textContent = cfg.hero.botonTexto || 'Explorar Tratamientos';
+            }
+            if (cfg.serviciosSection) {
+                $('serviciosEtiqueta').textContent = cfg.serviciosSection.etiqueta || 'Nuestros Servicios';
+                $('serviciosTitulo').textContent = cfg.serviciosSection.titulo || 'Elige tu Masaje Ideal';
+                $('serviciosDescripcion').textContent = cfg.serviciosSection.descripcion || 'Turnos: 12:00, 16:00 y 20:00';
+            }
+            if (cfg.contactoSection) {
+                $('contactoTitulo').textContent = cfg.contactoSection.titulo || 'Asistente de Reservas';
+                $('contactoDescripcion').textContent = cfg.contactoSection.descripcion || 'Reserva tu turno de forma rápida';
+            }
+            if (cfg.shareSection) {
+                $('shareTitulo').textContent = cfg.shareSection.titulo || 'Comparte Serenity Spa';
+            }
+        }
+        
+        async function loadServicios() {
+            try {
+                const res = await fetch(API.servicios);
+                if (!res.ok) throw new Error('Error HTTP ' + res.status);
+                state.servicios = await res.json();
+                console.log('✅ Servicios cargados:', state.servicios.length);
+                renderServicios();
+            } catch(e) {
+                console.error('❌ Error cargando servicios:', e);
+                grid.innerHTML = `
+                    <div style="text-align:center;padding:2rem;grid-column:1/-1">
+                        <p style="color:#E07070">Error al cargar servicios</p>
+                        <button onclick="location.reload()" style="margin-top:1rem;padding:.5rem 1.5rem;background:#C9A961;color:white;border:none;border-radius:20px;cursor:pointer">Reintentar</button>
+                    </div>`;
+            }
+        }
+        
+        async function loadTurnos() {
+            try {
+                const res = await fetch(API.turnos);
+                if (res.ok) state.turnos = await res.json();
+            } catch(e) {
+                state.turnos = [];
+            }
+        }
+        
+        // ============================================================
+        // RENDERIZADO DE SERVICIOS
+        // ============================================================
+        function renderServicios() {
+            if (!state.servicios.length) {
+                grid.innerHTML = '<div style="text-align:center;padding:2rem;grid-column:1/-1">No hay servicios disponibles</div>';
+                return;
+            }
+            
+            grid.innerHTML = state.servicios.map(s => `
+                <div class="card scroll-reveal" onclick="openServiceModal('${s.id}')">
+                    <img class="card-img" src="${s.imagenWeb || 'https://images.unsplash.com/photo-1544161515-4ab6ce6db874?w=800'}" 
+                         alt="${escHtml(s.nombre)}" loading="lazy"
+                         onerror="this.src='https://images.unsplash.com/photo-1544161515-4ab6ce6db874?w=800'">
+                    <div class="card-content">
+                        <div class="card-header">
+                            <h3>${escHtml(s.nombre)}</h3>
+                            <span class="price">${escHtml(s.precio)}</span>
+                        </div>
+                        <p class="description">${escHtml(s.descripcion || '')}</p>
+                        ${(s.beneficios || []).slice(0, 3).map(b => `
+                            <li class="benefits-list"><i class="fas fa-check-circle"></i> ${escHtml(b)}</li>
+                        `).join('')}
+                        <div class="card-cta">
+                            <span class="btn-details">Ver detalles →</span>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+            
+            setupScrollReveal();
+        }
+        
+        // ============================================================
+        // MODAL DE SERVICIO
+        // ============================================================
+        window.openServiceModal = function(id) {
+            const s = state.servicios.find(x => x.id === id);
+            if (!s) return;
+            
+            $('modalImg').src = s.imagenWeb || 'https://images.unsplash.com/photo-1544161515-4ab6ce6db874?w=800';
+            $('modalTitle').textContent = s.nombre;
+            $('modalPrice').textContent = s.precio;
+            $('modalDesc').textContent = s.descripcion || '';
+            
+            let benefitsHtml = '<h3 style="margin-bottom:.5rem;color:#1a2332">✨ Beneficios</h3>';
+            benefitsHtml += (s.beneficios || []).map(b => 
+                `<div style="display:flex;align-items:center;gap:.5rem;padding:.3rem 0;font-size:.9rem">
+                    <i class="fas fa-check-circle" style="color:#C9A961"></i> ${escHtml(b)}
+                </div>`
+            ).join('');
+            $('modalBenefits').innerHTML = benefitsHtml;
+            
+            $('modalReserve').onclick = () => {
+                modalOverlay.style.display = 'none';
+                document.body.style.overflow = '';
+                reserveService(s.nombre);
+            };
+            
+            $('modalShare').onclick = () => {
+                const text = `🌟 ${s.nombre} - ${s.precio} en Serenity Spa\n${window.location.href}`;
+                window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
+            };
+            
+            modalOverlay.style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+        };
+        
+        $('modalClose').onclick = () => {
+            modalOverlay.style.display = 'none';
+            document.body.style.overflow = '';
+        };
+        
+        modalOverlay.onclick = (e) => {
+            if (e.target === modalOverlay) {
+                modalOverlay.style.display = 'none';
+                document.body.style.overflow = '';
+            }
+        };
+        
+        // ============================================================
+        // RESERVA DESDE MODAL
+        // ============================================================
+        function reserveService(nombreMasaje) {
+            document.getElementById('contacto').scrollIntoView({ behavior: 'smooth' });
+            input.focus();
+            
+            if (state.clientName && state.clientPhone) {
+                state.pendingBooking = {
+                    nombre: state.clientName,
+                    telefono: state.clientPhone,
+                    dia: '', hora: null,
+                    massageType: nombreMasaje,
+                    ubicacion: null,
+                    tipoServicio: 'salon',
+                    codigoPais: '54'
+                };
+                state.bookingStep = 'service_type';
+                state.errorCount = 0;
+                addMessage(`Seleccionaste *${nombreMasaje}*\n\n¿Dónde preferís?\n1️⃣ Salón\n2️⃣ Domicilio`, 'bot');
+            } else if (state.clientName) {
+                state.pendingBooking = {
+                    nombre: state.clientName,
+                    massageType: nombreMasaje,
+                    dia: '', hora: null,
+                    telefono: null,
+                    ubicacion: null,
+                    tipoServicio: 'salon',
+                    codigoPais: '54'
+                };
+                state.bookingStep = 'phone_with_massage';
+                state.errorCount = 0;
+                addMessage(`Seleccionaste *${nombreMasaje}*\n\n¿Cuál es tu número de teléfono?`, 'bot');
+            } else {
+                state.pendingBooking = {
+                    nombre: '',
+                    massageType: nombreMasaje,
+                    dia: '', hora: null,
+                    telefono: null,
+                    ubicacion: null,
+                    tipoServicio: 'salon',
+                    codigoPais: '54'
+                };
+                state.bookingStep = 'name_with_massage';
+                state.errorCount = 0;
+                addMessage(`Seleccionaste *${nombreMasaje}*\n\n¿Cuál es tu nombre?`, 'bot');
+            }
+        }
+        
+        // ============================================================
+        // CHAT
+        // ============================================================
+        function addMessage(text, who) {
+            const div = document.createElement('div');
+            div.className = `message ${who}`;
+            
+            if (who === 'user') {
+                div.innerHTML = `
+                    <div class="avatar">${state.clientName ? state.clientName[0].toUpperCase() : 'T'}</div>
+                    <div class="message-bubble">${text.replace(/\n/g, '<br>')}</div>`;
+            } else {
+                // Simular typing
+                state.isTyping = true;
+                inputArea.style.opacity = '0.5';
+                inputArea.style.pointerEvents = 'none';
+                chatStatus.textContent = 'escribiendo...';
+                
+                const typingDiv = document.createElement('div');
+                typingDiv.className = 'message bot';
+                typingDiv.innerHTML = `
+                    <div class="avatar">🤖</div>
+                    <div class="message-bubble" style="display:flex;gap:4px;padding:1rem">
+                        <span style="width:6px;height:6px;border-radius:50%;background:#ccc;animation:typing 1.4s infinite"></span>
+                        <span style="width:6px;height:6px;border-radius:50%;background:#ccc;animation:typing 1.4s .2s infinite"></span>
+                        <span style="width:6px;height:6px;border-radius:50%;background:#ccc;animation:typing 1.4s .4s infinite"></span>
+                    </div>`;
+                chat.appendChild(typingDiv);
+                chat.scrollTop = chat.scrollHeight;
+                
+                setTimeout(() => {
+                    if (typingDiv.parentNode) typingDiv.remove();
+                    
+                    const msgDiv = document.createElement('div');
+                    msgDiv.className = 'message bot';
+                    msgDiv.innerHTML = `
+                        <div class="avatar">🤖</div>
+                        <div class="message-bubble">${text.replace(/\n/g, '<br>')}</div>`;
+                    chat.appendChild(msgDiv);
+                    chat.scrollTop = chat.scrollHeight;
+                    
+                    state.isTyping = false;
+                    inputArea.style.opacity = '1';
+                    inputArea.style.pointerEvents = 'auto';
+                    chatStatus.textContent = 'en línea';
+                    
+                    if (state.messageQueue.length) {
+                        processMessage(state.messageQueue.shift());
+                    }
+                }, 800);
+                
+                return;
+            }
+            
+            chat.appendChild(div);
+            chat.scrollTop = chat.scrollHeight;
+        }
+        
+        function sendMessage() {
+            const text = input.value.trim();
+            if (!text || state.isTyping) return;
+            
+            addMessage(text, 'user');
+            input.value = '';
+            
+            if (state.isTyping) {
+                state.messageQueue.push(text);
+            } else {
+                processMessage(text);
+            }
+        }
+        
+        function processMessage(msg) {
+            const lower = msg.toLowerCase().trim();
+            
+            // Cancelar turno
+            if (/\b(cancelar|eliminar|anular)\b/.test(lower) && !state.bookingStep) {
+                state.bookingStep = 'cancel_phone';
+                addMessage('Para cancelar tu turno, enviame tu número de teléfono.', 'bot');
+                return;
+            }
+            
+            if (state.bookingStep === 'cancel_phone') {
+                const tel = msg.replace(/\D/g, '');
+                if (tel.length >= 7) {
+                    fetch(API.cancelar, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ telefono: tel })
+                    })
+                    .then(r => r.json())
+                    .then(data => {
+                        if (data.cancelado) addMessage('✅ ' + data.mensaje, 'bot');
+                        else if (data.whatsappCancelacion) addMessage('📱 ' + data.mensaje, 'bot');
+                        else addMessage('❌ ' + (data.error || 'No se pudo cancelar'), 'bot');
+                        state.bookingStep = null;
+                    })
+                    .catch(() => {
+                        addMessage('❌ Error de conexión', 'bot');
+                        state.bookingStep = null;
+                    });
+                } else {
+                    addMessage('Número inválido. Ingresá solo números (mínimo 7 dígitos).', 'bot');
+                }
+                return;
+            }
+            
+            // Reservar
+            if (/\b(reservar|turno|cita|agendar)\b/.test(lower) && !state.bookingStep) {
+                startBooking();
+                return;
+            }
+            
+            // Ver horarios
+            if (/\b(horario|hora)\b/.test(lower)) {
+                addMessage('📅 *Horarios:*\n⏰ 12:00, 16:00, 20:00 hs\n📅 Lunes a Sábado', 'bot');
+                return;
+            }
+            
+            // Ver masajes
+            if (/\b(masaje|tipos|servicios)\b/.test(lower)) {
+                showMassages();
+                return;
+            }
+            
+            // Ver precios
+            if (/\b(precio|costo|vale)\b/.test(lower)) {
+                let p = '*💰 Precios:*\n\n';
+                state.servicios.forEach(s => { p += `• ${s.nombre}: ${s.precio}\n`; });
+                addMessage(p, 'bot');
+                return;
+            }
+            
+            // Gracias
+            if (/\b(gracias|genial|perfecto)\b/.test(lower)) {
+                addMessage('🌟 ¡De nada! ¿Necesitás algo más?\n\n• 📅 Reservar turno\n• ⏰ Ver horarios\n• 📋 Ver masajes\n• 💰 Ver precios', 'bot');
+                return;
+            }
+            
+            // Procesar steps de booking
+            processBookingStep(msg);
+        }
+        
+        function startBooking() {
+            if (state.clientName && state.clientPhone) {
+                state.pendingBooking = {
+                    nombre: state.clientName,
+                    telefono: state.clientPhone,
+                    dia: '', hora: null, massageType: null,
+                    ubicacion: null, tipoServicio: 'salon', codigoPais: '54'
+                };
+                state.bookingStep = 'select_massage';
+                state.errorCount = 0;
+                showMassages();
+            } else if (state.clientName) {
+                state.bookingStep = 'phone';
+                state.errorCount = 0;
+                addMessage('¿Cuál es tu número de teléfono? (solo números)', 'bot');
+            } else {
+                state.bookingStep = 'name';
+                state.errorCount = 0;
+                addMessage('¿Cuál es tu nombre?', 'bot');
+            }
+        }
+        
+        function showMassages() {
+            if (!state.servicios.length) {
+                addMessage('No hay servicios disponibles.', 'bot');
+                return;
+            }
+            let m = '📋 *Masajes disponibles:*\n\n';
+            state.servicios.forEach((s, i) => {
+                m += `${i+1}. *${s.nombre}* - ${s.precio}\n   ${(s.descripcion||'').substring(0,50)}...\n\n`;
+            });
+            m += 'Respondé con el *número* del masaje.';
+            addMessage(m, 'bot');
+        }
+        
+        function processBookingStep(msg) {
+            const lower = msg.toLowerCase().trim();
+            const pb = state.pendingBooking;
+            
+            // Selección de masaje
+            if (state.bookingStep === 'select_massage') {
+                const opt = parseInt(msg);
+                if (!isNaN(opt) && opt >= 1 && opt <= state.servicios.length) {
+                    pb.massageType = state.servicios[opt-1].nombre;
+                    state.bookingStep = 'service_type';
+                    state.errorCount = 0;
+                    addMessage(`✨ *${pb.massageType}*\n\n¿Dónde?\n1️⃣ Salón\n2️⃣ Domicilio`, 'bot');
+                } else {
+                    state.errorCount++;
+                    if (state.errorCount >= 3) {
+                        state.bookingStep = null;
+                        addMessage('Reiniciando. Decí "reservar" para empezar.', 'bot');
+                    } else {
+                        addMessage(`Elegí un número del 1 al ${state.servicios.length}.`, 'bot');
+                    }
+                }
+                return;
+            }
+            
+            // Nombre
+            if (state.bookingStep === 'name' || state.bookingStep === 'name_with_massage') {
+                if (!msg.trim() || msg.trim().length < 2) {
+                    addMessage('Ingresá un nombre válido.', 'bot');
+                    return;
+                }
+                state.clientName = msg.trim();
+                state.errorCount = 0;
+                
+                if (state.bookingStep === 'name_with_massage') {
+                    pb.nombre = state.clientName;
+                    state.bookingStep = 'phone_with_massage';
+                    addMessage(`Gracias ${state.clientName}. ¿Tu teléfono?`, 'bot');
+                } else {
+                    state.bookingStep = 'phone';
+                    addMessage(`¡Hola ${state.clientName}! ¿Tu teléfono?`, 'bot');
+                }
+                return;
+            }
+            
+            // Teléfono
+            if (state.bookingStep === 'phone' || state.bookingStep === 'phone_with_massage') {
+                const tel = msg.replace(/\D/g, '');
+                if (tel.length < 7) {
+                    state.errorCount++;
+                    if (state.errorCount >= 3) {
+                        state.bookingStep = null;
+                        addMessage('Reiniciando.', 'bot');
+                    } else {
+                        addMessage('Número inválido. Ingresá solo números (mínimo 7).', 'bot');
+                    }
+                    return;
+                }
+                state.clientPhone = tel;
+                pb.telefono = tel;
+                state.errorCount = 0;
+                
+                if (state.bookingStep === 'phone_with_massage') {
+                    pb.nombre = state.clientName;
+                    state.bookingStep = 'service_type';
+                    addMessage('¿Dónde?\n1️⃣ Salón\n2️⃣ Domicilio', 'bot');
+                } else {
+                    pb.nombre = state.clientName;
+                    state.bookingStep = 'select_massage';
+                    showMassages();
+                }
+                return;
+            }
+            
+            // Tipo de servicio
+            if (state.bookingStep === 'service_type') {
+                if (msg === '1') {
+                    pb.tipoServicio = 'salon';
+                    pb.ubicacion = 'Salón Serenity Spa';
+                    state.bookingStep = 'day';
+                    state.errorCount = 0;
+                    addMessage('✅ Salón\n\n📅 ¿Qué día? (Lunes a Sábado)', 'bot');
+                } else if (msg === '2') {
+                    pb.tipoServicio = 'domicilio';
+                    state.bookingStep = 'address';
+                    state.errorCount = 0;
+                    addMessage('🚗 Domicilio\n\n📍 ¿Dirección?', 'bot');
+                } else {
+                    addMessage('Respondé *1* para Salón o *2* para Domicilio.', 'bot');
+                }
+                return;
+            }
+            
+            // Dirección
+            if (state.bookingStep === 'address') {
+                if (!msg.trim() || msg.trim().length < 5) {
+                    addMessage('Dirección inválida. Ingresá calle y número.', 'bot');
+                    return;
+                }
+                pb.ubicacion = msg.trim();
+                state.bookingStep = 'day';
+                state.errorCount = 0;
+                addMessage('📅 ¿Qué día? (Lunes a Sábado)', 'bot');
+                return;
+            }
+            
+            // Día
+            if (state.bookingStep === 'day') {
+                const diasMap = { 'lunes':'lunes', 'martes':'martes', 'miercoles':'miercoles', 'jueves':'jueves', 'viernes':'viernes', 'sabado':'sabado' };
+                let dia = null;
+                for (const [k, v] of Object.entries(diasMap)) {
+                    if (lower.includes(k)) { dia = v; break; }
+                }
+                if (!dia) {
+                    addMessage('Día no válido. Elegí: Lunes a Sábado.', 'bot');
+                    return;
+                }
+                pb.dia = dia;
+                state.bookingStep = 'time';
+                state.errorCount = 0;
+                addMessage('⏰ ¿Hora? 12:00, 16:00 o 20:00', 'bot');
+                return;
+            }
+            
+            // Hora
+            if (state.bookingStep === 'time') {
+                const h = parseInt(msg);
+                if (!HORAS.includes(h)) {
+                    addMessage('Hora no válida. Elegí: 12, 16 o 20.', 'bot');
+                    return;
+                }
+                
+                loadTurnos().then(() => {
+                    if (state.turnos.some(t => t.telefono === pb.telefono && t.dia === pb.dia)) {
+                        addMessage('⚠️ Ya tenés un turno ese día.', 'bot');
+                        state.bookingStep = null;
+                        return;
+                    }
+                    if (state.turnos.some(t => t.dia === pb.dia && t.hora === h)) {
+                        addMessage('❌ Horario ocupado. Intentá otro día u hora.', 'bot');
+                        state.bookingStep = null;
+                        return;
+                    }
+                    pb.hora = h;
+                    confirmBooking();
+                });
+                return;
+            }
+            
+            // Si no hay step activo
+            if (!state.bookingStep) {
+                // Intentar detectar nombre
+                if (!state.clientName && msg.trim().length >= 2 && !/\d/.test(msg)) {
+                    state.clientName = msg.trim();
+                    addMessage(`¡Mucho gusto, ${state.clientName}! ¿En qué puedo ayudarte?\n\n• 📅 Reservar turno\n• ⏰ Ver horarios\n• 📋 Ver masajes\n• 💰 Ver precios`, 'bot');
+                    return;
+                }
+                
+                addMessage('¿En qué puedo ayudarte?\n\n• 📅 *Reservar turno*\n• ⏰ *Ver horarios*\n• 📋 *Ver masajes*\n• 💰 *Ver precios*', 'bot');
+            }
+        }
+        
+        async function confirmBooking() {
+            const d = state.pendingBooking;
+            try {
+                const res = await fetch(API.turnos, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(d)
+                });
+                const data = await res.json();
+                
+                if (res.ok) {
+                    const tipo = d.tipoServicio === 'domicilio' ? `📍 ${d.ubicacion}` : '📍 Salón';
+                    addMessage(`✅ *¡TURNO CONFIRMADO!*\n\n📅 ${d.dia}\n⏰ ${d.hora}:00 hs\n💆 ${d.massageType}\n${tipo}\n\n🌸 ¡Te esperamos!`, 'bot');
+                    state.bookingStep = null;
+                    state.pendingBooking = {
+                        nombre: state.clientName, telefono: state.clientPhone,
+                        dia: '', hora: null, massageType: null,
+                        ubicacion: null, tipoServicio: 'salon', codigoPais: '54'
+                    };
+                    await loadTurnos();
+                } else {
+                    addMessage('❌ ' + (data.error || 'No se pudo reservar.'), 'bot');
+                    state.bookingStep = null;
+                }
+            } catch(e) {
+                addMessage('❌ Error de conexión.', 'bot');
+                state.bookingStep = null;
+            }
+        }
+        
+        // ============================================================
+        // UTILIDADES
+        // ============================================================
+        function escHtml(s) {
+            if (!s) return '';
+            return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+        }
+        
+        function setupScrollReveal() {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) entry.target.classList.add('visible');
+                });
+            }, { threshold: 0.1 });
+            
+            document.querySelectorAll('.scroll-reveal').forEach(el => observer.observe(el));
+        }
+        
+        // ============================================================
+        // EVENT LISTENERS
+        // ============================================================
+        sendBtn.onclick = sendMessage;
+        input.onkeypress = (e) => {
+            if (e.key === 'Enter') sendMessage();
+        };
+        
+        // Header scroll effect
+        window.onscroll = () => {
+            document.getElementById('header').classList.toggle('scrolled', window.scrollY > 100);
+        };
+        
+        // ============================================================
+        // INICIAR
+        // ============================================================
+        init();
+    })();
+    </script>
+</body>
+</html>
