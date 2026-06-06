@@ -1,0 +1,944 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel | Serenity Spa</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box}
+        body{font-family:'Inter',sans-serif;background:#f3f4f8;padding:1.5rem;min-height:100vh}
+        .dashboard{max-width:1400px;margin:0 auto}
+        .admin-header{background:white;padding:1.25rem 1.75rem;border-radius:20px;box-shadow:0 1px 3px rgba(0,0,0,.05);margin-bottom:1.5rem;display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:1rem}
+        .title-section{display:flex;align-items:center;gap:.85rem}
+        .title-icon{width:44px;height:44px;border-radius:14px;background:linear-gradient(135deg,#C9A961,#A8883F);display:flex;align-items:center;justify-content:center;color:white}
+        h1{font-size:1.5rem;font-weight:700;color:#1a2332}
+        .header-actions{display:flex;gap:.75rem;flex-wrap:wrap}
+        .btn{padding:.6rem 1.2rem;border-radius:40px;font-weight:600;font-size:.8rem;cursor:pointer;border:none;display:inline-flex;align-items:center;gap:.5rem;transition:all .2s;text-decoration:none;font-family:inherit}
+        .btn-primary{background:#C9A961;color:white}.btn-primary:hover{background:#A8883F}
+        .btn-success{background:#059669;color:white}.btn-success:hover{background:#047857}
+        .btn-outline{background:white;color:#4b5563;border:1px solid #e5e7eb}.btn-outline:hover{border-color:#C9A961;color:#C9A961}
+        .btn-danger{background:#dc2626;color:white}.btn-danger:hover{background:#b91c1c}
+        .btn-warning{background:#f59e0b;color:white}.btn-warning:hover{background:#d97706}
+        .btn-whatsapp{background:#25D366;color:white}.btn-whatsapp:hover{background:#128C7E}
+        .btn-info{background:#3B82F6;color:white}.btn-info:hover{background:#2563EB}
+        .btn-security{background:#7c3aed;color:white}.btn-security:hover{background:#6d28d9}
+        .btn-dark{background:#1a2332;color:white}.btn-dark:hover{background:#2d3a4a}
+        .tabs{display:flex;gap:.5rem;margin-bottom:1.5rem;border-bottom:1px solid #e5e7eb;padding-bottom:.5rem;flex-wrap:wrap}
+        .tab{padding:.6rem 1.2rem;border-radius:40px;cursor:pointer;font-weight:500;transition:all .2s;background:transparent;border:none;font-size:.85rem;font-family:inherit}
+        .tab.active{background:#C9A961;color:white}.tab:hover:not(.active){background:rgba(201,169,97,.1)}
+        .tab-content{display:none}.tab-content.active{display:block}
+        .config-panel{background:white;border-radius:20px;padding:1.5rem;margin-bottom:1.5rem;border:1px solid #e5e7eb}
+        .config-panel h3{font-size:1.1rem;margin-bottom:1rem;color:#1a2332;display:flex;align-items:center;gap:.5rem}
+        .config-panel h3 i{color:#C9A961}
+        .form-group{margin-bottom:1rem}
+        .form-group label{display:block;margin-bottom:.4rem;font-weight:500;font-size:.8rem;color:#4b5563}
+        .form-group input,.form-group textarea,.form-group select{width:100%;padding:.6rem .8rem;border:1px solid #e5e7eb;border-radius:10px;font-family:inherit;font-size:.85rem}
+        .form-group input:focus,.form-group textarea:focus,.form-group select:focus{outline:none;border-color:#C9A961;box-shadow:0 0 0 3px rgba(201,169,97,.1)}
+        .form-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:1rem}
+        .servicios-grid,.turnos-grid,.seguridad-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(350px,1fr));gap:1rem;margin-top:1rem}
+        .servicio-card,.turno-card,.bloqueo-card{background:white;border-radius:16px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.05);border:1px solid #e5e7eb;transition:all .2s}
+        .servicio-card:hover,.turno-card:hover,.bloqueo-card:hover{box-shadow:0 4px 12px rgba(0,0,0,.1);transform:translateY(-2px)}
+        .servicio-imagen{width:100%;height:160px;object-fit:cover}
+        .servicio-info,.turno-info,.bloqueo-info{padding:1rem}
+        .servicio-nombre,.turno-nombre,.bloqueo-ip{font-size:1rem;font-weight:700;color:#1a2332;margin-bottom:.25rem}
+        .servicio-precio,.turno-hora{color:#C9A961;font-weight:600;font-size:.85rem;margin-bottom:.5rem}
+        .servicio-descripcion,.turno-detalle,.bloqueo-detalle{font-size:.75rem;color:#6b7280;margin-bottom:.5rem;line-height:1.4}
+        .servicio-beneficios{display:flex;flex-wrap:wrap;gap:.3rem;margin-bottom:.5rem}
+        .tag{background:#f3f4f8;padding:.2rem .5rem;border-radius:20px;font-size:.65rem;color:#4b5563}
+        .tag-danger{background:rgba(220,38,38,.1);color:#dc2626;font-weight:600}
+        .tag-warning{background:rgba(245,158,11,.1);color:#d97706;font-weight:600}
+        .tag-success{background:rgba(16,185,129,.1);color:#059669;font-weight:600}
+        .tag-purple{background:rgba(124,58,237,.1);color:#7c3aed;font-weight:600}
+        .tag-info{background:rgba(59,130,246,.1);color:#3B82F6;font-weight:600}
+        .servicio-acciones,.turno-acciones,.bloqueo-acciones{display:flex;gap:.5rem;padding-top:.5rem;border-top:1px solid #e5e7eb;flex-wrap:wrap}
+        .accion-btn{flex:1;min-width:70px;padding:.4rem;border-radius:8px;border:none;cursor:pointer;font-size:.65rem;font-weight:500;display:flex;align-items:center;justify-content:center;gap:.3rem;transition:all .2s;font-family:inherit}
+        .accion-btn.editar{background:rgba(201,169,97,.1);color:#C9A961}
+        .accion-btn.eliminar{background:rgba(220,38,38,.1);color:#dc2626}
+        .accion-btn.whatsapp{background:rgba(37,211,102,.1);color:#25D366}
+        .accion-btn.desbloquear{background:rgba(16,185,129,.1);color:#059669}
+        .accion-btn.bloquear-perm{background:rgba(220,38,38,.1);color:#dc2626}
+        .accion-btn.eliminar-reg{background:rgba(239,68,68,.15);color:#dc2626}
+        .accion-btn:hover{filter:brightness(.9);transform:scale(1.02)}
+        .modal-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.5);backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;z-index:1000;opacity:0;visibility:hidden;transition:all .2s}
+        .modal-overlay.active{opacity:1;visibility:visible}
+        .modal{background:white;border-radius:24px;max-width:700px;width:90%;max-height:85vh;overflow-y:auto}
+        .modal-header{padding:1.25rem 1.5rem;border-bottom:1px solid #e5e7eb;display:flex;justify-content:space-between;align-items:center}
+        .modal-header h3{font-size:1.2rem;color:#1a2332}
+        .modal-close{background:none;border:none;font-size:1.2rem;cursor:pointer;color:#9ca3af;transition:all .2s}
+        .modal-close:hover{color:#dc2626;transform:rotate(90deg)}
+        .modal-body{padding:1.5rem}
+        .modal-footer{padding:1rem 1.5rem;border-top:1px solid #e5e7eb;display:flex;justify-content:flex-end;gap:.75rem}
+        .dynamic-list{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:.5rem}
+        .dynamic-item{background:#f3f4f8;padding:.3rem .7rem;border-radius:20px;font-size:.75rem;display:flex;align-items:center;gap:.5rem}
+        .dynamic-item button{background:none;border:none;cursor:pointer;color:#dc2626}
+        .input-group{display:flex;gap:.5rem;margin-bottom:.5rem}
+        .input-group input{flex:1}
+        .toast{position:fixed;bottom:1.5rem;right:1.5rem;background:white;padding:.75rem 1.25rem;border-radius:12px;box-shadow:0 4px 12px rgba(0,0,0,.15);display:flex;align-items:center;gap:.6rem;transform:translateX(150%);transition:transform .3s;z-index:2000;font-size:.85rem}
+        .toast.show{transform:translateX(0)}.toast.error{border-left:4px solid #dc2626}.toast.success{border-left:4px solid #059669}
+        .empty-state{text-align:center;padding:3rem;background:white;border-radius:20px;color:#9ca3af}
+        .stats-bar{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem;margin-bottom:1.5rem}
+        .stat-card{background:white;border-radius:16px;padding:1.25rem;border:1px solid #e5e7eb;text-align:center;transition:all .2s}
+        .stat-card:hover{transform:translateY(-2px);box-shadow:0 4px 12px rgba(0,0,0,.1)}
+        .stat-card .stat-value{font-size:2rem;font-weight:700;color:#1a2332}
+        .stat-card .stat-label{font-size:.75rem;color:#6b7280;margin-top:.25rem}
+        .stat-card.danger .stat-value{color:#dc2626}.stat-card.warning .stat-value{color:#f59e0b}.stat-card.success .stat-value{color:#059669}.stat-card.info .stat-value{color:#3B82F6}
+        .image-upload-area{border:2px dashed #e5e7eb;border-radius:12px;padding:1.5rem;text-align:center;cursor:pointer;transition:all .2s;background:#f9fafb;margin-bottom:.5rem}
+        .image-upload-area:hover{border-color:#C9A961;background:rgba(201,169,97,.05)}
+        .image-upload-area i{font-size:2rem;color:#C9A961;margin-bottom:.5rem}
+        .image-upload-area p{font-size:.8rem;color:#6b7280}
+        .image-preview-container{display:flex;gap:1rem;flex-wrap:wrap;margin-top:.5rem}
+        .image-preview-box{flex:1;min-width:150px;border-radius:10px;border:2px solid #e5e7eb;overflow:hidden;background:#f9fafb;position:relative}
+        .image-preview-box img{width:100%;height:120px;object-fit:cover}
+        .image-preview-box .preview-label{position:absolute;bottom:0;left:0;right:0;background:rgba(0,0,0,.7);color:white;padding:.3rem;font-size:.65rem;text-align:center}
+        .image-preview-box.empty{display:flex;align-items:center;justify-content:center;height:120px;color:#9ca3af;font-size:.75rem}
+        .url-input-group{display:flex;gap:.5rem;align-items:center}
+        .url-input-group input{flex:1}
+        .url-input-group button{white-space:nowrap;padding:.6rem 1rem;font-size:.75rem}
+        .url-warning{background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.3);border-radius:8px;padding:.5rem .75rem;font-size:.7rem;color:#92400e;margin-top:.5rem;display:none;align-items:center;gap:.5rem}
+        .url-warning.show{display:flex}
+        .section-actions{display:flex;gap:.75rem;margin-bottom:1rem;flex-wrap:wrap}
+        table{width:100%;border-collapse:collapse;font-size:.8rem}
+        table th{background:#f9fafb;padding:.75rem;text-align:left;font-weight:600;color:#4b5563;border-bottom:2px solid #e5e7eb;position:sticky;top:0}
+        table td{padding:.75rem;border-bottom:1px solid #e5e7eb;color:#6b7280}
+        table tr:hover td{background:#f9fafb}
+        .table-container{max-height:400px;overflow-y:auto;border-radius:10px;border:1px solid #e5e7eb}
+        .security-mode-badge{display:inline-flex;align-items:center;gap:.5rem;padding:.4rem .8rem;border-radius:20px;font-size:.75rem;font-weight:600}
+        .security-mode-badge.active{background:rgba(16,185,129,.1);color:#059669}
+        .security-mode-badge.inactive{background:rgba(239,68,68,.1);color:#dc2626}
+        .pais-activo-card{background:linear-gradient(135deg,rgba(201,169,97,0.1),rgba(201,169,97,0.02));border:1px solid rgba(201,169,97,0.2)}
+        @media(max-width:768px){body{padding:.75rem}.servicios-grid,.turnos-grid,.seguridad-grid{grid-template-columns:1fr}.form-row{grid-template-columns:1fr}.stats-bar{grid-template-columns:repeat(2,1fr)}.image-preview-container{flex-direction:column}}
+    </style>
+</head>
+<body>
+<div class="dashboard">
+    <div class="admin-header">
+        <div class="title-section">
+            <div class="title-icon"><i class="fas fa-spa"></i></div>
+            <h1>Panel de Administración</h1>
+        </div>
+        <div class="header-actions">
+            <button class="btn btn-security" id="btnSeguridadHeader"><i class="fas fa-shield-alt"></i> Seguridad</button>
+            <button class="btn btn-success" id="btnGuardarConfig"><i class="fas fa-save"></i> Guardar Config</button>
+            <button class="btn btn-primary" id="btnAgregarServicio"><i class="fas fa-plus"></i> Agregar Servicio</button>
+            <button class="btn btn-outline" id="btnLogout"><i class="fas fa-sign-out-alt"></i> Salir</button>
+        </div>
+    </div>
+    <div class="tabs">
+        <button class="tab active" data-tab="config"><i class="fas fa-sliders-h"></i> Configuración</button>
+        <button class="tab" data-tab="servicios"><i class="fas fa-spa"></i> Servicios</button>
+        <button class="tab" data-tab="turnos"><i class="fas fa-calendar-check"></i> Turnos</button>
+        <button class="tab" data-tab="seguridad"><i class="fas fa-shield-alt"></i> Seguridad</button>
+    </div>
+
+    <!-- TAB CONFIGURACIÓN -->
+    <div id="tabConfig" class="tab-content active">
+        <div class="config-panel"><h3><i class="fas fa-image"></i> Sección Hero</h3>
+            <div class="form-row">
+                <div class="form-group"><label>Título</label><input type="text" id="heroTitulo" placeholder="Renueva tu Energía"></div>
+                <div class="form-group"><label>Subtítulo</label><input type="text" id="heroSubtitulo" placeholder="Experiencias de bienestar..."></div>
+            </div>
+            <div class="form-group">
+                <label>Subir imagen de fondo</label>
+                <div class="image-upload-area" id="heroUploadArea">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                    <p>Clic para seleccion imagen (JPG, PNG, WEBP)</p>
+                    <input type="file" id="heroImageInput" accept="image/jpeg,image/png,image/webp" style="display:none">
+                </div>
+                <div id="heroPreview" style="margin-top:.5rem; max-width:200px; border-radius:8px; overflow:hidden; display:none">
+                    <img id="heroPreviewImg" width="100%" style="border-radius:8px">
+                </div>
+            </div>
+            <div class="form-group"><label>O URL manual</label><input type="text" id="heroImagen" placeholder="https://..."></div>
+            <div class="form-group"><label>Texto Botón</label><input type="text" id="heroBoton" placeholder="Explorar Tratamientos"></div>
+        </div>
+        <div class="config-panel"><h3><i class="fas fa-tags"></i> Sección Servicios</h3>
+            <div class="form-row"><div class="form-group"><label>Etiqueta</label><input type="text" id="serviciosEtiqueta" placeholder="Nuestros Servicios"></div><div class="form-group"><label>Título</label><input type="text" id="serviciosTitulo" placeholder="Elige tu Masaje Ideal"></div></div>
+            <div class="form-group"><label>Descripción</label><textarea id="serviciosDescripcion" rows="2"></textarea></div>
+        </div>
+        <div class="config-panel"><h3><i class="fas fa-comment-dots"></i> Sección Contacto</h3>
+            <div class="form-row"><div class="form-group"><label>Título</label><input type="text" id="contactoTitulo" placeholder="Asistente de Reservas"></div><div class="form-group"><label>Subtítulo</label><input type="text" id="contactoDescripcion"></div></div>
+        </div>
+        <div class="config-panel"><h3><i class="fas fa-share-alt"></i> Sección Compartir</h3>
+            <div class="form-group"><label>Título</label><input type="text" id="shareTitulo" placeholder="Comparte Serenity Spa"></div></div>
+        
+        <div class="config-panel">
+            <h3><i class="fas fa-robot"></i> Configuración de IA</h3>
+            <div class="form-row">
+                <div class="form-group"><label>Nombre del asistente</label><input type="text" id="iaNombre" placeholder="SpaBot"></div>
+                <div class="form-group">
+                    <label>Tono de voz</label>
+                    <select id="iaTono">
+                        <option value="cálido y profesional">Cálido y profesional</option>
+                        <option value="amigable y casual">Amigable y casual</option>
+                        <option value="formal y elegante">Formal y elegante</option>
+                        <option value="divertido y energético">Divertido y energético</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group"><label>Estilo de comunicación</label><textarea id="iaEstilo" rows="2" placeholder="Hablar en español neutro, usar emojis..."></textarea></div>
+            <div class="form-group"><label>Reglas (una por línea)</label><textarea id="iaReglas" rows="4" placeholder="NUNCA inventar información...&#10;SIEMPRE ofrecer reservar turnos..."></textarea></div>
+            <div style="display:flex;gap:.5rem">
+                <button class="btn btn-primary" id="btnGuardarIA"><i class="fas fa-save"></i> Guardar Personalidad</button>
+                <button class="btn btn-info" id="btnRecargarIA"><i class="fas fa-sync"></i> Recargar Conocimiento</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB SERVICIOS -->
+    <div id="tabServicios" class="tab-content"><div class="servicios-grid" id="serviciosGrid"></div></div>
+
+    <!-- TAB TURNOS -->
+    <div id="tabTurnos" class="tab-content"><div class="turnos-grid" id="turnosGrid"></div></div>
+
+    <!-- TAB SEGURIDAD -->
+    <div id="tabSeguridad" class="tab-content">
+        <!-- Estadísticas -->
+        <div class="stats-bar">
+            <div class="stat-card danger"><div class="stat-value" id="statBloqueosActivos">0</div><div class="stat-label"><i class="fas fa-ban"></i> IPs Bloqueadas</div></div>
+            <div class="stat-card warning"><div class="stat-value" id="statIntentosFallidos">0</div><div class="stat-label"><i class="fas fa-exclamation-triangle"></i> Intentos Fallidos</div></div>
+            <div class="stat-card info"><div class="stat-value" id="statPaisesBloqueados">0</div><div class="stat-label"><i class="fas fa-globe-americas"></i> Países Bloqueados</div></div>
+            <div class="stat-card"><div class="stat-value" id="statHistorial">0</div><div class="stat-label"><i class="fas fa-history"></i> Registros Históricos</div></div>
+        </div>
+
+        <!-- Modo de seguridad -->
+        <div class="config-panel" style="background:#f9fafb">
+            <h3><i class="fas fa-toggle-on"></i> Modo de Seguridad</h3>
+            <div style="display:flex;align-items:center;gap:1rem;flex-wrap:wrap">
+                <span id="securityModeBadge" class="security-mode-badge active">
+                    <i class="fas fa-shield-alt"></i> <span id="securityModeText">Protección Activa</span>
+                </span>
+                <button class="btn btn-danger" id="btnToggleSecurity" style="font-size:.75rem">
+                    <i class="fas fa-power-off"></i> <span id="btnSecurityText">Desactivar Protección</span>
+                </button>
+            </div>
+            <p style="font-size:.7rem;color:#6b7280;margin-top:.5rem">
+                Cuando la protección está activa, se bloquean automáticamente las IPs con comportamientos sospechosos.
+            </p>
+        </div>
+
+        <!-- Acciones de seguridad -->
+        <div class="section-actions">
+            <button class="btn btn-warning" id="btnLimpiarExpirados"><i class="fas fa-broom"></i> Limpiar Bloqueos Expirados</button>
+            <button class="btn btn-danger" id="btnLimpiarTodo"><i class="fas fa-trash"></i> Limpiar Todos los Bloqueos</button>
+            <button class="btn btn-dark" id="btnExportarLog"><i class="fas fa-download"></i> Exportar Registros</button>
+        </div>
+
+        <!-- IPs Bloqueadas -->
+        <div class="config-panel">
+            <h3><i class="fas fa-ban"></i> IPs Bloqueadas Activamente</h3>
+            <div id="bloqueosActivosContainer">
+                <div class="empty-state"><i class="fas fa-check-circle fa-2x" style="color:#059669"></i><p>No hay IPs bloqueadas actualmente</p></div>
+            </div>
+        </div>
+
+        <!-- PAÍS ACTIVO (NUEVO) -->
+        <div class="config-panel pais-activo-card">
+            <h3><i class="fas fa-flag-checkered"></i> País Activo (Solo reservas desde aquí)</h3>
+            <p style="font-size:.75rem;color:#6b7280;margin-bottom:1rem">
+                <strong>Configuración de país único:</strong> Seleccione el país desde donde se permitirán las reservas. 
+                Una vez configurado, <strong>SOLO usuarios con ese código de país podrán reservar turnos</strong>.
+            </p>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>País permitido</label>
+                    <select id="selectPaisActivo">
+                        <option value="">Seleccionar país...</option>
+                        <option value="53">🇨🇺 Cuba (+53)</option>
+                        <option value="54">🇦🇷 Argentina (+54)</option>
+                        <option value="52">🇲🇽 México (+52)</option>
+                        <option value="57">🇨🇴 Colombia (+57)</option>
+                        <option value="56">🇨🇱 Chile (+56)</option>
+                        <option value="51">🇵🇪 Perú (+51)</option>
+                        <option value="34">🇪🇸 España (+34)</option>
+                        <option value="1">🇺🇸 EE.UU. (+1)</option>
+                        <option value="58">🇻🇪 Venezuela (+58)</option>
+                        <option value="593">🇪🇨 Ecuador (+593)</option>
+                        <option value="598">🇺🇾 Uruguay (+598)</option>
+                        <option value="595">🇵🇾 Paraguay (+595)</option>
+                        <option value="55">🇧🇷 Brasil (+55)</option>
+                        <option value="39">🇮🇹 Italia (+39)</option>
+                        <option value="33">🇫🇷 Francia (+33)</option>
+                        <option value="49">🇩🇪 Alemania (+49)</option>
+                    </select>
+                </div>
+                <div class="form-group" style="display:flex;align-items:end">
+                    <button class="btn btn-primary" id="btnActivarPais" style="background:#059669; white-space:nowrap">
+                        <i class="fas fa-check-circle"></i> Activar solo este país
+                    </button>
+                </div>
+            </div>
+            <div id="paisActivoInfo" style="margin-top:1rem; padding:.75rem; background:rgba(5,150,105,0.1); border-radius:12px; display:none">
+                <i class="fas fa-info-circle" style="color:#059669"></i>
+                <span id="paisActivoText"></span>
+                <button id="btnResetPaises" style="margin-left:1rem; background:rgba(220,38,38,0.1); border:none; padding:.3rem .8rem; border-radius:20px; color:#dc2626; cursor:pointer; font-size:.7rem">
+                    <i class="fas fa-undo"></i> Restablecer (permitir todos)
+                </button>
+            </div>
+        </div>
+
+        <!-- Control de Países (lista completa) -->
+        <div class="config-panel">
+            <h3><i class="fas fa-globe-americas"></i> Lista de Países (Autorizados/Bloqueados)</h3>
+            <p style="font-size:.75rem;color:#6b7280;margin-bottom:1rem">
+                Si no hay país activo configurado arriba, puede gestionar aquí qué países pueden reservar.
+            </p>
+            <div class="form-row" style="margin-bottom:1rem">
+                <div class="form-group">
+                    <label>Modo de operación</label>
+                    <select id="modoPaises">
+                        <option value="todos">Permitir todos (excepto bloqueados)</option>
+                        <option value="solo_autorizados">Solo países autorizados</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-row" style="align-items:end">
+                <div class="form-group">
+                    <label>Agregar país a lista</label>
+                    <select id="selectPais">
+                        <option value="">Seleccionar país...</option>
+                        <option value="53">Cuba (+53)</option>
+                        <option value="54">Argentina (+54)</option>
+                        <option value="52">México (+52)</option>
+                        <option value="57">Colombia (+57)</option>
+                        <option value="56">Chile (+56)</option>
+                        <option value="51">Perú (+51)</option>
+                        <option value="34">España (+34)</option>
+                        <option value="1">EE.UU. (+1)</option>
+                        <option value="58">Venezuela (+58)</option>
+                        <option value="593">Ecuador (+593)</option>
+                        <option value="598">Uruguay (+598)</option>
+                        <option value="595">Paraguay (+595)</option>
+                        <option value="55">Brasil (+55)</option>
+                        <option value="39">Italia (+39)</option>
+                        <option value="33">Francia (+33)</option>
+                        <option value="49">Alemania (+49)</option>
+                        <option value="otro">Otro (código manual)</option>
+                    </select>
+                </div>
+                <div class="form-group" id="codigoManualGroup" style="display:none">
+                    <label>Código de país</label>
+                    <input type="text" id="codigoManual" placeholder="+53">
+                </div>
+                <div class="form-group" style="display:flex;gap:.5rem;align-items:end">
+                    <button class="btn btn-success" id="btnAutorizarPais" style="white-space:nowrap"><i class="fas fa-check"></i> Autorizar</button>
+                    <button class="btn btn-danger" id="btnBloquearPais" style="white-space:nowrap"><i class="fas fa-ban"></i> Bloquear</button>
+                </div>
+            </div>
+            <div class="form-row" style="margin-top:1.5rem">
+                <div style="flex:1">
+                    <h4 style="font-size:.85rem;color:#059669;margin-bottom:.5rem">✅ Autorizados (<span id="countAutorizados">0</span>)</h4>
+                    <div id="listaAutorizados" style="display:flex;flex-wrap:wrap;gap:.5rem;min-height:40px">
+                        <span style="color:#9ca3af;font-size:.75rem">Ninguno (todos permitidos)</span>
+                    </div>
+                </div>
+                <div style="flex:1">
+                    <h4 style="font-size:.85rem;color:#dc2626;margin-bottom:.5rem">🚫 Bloqueados (<span id="countBloqueados">0</span>)</h4>
+                    <div id="listaBloqueados" style="display:flex;flex-wrap:wrap;gap:.5rem;min-height:40px">
+                        <span style="color:#9ca3af;font-size:.75rem">Ninguno</span>
+                    </div>
+                </div>
+            </div>
+            <div style="margin-top:1.5rem">
+                <h4 style="font-size:.85rem;color:#1a2332;margin-bottom:.5rem">📊 Reservas por país</h4>
+                <div id="statsPaises" style="display:flex;flex-wrap:wrap;gap:.5rem">
+                    <span style="color:#9ca3af;font-size:.75rem">Cargando...</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Historial de bloqueos -->
+        <div class="config-panel">
+            <h3><i class="fas fa-history"></i> Historial de Bloqueos</h3>
+            <div class="table-container">
+                <table>
+                    <thead><tr><th>IP</th><th>Tipo de Ataque</th><th>Motivo</th><th>Fecha</th><th>Intentos</th><th>Estado</th><th>Acción</th></tr></thead>
+                    <tbody id="tablaHistorialBody"><tr><td colspan="7" style="text-align:center;padding:2rem">Sin registros</td></tr></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL SERVICIO -->
+<div class="modal-overlay" id="modalServicio">
+    <div class="modal">
+        <div class="modal-header"><h3 id="modalTitle">Agregar Servicio</h3><button class="modal-close" onclick="closeModal()"><i class="fas fa-times"></i></button></div>
+        <div class="modal-body">
+            <div class="form-group"><label>Nombre *</label><input type="text" id="servicioNombre" placeholder="Masaje Relajante"></div>
+            <div class="form-group"><label>Precio *</label><input type="text" id="servicioPrecio" placeholder="$45"></div>
+            <div class="form-group"><label>Descripción *</label><textarea id="servicioDescripcion" rows="2"></textarea></div>
+            <div class="config-panel" style="background:#f9fafb;border:1px solid #e5e7eb">
+                <h3 style="font-size:.95rem"><i class="fas fa-globe"></i> Imagen Web</h3>
+                <div class="form-group"><label>Subir imagen</label><div class="image-upload-area" onclick="document.getElementById('inputFileWeb').click()"><i class="fas fa-cloud-upload-alt"></i><p>Clic para seleccionar</p><p style="font-size:.65rem;color:#9ca3af">JPG, PNG, WEBP</p><input type="file" id="inputFileWeb" accept="image/jpeg,image/png,image/webp" onchange="handleFileUpload(this)"></div></div>
+                <div class="form-group"><label>O URL</label><div class="url-input-group"><input type="text" id="servicioImagenWeb" placeholder="https://..." oninput="previewFromUrl('web')"><button class="btn btn-info" onclick="previewFromUrl('web')"><i class="fas fa-eye"></i></button></div></div>
+                <div class="image-preview-container"><div class="image-preview-box empty" id="previewBoxWeb">Sin vista</div></div>
+                <input type="hidden" id="servicioImagenWebFinal">
+            </div>
+            <div class="config-panel" style="background:#f0fdf4;border:1px solid #bbf7d0">
+                <h3 style="font-size:.95rem"><i class="fab fa-whatsapp" style="color:#25D366"></i> Imagen WhatsApp</h3>
+                <p style="font-size:.7rem;color:#6b7280;margin-bottom:.5rem">Solo URLs públicas (http/https). No se aceptan archivos locales.</p>
+                <div class="url-warning" id="waUrlWarning"><i class="fas fa-exclamation-triangle"></i><span>Solo URLs con http:// o https://</span></div>
+                <div class="form-group" style="margin-top:.75rem"><label>URL pública</label><div class="url-input-group"><input type="text" id="servicioImagenWhatsApp" placeholder="https://..." oninput="validarWaUrl()"><button class="btn btn-info" onclick="validarWaUrl()"><i class="fas fa-check"></i></button></div></div>
+                <div class="image-preview-container"><div class="image-preview-box empty" id="previewBoxWhatsApp">Sin vista</div></div>
+                <input type="hidden" id="servicioImagenWhatsAppFinal">
+            </div>
+            <div class="form-group"><label>Beneficios</label><div class="input-group"><input type="text" id="nuevoBeneficio" placeholder="60 minutos"><button class="btn btn-outline" id="btnAgregarBeneficio">+</button></div><div class="dynamic-list" id="beneficiosList"></div></div>
+            <div class="form-group"><label>Efectos</label><div class="input-group"><input type="text" id="nuevoEfecto" placeholder="Relajación"><button class="btn btn-outline" id="btnAgregarEfecto">+</button></div><div class="dynamic-list" id="efectosList"></div></div>
+        </div>
+        <div class="modal-footer"><button class="btn btn-outline" onclick="closeModal()">Cancelar</button><button class="btn btn-primary" id="btnGuardarServicio"><i class="fas fa-save"></i> Guardar</button></div>
+    </div>
+</div>
+
+<!-- MODAL WHATSAPP -->
+<div class="modal-overlay" id="modalWhatsApp">
+    <div class="modal">
+        <div class="modal-header"><h3><i class="fab fa-whatsapp"></i> Mensaje WhatsApp</h3><button class="modal-close" onclick="closeWaModal()"><i class="fas fa-times"></i></button></div>
+        <div class="modal-body">
+            <div class="form-group"><label>Teléfono</label><input type="text" id="whatsappNumero" readonly style="background:#f3f4f8"></div>
+            <div class="form-group"><label>Mensaje</label><textarea id="whatsappMensaje" rows="10" readonly style="background:#f3f4f8;font-family:monospace;font-size:.75rem"></textarea></div>
+        </div>
+        <div class="modal-footer"><button class="btn btn-outline" onclick="closeWaModal()">Cerrar</button><button class="btn btn-whatsapp" id="btnEnviarWa"><i class="fab fa-whatsapp"></i> Enviar</button></div>
+    </div>
+</div>
+
+<div class="toast" id="toast"><i class="fas fa-check-circle"></i><span id="toastMsg"></span></div>
+
+<script>
+    let servicios=[], turnos=[], configData={}, editandoId=null;
+    let beneficiosTemp=[], efectosTemp=[];
+    let seguridadData={activos:[],historial:[],intentosFallidos:{}};
+    let imagenWebBase64=null;
+    let paisesData={autorizados:[],bloqueados:[],modo:'todos',paisActivo:null};
+    let seguridadActiva=true;
+
+    function getToken(){return sessionStorage.getItem('adminToken')}
+    function escapeHtml(s){if(!s)return'';const d=document.createElement('div');d.textContent=s;return d.innerHTML}
+
+    function showToast(msg,type='success'){
+        const t=document.getElementById('toast');
+        document.getElementById('toastMsg').textContent=msg;
+        t.className='toast '+type;
+        t.querySelector('i').className=type==='error'?'fas fa-exclamation-circle':'fas fa-check-circle';
+        t.classList.add('show');
+        setTimeout(()=>t.classList.remove('show'),3500);
+    }
+
+    async function verifyToken(){
+        const token=getToken();
+        if(!token) return false;
+        try{
+            const r=await fetch('/api/verify',{headers:{'Authorization':'Bearer '+token}});
+            const data=await r.json();
+            if(!data.valid){sessionStorage.removeItem('adminToken');return false;}
+            return true;
+        }catch{return false;}
+    }
+
+    async function apiFetch(url,opts={}){
+        const token=getToken();
+        if(!token){window.location.href='/login.html';throw new Error('No auth');}
+        const r=await fetch(url,{...opts,headers:{'Authorization':'Bearer '+token,'Content-Type':'application/json',...opts.headers}});
+        if(r.status===401){sessionStorage.removeItem('adminToken');window.location.href='/login.html';throw new Error('Sesión expirada');}
+        return r;
+    }
+
+    // ========== IMÁGENES ==========
+    function handleFileUpload(input){
+        const file=input.files[0]; if(!file)return;
+        if(file.size>5*1024*1024){showToast('Máx 5MB','error');input.value='';return;}
+        if(!['image/jpeg','image/png','image/webp','image/gif'].includes(file.type)){showToast('Formato no válido','error');input.value='';return;}
+        const reader=new FileReader();
+        reader.onload=e=>{imagenWebBase64=e.target.result;document.getElementById('servicioImagenWeb').value='[Subida]';document.getElementById('servicioImagenWebFinal').value=e.target.result;updatePreview('web',e.target.result);showToast('Imagen cargada');};
+        reader.readAsDataURL(file);
+    }
+    function previewFromUrl(tipo){
+        if(tipo==='web'){const u=document.getElementById('servicioImagenWeb').value.trim();if(u&&u!=='[Subida]'){imagenWebBase64=null;document.getElementById('servicioImagenWebFinal').value=u;updatePreview('web',u);}}
+    }
+    function validarWaUrl(){
+        const input=document.getElementById('servicioImagenWhatsApp');
+        const warning=document.getElementById('waUrlWarning');
+        const hidden=document.getElementById('servicioImagenWhatsAppFinal');
+        const previewBox=document.getElementById('previewBoxWhatsApp');
+        const valor=input.value.trim();
+        if(!valor){warning.classList.remove('show');hidden.value='';previewBox.innerHTML='Sin vista';previewBox.classList.add('empty');return;}
+        if(valor.startsWith('http://')||valor.startsWith('https://')){
+            warning.classList.remove('show');hidden.value=valor;
+            previewBox.innerHTML=`<img src="${valor}" alt="Preview" onerror="this.parentElement.innerHTML='Vista previa no disponible';this.parentElement.classList.add('empty')" style="width:100%;height:120px;object-fit:cover">`;
+            previewBox.classList.remove('empty');return;
+        }
+        warning.classList.add('show');hidden.value='';previewBox.innerHTML='URL no válida';previewBox.classList.add('empty');
+    }
+    function updatePreview(tipo,src){
+        const box=document.getElementById(tipo==='web'?'previewBoxWeb':'previewBoxWhatsApp');
+        if(src&&src!=='[Subida]'){
+            box.innerHTML=`<img src="${src}" alt="Preview" onerror="this.parentElement.innerHTML='Error';this.parentElement.classList.add('empty')"><div class="preview-label">${tipo==='web'?'Web':'WhatsApp'}</div>`;
+            box.classList.remove('empty');
+        }else{box.innerHTML='Sin vista';box.classList.add('empty');}
+    }
+    function resetImgFields(){
+        imagenWebBase64=null;
+        ['servicioImagenWeb','servicioImagenWebFinal','servicioImagenWhatsApp','servicioImagenWhatsAppFinal'].forEach(id=>document.getElementById(id).value='');
+        document.getElementById('inputFileWeb').value='';
+        document.getElementById('waUrlWarning').classList.remove('show');
+        ['previewBoxWeb','previewBoxWhatsApp'].forEach(id=>{document.getElementById(id).innerHTML='Sin vista';document.getElementById(id).classList.add('empty');});
+    }
+
+    // ========== CONFIG ==========
+    async function cargarConfig(){
+        try{const r=await fetch('/api/config');const d=await r.json();configData=d;
+            document.getElementById('heroTitulo').value=d.hero?.titulo||'';
+            document.getElementById('heroSubtitulo').value=d.hero?.subtitulo||'';
+            document.getElementById('heroImagen').value=d.hero?.imagenFondo||'';
+            document.getElementById('heroBoton').value=d.hero?.botonTexto||'';
+            document.getElementById('serviciosEtiqueta').value=d.serviciosSection?.etiqueta||'';
+            document.getElementById('serviciosTitulo').value=d.serviciosSection?.titulo||'';
+            document.getElementById('serviciosDescripcion').value=d.serviciosSection?.descripcion||'';
+            document.getElementById('contactoTitulo').value=d.contactoSection?.titulo||'';
+            document.getElementById('contactoDescripcion').value=d.contactoSection?.descripcion||'';
+            document.getElementById('shareTitulo').value=d.shareSection?.titulo||'';
+        }catch(e){console.warn('Config:',e);}
+    }
+    async function guardarConfig(){
+        const cfg={hero:{titulo:document.getElementById('heroTitulo').value,subtitulo:document.getElementById('heroSubtitulo').value,imagenFondo:document.getElementById('heroImagen').value,botonTexto:document.getElementById('heroBoton').value},serviciosSection:{etiqueta:document.getElementById('serviciosEtiqueta').value,titulo:document.getElementById('serviciosTitulo').value,descripcion:document.getElementById('serviciosDescripcion').value},contactoSection:{titulo:document.getElementById('contactoTitulo').value,descripcion:document.getElementById('contactoDescripcion').value},shareSection:{titulo:document.getElementById('shareTitulo').value}};
+        try{await apiFetch('/api/config',{method:'PUT',body:JSON.stringify(cfg)});showToast('Config guardada');}catch(e){showToast('Error al guardar','error');}
+    }
+
+    // ========== IA ==========
+    async function cargarPersonalidadIA(){
+        try{
+            const r=await apiFetch('/api/ia/personalidad');
+            const p=await r.json();
+            document.getElementById('iaNombre').value=p.nombre||'';
+            document.getElementById('iaTono').value=p.tono||'cálido y profesional';
+            document.getElementById('iaEstilo').value=p.estilo||'';
+            document.getElementById('iaReglas').value=(p.reglas||[]).join('\n');
+        }catch(e){console.warn('IA:',e);}
+    }
+    async function guardarPersonalidadIA(){
+        const data={
+            nombre:document.getElementById('iaNombre').value.trim(),
+            tono:document.getElementById('iaTono').value,
+            estilo:document.getElementById('iaEstilo').value.trim(),
+            reglas:document.getElementById('iaReglas').value.split('\n').filter(r=>r.trim())
+        };
+        try{await apiFetch('/api/ia/personalidad',{method:'PUT',body:JSON.stringify(data)});showToast('Personalidad de IA guardada');}catch(e){showToast('Error','error');}
+    }
+    async function recargarConocimientoIA(){
+        try{const r=await apiFetch('/api/ia/recargar',{method:'POST'});const d=await r.json();showToast(`Conocimiento recargado (${d.items} items)`);}catch(e){showToast('Error','error');}
+    }
+
+    // ========== SERVICIOS ==========
+    async function cargarServicios(){try{const r=await fetch('/api/servicios');servicios=await r.json();renderServicios();}catch(e){console.warn('Servicios:',e);}}
+    function renderServicios(){
+        const g=document.getElementById('serviciosGrid');
+        if(!servicios.length){g.innerHTML='<div class="empty-state"><i class="fas fa-spa fa-2x"></i><p>Sin servicios</p></div>';return;}
+        g.innerHTML=servicios.map(s=>{
+            const img=s.imagenWeb||"https://images.unsplash.com/photo-1544161515-4ab6ce6db874?w=800";
+            const waTag=s.imagenWhatsApp?'<span class="tag tag-success">WA: OK</span>':'<span class="tag tag-warning">WA: Sin URL</span>';
+            return`<div class="servicio-card"><img class="servicio-imagen" src="${img}" onerror="this.src='https://images.unsplash.com/photo-1544161515-4ab6ce6db874?w=800'"><div class="servicio-info"><div class="servicio-nombre">${escapeHtml(s.nombre)}</div><div class="servicio-precio">${escapeHtml(s.precio)}</div><div class="servicio-descripcion">${escapeHtml(s.descripcion)}</div><div class="servicio-beneficios">${(s.beneficios||[]).map(b=>`<span class="tag">${escapeHtml(b)}</span>`).join('')} ${waTag}</div><div class="servicio-acciones"><button class="accion-btn editar" onclick="editarServicio('${s.id}')"><i class="fas fa-edit"></i> Editar</button><button class="accion-btn eliminar" onclick="eliminarServicio('${s.id}')"><i class="fas fa-trash"></i> Eliminar</button></div></div></div>`;
+        }).join('');
+    }
+    window.editarServicio=async id=>{
+        const s=servicios.find(x=>x.id===id);if(!s)return;
+        editandoId=id;resetImgFields();
+        document.getElementById('modalTitle').textContent='Editar Servicio';
+        document.getElementById('servicioNombre').value=s.nombre;
+        document.getElementById('servicioPrecio').value=s.precio;
+        document.getElementById('servicioDescripcion').value=s.descripcion;
+        if(s.imagenWeb){if(s.imagenWeb.startsWith('data:')){imagenWebBase64=s.imagenWeb;document.getElementById('servicioImagenWeb').value='[Subida]';}else document.getElementById('servicioImagenWeb').value=s.imagenWeb;document.getElementById('servicioImagenWebFinal').value=s.imagenWeb;updatePreview('web',s.imagenWeb);}
+        document.getElementById('servicioImagenWhatsApp').value=s.imagenWhatsApp||'';
+        document.getElementById('servicioImagenWhatsAppFinal').value=s.imagenWhatsApp||'';
+        if(s.imagenWhatsApp)updatePreview('whatsapp',s.imagenWhatsApp);
+        beneficiosTemp=[...(s.beneficios||[])];efectosTemp=[...(s.efectos||[])];
+        renderBeneficios();renderEfectos();
+        document.getElementById('modalServicio').classList.add('active');
+    };
+    window.eliminarServicio=async id=>{if(!confirm('¿Eliminar?'))return;try{await apiFetch(`/api/servicios/${id}`,{method:'DELETE'});showToast('Eliminado');cargarServicios();}catch{showToast('Error','error');}};
+    async function guardarServicio(){
+        const nombre=document.getElementById('servicioNombre').value.trim();
+        const precio=document.getElementById('servicioPrecio').value.trim();
+        const desc=document.getElementById('servicioDescripcion').value.trim();
+        const iw=document.getElementById('servicioImagenWebFinal').value;
+        const iwa=document.getElementById('servicioImagenWhatsAppFinal').value;
+        if(!nombre||!precio||!desc){showToast('Completá todos los campos','error');return;}
+        const data={nombre,precio,descripcion:desc,beneficios:beneficiosTemp,efectos:efectosTemp,imagenWeb:iw||"https://images.unsplash.com/photo-1544161515-4ab6ce6db874?w=800",imagenWhatsApp:iwa||''};
+        try{
+            if(editandoId){await apiFetch('/api/servicios/'+editandoId,{method:'PUT',body:JSON.stringify(data)});showToast('Servicio actualizado');}
+            else{await apiFetch('/api/servicios',{method:'POST',body:JSON.stringify(data)});showToast('Servicio creado');}
+            closeModal();cargarServicios();
+        }catch(e){showToast('Error al guardar','error');}
+    }
+
+    // ========== TURNOS ==========
+    async function cargarTurnos(){try{const r=await apiFetch('/turnos');turnos=await r.json();renderTurnos();}catch(e){console.warn('Turnos:',e);}}
+    function renderTurnos(){
+        const g=document.getElementById('turnosGrid');
+        if(!turnos.length){g.innerHTML='<div class="empty-state"><i class="fas fa-calendar fa-2x"></i><p>Sin turnos</p></div>';return;}
+        g.innerHTML=turnos.map(t=>{
+            const waTag=t.confirmadoWhatsApp?'<span class="tag tag-purple"><i class="fab fa-whatsapp"></i> Confirmado WA</span>':'';
+            const paisTag=t.codigoPais?`<span class="tag tag-info">+${t.codigoPais}</span>`:'';
+            return`<div class="turno-card"><div class="turno-info"><div class="turno-nombre">${escapeHtml(t.nombre)} ${waTag} ${paisTag}</div><div class="turno-hora">💆‍♂️ ${escapeHtml(t.massageType||'Masaje')}</div><div class="turno-detalle">📅 ${escapeHtml(t.dia)} ${t.hora}:00 hs</div><div class="turno-detalle">📞 +${t.codigoPais||'53'} ${escapeHtml(t.telefono||'')}</div>${t.tipoServicio==='domicilio'?`<div class="turno-detalle">📍 ${escapeHtml(t.ubicacion)}</div>`:'<div class="turno-detalle">📍 En salón</div>'}<div class="turno-acciones"><button class="accion-btn whatsapp" onclick="prepararWa('${t.id}')"><i class="fab fa-whatsapp"></i> WA</button><button class="accion-btn eliminar" onclick="eliminarTurno('${t.id}')"><i class="fas fa-trash"></i> Eliminar</button></div></div></div>`;
+        }).join('');
+    }
+    window.eliminarTurno=async id=>{if(!confirm('¿Eliminar turno?'))return;try{await apiFetch(`/turnos/${id}`,{method:'DELETE'});showToast('Eliminado');cargarTurnos();}catch{showToast('Error','error');}};
+    async function prepararWa(id){
+        try{const r=await apiFetch(`/api/enviar-whatsapp/${id}`,{method:'POST'});const d=await r.json();
+            if(d.success){document.getElementById('whatsappNumero').value=d.numero;document.getElementById('whatsappMensaje').value=d.mensaje;document.getElementById('modalWhatsApp').classList.add('active');showToast('Turno marcado como confirmado por WhatsApp');cargarTurnos();}
+            else showToast('Error','error');
+        }catch{showToast('Error','error');}
+    }
+
+    // ========== SEGURIDAD ==========
+    async function cargarSeguridad(){
+        try{
+            const r=await apiFetch('/api/seguridad/bloqueos');
+            seguridadData=await r.json();
+            renderSeguridad();
+        }catch(e){console.warn('Seguridad:',e);}
+    }
+    function renderSeguridad(){
+        const a=seguridadData.activos||[],h=seguridadData.historial||[],i=seguridadData.intentosFallidos||{};
+        document.getElementById('statBloqueosActivos').textContent=a.length;
+        document.getElementById('statIntentosFallidos').textContent=Object.keys(i).length;
+        document.getElementById('statHistorial').textContent=h.length;
+        document.getElementById('statPaisesBloqueados').textContent=paisesData.bloqueados.length;
+
+        const c=document.getElementById('bloqueosActivosContainer');
+        if(!a.length){
+            c.innerHTML='<div class="empty-state"><i class="fas fa-check-circle fa-2x" style="color:#059669"></i><p>No hay IPs bloqueadas actualmente</p></div>';
+        }else{
+            c.innerHTML='<div class="seguridad-grid">'+a.map(b=>{
+                const tipoColor=b.permanente?'#dc2626':b.tiempoRestante>1800000?'#f59e0b':'#3B82F6';
+                return`<div class="bloqueo-card" style="border-left:4px solid ${tipoColor}">
+                    <div class="bloqueo-info">
+                        <div class="bloqueo-ip"><i class="fas fa-globe"></i> ${escapeHtml(b.ip)}</div>
+                        <div style="margin:.5rem 0">
+                            <span class="tag tag-danger">${escapeHtml(b.tipoAtaque||'Desconocido')}</span>
+                            ${b.permanente?'<span class="tag tag-danger">PERMANENTE</span>':''}
+                            ${!b.permanente&&b.tiempoRestante<1800000?'<span class="tag tag-warning">POR EXPIRAR</span>':''}
+                        </div>
+                        <div class="bloqueo-detalle"><strong>Motivo:</strong> ${escapeHtml(b.motivo)}</div>
+                        <div class="bloqueo-detalle"><strong>Restante:</strong> ${b.tiempoRestanteFormateado||'-'}</div>
+                        <div class="bloqueo-detalle"><strong>Intentos:</strong> ${b.intentos||0}</div>
+                        <div class="bloqueo-acciones">
+                            <button class="accion-btn desbloquear" onclick="desbloquear('${b.ip}')"><i class="fas fa-unlock"></i> Desbloquear</button>
+                            <button class="accion-btn eliminar-reg" onclick="elimBloqueo('${b.ip}')"><i class="fas fa-trash"></i> Eliminar</button>
+                            ${!b.permanente?`<button class="accion-btn bloquear-perm" onclick="bloquearPerm('${b.ip}')"><i class="fas fa-ban"></i> Perm.</button>`:''}
+                        </div>
+                    </div>
+                </div>`;
+            }).join('')+'</div>';
+        }
+
+        const tb=document.getElementById('tablaHistorialBody');
+        if(!h.length){
+            tb.innerHTML='<tr><td colspan="7" style="text-align:center;padding:2rem">Sin registros</td></tr>';
+        }else{
+            tb.innerHTML=h.slice(0,100).map(x=>{
+                const exp=Date.now()>x.hasta;
+                return`<tr>
+                    <td><code style="background:#f3f4f8;padding:.2rem .4rem;border-radius:4px">${escapeHtml(x.ip)}</code></td>
+                    <td><span class="tag tag-danger">${escapeHtml(x.tipoAtaque||'?')}</span></td>
+                    <td style="max-width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${escapeHtml(x.motivo)}</td>
+                    <td>${new Date(x.fecha).toLocaleString()}</td>
+                    <td>${x.intentos||0}</td>
+                    <td>${exp?'<span class="tag tag-success">Expirado</span>':'<span class="tag tag-warning">Activo</span>'}</td>
+                    <td><button class="accion-btn eliminar-reg" style="min-width:auto;padding:.3rem .5rem" onclick="elimHistorial('${x.id}')"><i class="fas fa-trash"></i></button></td>
+                </tr>`;
+            }).join('');
+        }
+    }
+
+    window.desbloquear=async ip=>{if(!confirm(`¿Desbloquear ${ip}?`))return;try{await apiFetch(`/api/seguridad/desbloquear/${ip}`,{method:'POST'});showToast('IP desbloqueada');cargarSeguridad();}catch{showToast('Error','error');}};
+    window.elimBloqueo=async ip=>{if(!confirm(`¿Eliminar bloqueo de ${ip}?`))return;try{await apiFetch(`/api/seguridad/bloqueos/${ip}`,{method:'DELETE'});showToast('Bloqueo eliminado');cargarSeguridad();}catch{showToast('Error','error');}};
+    window.elimHistorial=async id=>{if(!confirm('¿Eliminar registro?'))return;try{await apiFetch(`/api/seguridad/historial/${id}`,{method:'DELETE'});showToast('Registro eliminado');cargarSeguridad();}catch{showToast('Error','error');}};
+    window.bloquearPerm=async ip=>{if(!confirm(`¿Bloquear permanentemente ${ip}?`))return;try{await apiFetch(`/api/seguridad/bloquear-permanente/${ip}`,{method:'POST'});showToast('IP bloqueada permanentemente');cargarSeguridad();}catch{showToast('Error','error');}};
+
+    async function limpiarExpirados(){
+        try{const r=await apiFetch('/api/seguridad/limpiar-expirados',{method:'POST'});const d=await r.json();showToast(d.mensaje);cargarSeguridad();}catch{showToast('Error','error');}
+    }
+
+    async function limpiarTodo(){
+        if(!confirm('¿Eliminar TODOS los bloqueos activos? Esta acción no se puede deshacer.'))return;
+        try{
+            for(const b of seguridadData.activos||[]){
+                await apiFetch(`/api/seguridad/bloqueos/${b.ip}`,{method:'DELETE'});
+            }
+            showToast('Todos los bloqueos eliminados');
+            cargarSeguridad();
+        }catch{showToast('Error','error');}
+    }
+
+    function exportarLog(){
+        const data={
+            exportado:new Date().toISOString(),
+            activos:seguridadData.activos||[],
+            historial:seguridadData.historial||[],
+            paises:paisesData
+        };
+        const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+        const url=URL.createObjectURL(blob);
+        const a=document.createElement('a');
+        a.href=url;a.download=`serenity-seguridad-${new Date().toISOString().slice(0,10)}.json`;
+        a.click();URL.revokeObjectURL(url);
+        showToast('Registros exportados');
+    }
+
+    function toggleSeguridad(){
+        seguridadActiva=!seguridadActiva;
+        const badge=document.getElementById('securityModeBadge');
+        const text=document.getElementById('securityModeText');
+        const btnText=document.getElementById('btnSecurityText');
+
+        if(seguridadActiva){
+            badge.className='security-mode-badge active';
+            text.textContent='Protección Activa';
+            btnText.textContent='Desactivar Protección';
+            showToast('Protección de seguridad ACTIVADA');
+        }else{
+            badge.className='security-mode-badge inactive';
+            text.textContent='Protección Desactivada';
+            btnText.textContent='Activar Protección';
+            showToast('⚠️ Protección de seguridad DESACTIVADA','error');
+        }
+    }
+
+    // ========== PAÍSES ==========
+    async function cargarPaises(){
+        try{
+            const r=await apiFetch('/api/seguridad/paises');
+            paisesData=await r.json();
+            renderPaises();
+            cargarStatsPaises();
+            await cargarPaisActivo();
+        }catch(e){console.warn('Países:',e);}
+    }
+
+    function renderPaises(){
+        document.getElementById('modoPaises').value=paisesData.modo||'todos';
+        const listaAuth=document.getElementById('listaAutorizados');
+        const countAuth=document.getElementById('countAutorizados');
+        countAuth.textContent=paisesData.autorizados.length;
+
+        if(paisesData.autorizados.length===0){
+            listaAuth.innerHTML='<span style="color:#9ca3af;font-size:.75rem">Ninguno (todos permitidos)</span>';
+        }else{
+            listaAuth.innerHTML=paisesData.autorizados.map(c=>
+                `<span class="tag tag-success" style="cursor:pointer" onclick="quitarPais('${c}')" title="Click para quitar">+${c} <i class="fas fa-times" style="font-size:.6rem;margin-left:3px"></i></span>`
+            ).join('');
+        }
+
+        const listaBloq=document.getElementById('listaBloqueados');
+        const countBloq=document.getElementById('countBloqueados');
+        countBloq.textContent=paisesData.bloqueados.length;
+        document.getElementById('statPaisesBloqueados').textContent=paisesData.bloqueados.length;
+
+        if(paisesData.bloqueados.length===0){
+            listaBloq.innerHTML='<span style="color:#9ca3af;font-size:.75rem">Ninguno</span>';
+        }else{
+            listaBloq.innerHTML=paisesData.bloqueados.map(c=>
+                `<span class="tag tag-danger" style="cursor:pointer" onclick="quitarPais('${c}')" title="Click para quitar">+${c} <i class="fas fa-times" style="font-size:.6rem;margin-left:3px"></i></span>`
+            ).join('');
+        }
+    }
+
+    async function cargarPaisActivo(){
+        try{
+            const r=await apiFetch('/api/seguridad/paises');
+            const data=await r.json();
+            if(data.paisActivo && data.modo==='solo_autorizados'){
+                document.getElementById('paisActivoInfo').style.display='block';
+                document.getElementById('paisActivoText').innerHTML=`<strong>🔒 País activo:</strong> ${data.paisActivo.nombre} (+${data.paisActivo.codigo}) - Solo reservas desde este país`;
+            }else{
+                document.getElementById('paisActivoInfo').style.display='none';
+            }
+        }catch(e){console.warn('Error cargando país activo:',e);}
+    }
+
+    async function autorizarPais(){
+        const select=document.getElementById('selectPais');
+        let codigo=select.value;
+        if(codigo==='otro'){codigo=document.getElementById('codigoManual').value.replace(/\D/g,'');}
+        if(!codigo||!/^\d{1,3}$/.test(codigo)){showToast('Código de país inválido','error');return;}
+        const nombre=select.options[select.selectedIndex]?.text||codigo;
+        try{
+            await apiFetch('/api/seguridad/paises/autorizar',{method:'POST',body:JSON.stringify({codigo,nombre})});
+            showToast(`${nombre} autorizado`);
+            await cargarPaises();
+            document.getElementById('selectPais').value='';
+            document.getElementById('codigoManual').value='';
+            document.getElementById('codigoManualGroup').style.display='none';
+        }catch(e){showToast('Error','error');}
+    }
+
+    async function bloquearPais(){
+        const select=document.getElementById('selectPais');
+        let codigo=select.value;
+        if(codigo==='otro'){codigo=document.getElementById('codigoManual').value.replace(/\D/g,'');}
+        if(!codigo||!/^\d{1,3}$/.test(codigo)){showToast('Código de país inválido','error');return;}
+        const nombre=select.options[select.selectedIndex]?.text||codigo;
+        if(!confirm(`¿Bloquear ${nombre}? No podrán reservar turnos.`))return;
+        try{
+            await apiFetch('/api/seguridad/paises/bloquear',{method:'POST',body:JSON.stringify({codigo,nombre})});
+            showToast(`${nombre} bloqueado`);
+            await cargarPaises();
+            document.getElementById('selectPais').value='';
+            document.getElementById('codigoManual').value='';
+            document.getElementById('codigoManualGroup').style.display='none';
+        }catch(e){showToast('Error','error');}
+    }
+
+    async function quitarPais(codigo){
+        if(!confirm(`¿Quitar +${codigo} de todas las listas?`))return;
+        try{
+            await apiFetch(`/api/seguridad/paises/${codigo}`,{method:'DELETE'});
+            showToast(`+${codigo} eliminado`);
+            await cargarPaises();
+        }catch(e){showToast('Error','error');}
+    }
+
+    async function cargarStatsPaises(){
+        try{
+            const r=await apiFetch('/api/seguridad/paises/stats');
+            const stats=await r.json();
+            const container=document.getElementById('statsPaises');
+            if(!stats.length){container.innerHTML='<span style="color:#9ca3af;font-size:.75rem">Sin reservas aún</span>';return;}
+            container.innerHTML=stats.map(s=>
+                `<span class="tag" style="background:rgba(201,169,97,.1);color:#1a2332;font-weight:500">${s.nombre} (+${s.codigo}): ${s.reservas}</span>`
+            ).join('');
+        }catch(e){console.warn('Stats países:',e);}
+    }
+
+    async function activarPaisUnico(){
+        const select=document.getElementById('selectPaisActivo');
+        const codigo=select.value;
+        if(!codigo){
+            showToast('Seleccione un país','error');
+            return;
+        }
+        const option=select.options[select.selectedIndex];
+        const nombre=option.text.replace(/^[🇨🇺🇦🇷🇲🇽🇨🇴🇨🇱🇵🇪🇪🇸🇺🇸🇻🇪🇪🇨🇺🇾🇵🇾🇧🇷🇮🇹🇫🇷🇩🇪]\s*/, '');
+        
+        if(!confirm(`¿Activar SOLO ${nombre}? Los usuarios de otros países NO podrán reservar turnos.`)) return;
+        
+        try{
+            const r=await apiFetch('/api/seguridad/pais-activo',{
+                method:'PUT',
+                body:JSON.stringify({codigo:codigo, nombre:nombre})
+            });
+            const data=await r.json();
+            showToast(data.mensaje,'success');
+            await cargarPaises();
+        }catch(e){
+            showToast('Error al activar país','error');
+        }
+    }
+
+    async function resetPaises(){
+        if(!confirm('¿Restablecer configuración de países? Todos los países podrán reservar nuevamente.')) return;
+        try{
+            await apiFetch('/api/seguridad/paises',{
+                method:'PUT',
+                body:JSON.stringify({modo:'todos', autorizados:[], bloqueados:[]})
+            });
+            showToast('Configuración restablecida. Todos los países pueden reservar.');
+            await cargarPaises();
+        }catch(e){
+            showToast('Error al restablecer','error');
+        }
+    }
+
+    // ========== UTILS ==========
+    function closeModal(){document.getElementById('modalServicio').classList.remove('active');editandoId=null;beneficiosTemp=[];efectosTemp=[];resetImgFields();renderBeneficios();renderEfectos();}
+    function closeWaModal(){document.getElementById('modalWhatsApp').classList.remove('active');}
+    function renderBeneficios(){document.getElementById('beneficiosList').innerHTML=beneficiosTemp.map((b,i)=>`<div class="dynamic-item">${escapeHtml(b)}<button onclick="beneficiosTemp.splice(${i},1);renderBeneficios()"><i class="fas fa-times-circle"></i></button></div>`).join('');}
+    function renderEfectos(){document.getElementById('efectosList').innerHTML=efectosTemp.map((e,i)=>`<div class="dynamic-item">✨ ${escapeHtml(e)}<button onclick="efectosTemp.splice(${i},1);renderEfectos()"><i class="fas fa-times-circle"></i></button></div>`).join('');}
+
+    function cambiarTab(tab){
+        document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+        document.querySelector(`.tab[data-tab="${tab}"]`).classList.add('active');
+        document.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active'));
+        const m={config:'tabConfig',servicios:'tabServicios',turnos:'tabTurnos',seguridad:'tabSeguridad'};
+        if(m[tab])document.getElementById(m[tab]).classList.add('active');
+        if(tab==='servicios')cargarServicios();
+        if(tab==='turnos')cargarTurnos();
+        if(tab==='seguridad'){cargarSeguridad();cargarPaises();}
+        if(tab==='config')cargarPersonalidadIA();
+    }
+
+    // ========== EVENTOS ==========
+    document.getElementById('btnSeguridadHeader').onclick=()=>cambiarTab('seguridad');
+    document.getElementById('btnGuardarConfig').onclick=guardarConfig;
+    document.getElementById('btnAgregarServicio').onclick=()=>{editandoId=null;beneficiosTemp=[];efectosTemp=[];resetImgFields();document.getElementById('modalTitle').textContent='Agregar Servicio';document.getElementById('servicioNombre').value='';document.getElementById('servicioPrecio').value='';document.getElementById('servicioDescripcion').value='';renderBeneficios();renderEfectos();document.getElementById('modalServicio').classList.add('active');};
+    document.getElementById('btnGuardarServicio').onclick=guardarServicio;
+    document.getElementById('btnAgregarBeneficio').onclick=()=>{const i=document.getElementById('nuevoBeneficio');if(i.value.trim()){beneficiosTemp.push(i.value.trim());renderBeneficios();i.value='';}};
+    document.getElementById('btnAgregarEfecto').onclick=()=>{const i=document.getElementById('nuevoEfecto');if(i.value.trim()){efectosTemp.push(i.value.trim());renderEfectos();i.value='';}};
+    document.getElementById('btnLogout').onclick=()=>{sessionStorage.removeItem('adminToken');window.location.href='/login.html';};
+    document.getElementById('btnLimpiarExpirados').onclick=limpiarExpirados;
+    document.getElementById('btnLimpiarTodo').onclick=limpiarTodo;
+    document.getElementById('btnExportarLog').onclick=exportarLog;
+    document.getElementById('btnToggleSecurity').onclick=toggleSeguridad;
+    document.getElementById('btnGuardarIA').onclick=guardarPersonalidadIA;
+    document.getElementById('btnRecargarIA').onclick=recargarConocimientoIA;
+    document.getElementById('btnEnviarWa').onclick=()=>{const n=document.getElementById('whatsappNumero').value,m=document.getElementById('whatsappMensaje').value;if(n&&m){window.open(`https://wa.me/${n}?text=${encodeURIComponent(m)}`,'_blank');showToast('Abriendo WhatsApp...');}else showToast('Error','error');};
+    document.querySelectorAll('.tab').forEach(t=>t.onclick=()=>cambiarTab(t.dataset.tab));
+
+    // Eventos países
+    document.getElementById('selectPais').addEventListener('change',function(){
+        const manualGroup=document.getElementById('codigoManualGroup');
+        if(this.value==='otro'){manualGroup.style.display='block';document.getElementById('codigoManual').focus();}
+        else{manualGroup.style.display='none';}
+    });
+    document.getElementById('modoPaises').addEventListener('change',async function(){
+        try{
+            await apiFetch('/api/seguridad/paises',{method:'PUT',body:JSON.stringify({modo:this.value})});
+            showToast('Modo de países actualizado');
+            await cargarPaises();
+        }catch(e){showToast('Error','error');}
+    });
+    document.getElementById('btnAutorizarPais').addEventListener('click',autorizarPais);
+    document.getElementById('btnBloquearPais').addEventListener('click',bloquearPais);
+    document.getElementById('btnActivarPais').addEventListener('click',activarPaisUnico);
+    document.getElementById('btnResetPaises')?.addEventListener('click',resetPaises);
+
+    // Subida de imagen Hero
+    const heroUploadArea=document.getElementById('heroUploadArea');
+    const heroFileInput=document.getElementById('heroImageInput');
+    const heroPreview=document.getElementById('heroPreview');
+    const heroPreviewImg=document.getElementById('heroPreviewImg');
+    const heroImagenInput=document.getElementById('heroImagen');
+
+    heroUploadArea.addEventListener('click',()=>heroFileInput.click());
+    heroFileInput.addEventListener('change',async(e)=>{
+        const file=e.target.files[0];
+        if(!file)return;
+        if(file.size>5*1024*1024){showToast('Máx 5MB','error');return;}
+        const reader=new FileReader();
+        reader.onload=async(ev)=>{
+            const base64=ev.target.result;
+            heroPreviewImg.src=base64;
+            heroPreview.style.display='block';
+            try{
+                const res=await apiFetch('/api/upload-hero',{method:'POST',body:JSON.stringify({base64})});
+                const data=await res.json();
+                if(data.url){heroImagenInput.value=data.url;showToast('Imagen subida y actualizada');}
+                else throw new Error('No url');
+            }catch(err){showToast('Error al subir imagen','error');}
+        };
+        reader.readAsDataURL(file);
+    });
+
+    // ========== INICIO ==========
+    (async function(){
+        const valid=await verifyToken();
+        if(!valid){window.location.href='/login.html';return;}
+        await cargarConfig();
+        await cargarServicios();
+        await cargarTurnos();
+        await cargarPersonalidadIA();
+    })();
+</script>
+</body>
+</html>
