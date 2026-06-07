@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Login Admin | Serenity Spa</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(160deg, #1a2332 0%, #2C3E50 50%, #1a2332 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
+        .login-container {
+            background: rgba(255,255,255,0.03);
+            backdrop-filter: blur(24px);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 24px;
+            padding: 3rem 2.5rem;
+            width: 100%;
+            max-width: 420px;
+            animation: fadeIn .6s ease-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .login-header { text-align: center; margin-bottom: 2.5rem; }
+        .login-icon {
+            width: 64px; height: 64px;
+            border-radius: 18px;
+            background: linear-gradient(135deg, rgba(201,169,97,0.2), rgba(201,169,97,0.05));
+            border: 1px solid rgba(201,169,97,0.25);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.25rem;
+            position: relative;
+        }
+        .login-icon i { font-size: 1.6rem; color: #C9A961; }
+        .login-icon .shield {
+            position: absolute;
+            bottom: -5px;
+            right: -5px;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: #059669;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: .6rem;
+            color: white;
+            border: 2px solid #1a2332;
+        }
+        .login-header h2 { 
+            color: #f0ece4; 
+            font-size: 1.5rem; 
+            margin-bottom: 0.4rem;
+            font-weight: 700;
+        }
+        .login-header p { 
+            color: rgba(255,255,255,0.4); 
+            font-size: 0.82rem; 
+        }
+        .form-group { margin-bottom: 1.5rem; }
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: rgba(255,255,255,0.5);
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 600;
+        }
+        .password-input-wrapper { position: relative; }
+        .form-group input {
+            width: 100%;
+            padding: 0.9rem 3rem 0.9rem 1.2rem;
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 12px;
+            background: rgba(255,255,255,0.04);
+            color: #f0ece4;
+            font-size: 1rem;
+            font-family: 'Inter', sans-serif;
+            transition: all 0.3s;
+        }
+        .form-group input:focus {
+            outline: none;
+            border-color: rgba(201,169,97,0.5);
+            box-shadow: 0 0 0 4px rgba(201,169,97,0.08);
+            background: rgba(255,255,255,0.06);
+        }
+        .form-group input::placeholder {
+            color: rgba(255,255,255,0.2);
+        }
+        .toggle-password {
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: rgba(255,255,255,0.25);
+            transition: color 0.2s;
+            font-size: 0.95rem;
+            padding: 0.3rem;
+        }
+        .toggle-password:hover {
+            color: rgba(201,169,97,0.8);
+        }
+        .btn-login {
+            width: 100%;
+            padding: 0.95rem;
+            background: linear-gradient(135deg, #C9A961, #A8883F);
+            color: #1a2332;
+            border: none;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.6rem;
+            transition: all 0.3s;
+            font-family: 'Inter', sans-serif;
+            letter-spacing: 0.3px;
+        }
+        .btn-login:hover {
+            filter: brightness(1.1);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(201,169,97,0.3);
+        }
+        .btn-login:active {
+            transform: translateY(0);
+        }
+        .btn-login:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+            filter: none;
+        }
+        .error-message {
+            color: #f87171;
+            font-size: 0.8rem;
+            margin-top: 0.75rem;
+            text-align: center;
+            display: none;
+            background: rgba(248,113,113,0.08);
+            padding: 0.6rem;
+            border-radius: 8px;
+            border: 1px solid rgba(248,113,113,0.15);
+        }
+        .error-message.show {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+        .error-message i {
+            font-size: 0.85rem;
+        }
+        .info-message {
+            color: rgba(255,255,255,0.35);
+            font-size: 0.7rem;
+            text-align: center;
+            margin-top: 1.5rem;
+            padding: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.4rem;
+        }
+        .back-link {
+            display: block;
+            text-align: center;
+            margin-top: 1.5rem;
+            color: rgba(255,255,255,0.3);
+            text-decoration: none;
+            font-size: 0.82rem;
+            transition: color 0.2s;
+        }
+        .back-link:hover {
+            color: rgba(201,169,97,0.7);
+        }
+        .attempts-warning {
+            background: rgba(245,158,11,0.1);
+            border: 1px solid rgba(245,158,11,0.2);
+            border-radius: 8px;
+            padding: 0.6rem 0.8rem;
+            margin-bottom: 1.5rem;
+            display: none;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.75rem;
+            color: #fbbf24;
+        }
+        .attempts-warning.show {
+            display: flex;
+        }
+        .attempts-warning i {
+            font-size: 1rem;
+        }
+        .locked-message {
+            background: rgba(220,38,38,0.1);
+            border: 1px solid rgba(220,38,38,0.2);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            display: none;
+            text-align: center;
+            color: #f87171;
+            font-size: 0.8rem;
+        }
+        .locked-message.show {
+            display: block;
+        }
+        .locked-message i {
+            font-size: 1.5rem;
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+        .locked-message .timer {
+            font-weight: 700;
+            font-size: 1.2rem;
+            color: #fbbf24;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-header">
+            <div class="login-icon">
+                <i class="fas fa-spa"></i>
+                <div class="shield">
+                    <i class="fas fa-shield-alt"></i>
+                </div>
+            </div>
+            <h2>Panel Administrativo</h2>
+            <p>Acceso exclusivo para administradores</p>
+        </div>
+        
+        <!-- Mensaje de bloqueo -->
+        <div class="locked-message" id="lockedMessage">
+            <i class="fas fa-lock"></i>
+            <p>Demasiados intentos fallidos</p>
+            <p style="margin-top:0.5rem">Esperá <span class="timer" id="lockTimer">60</span> segundos</p>
+        </div>
+        
+        <!-- Advertencia de intentos -->
+        <div class="attempts-warning" id="attemptsWarning">
+            <i class="fas fa-exclamation-triangle"></i>
+            <span id="attemptsText">Intentos restantes: 3</span>
+        </div>
+        
+        <form id="loginForm">
+            <div class="form-group">
+                <label><i class="fas fa-key"></i> Contraseña</label>
+                <div class="password-input-wrapper">
+                    <input 
+                        type="password" 
+                        id="password" 
+                        placeholder="••••••••" 
+                        required 
+                        autocomplete="current-password"
+                        maxlength="50"
+                    >
+                    <i class="fas fa-eye toggle-password" id="togglePassword" title="Mostrar/ocultar contraseña"></i>
+                </div>
+            </div>
+            
+            <div class="error-message" id="errorMessage">
+                <i class="fas fa-times-circle"></i>
+                <span id="errorText">Contraseña incorrecta</span>
+            </div>
+            
+            <button type="submit" class="btn-login" id="loginBtn">
+                <i class="fas fa-lock"></i> Acceder al Panel
+            </button>
+        </form>
+        
+        <div class="info-message">
+            <i class="fas fa-info-circle"></i>
+            Contraseña configurada en Render
+        </div>
+        
+        <a href="/" class="back-link"><i class="fas fa-arrow-left"></i> Volver al inicio</a>
+    </div>
+
+    <script>
+        (function() {
+            // Verificar si ya está autenticado
+            const token = sessionStorage.getItem('adminToken');
+            if (token) {
+                // Verificar que el token siga siendo válido
+                fetch('/api/verify', {
+                    headers: { 'Authorization': 'Bearer ' + token }
+                })
+                .then(r => r.json())
+                .then(data => {
+                    if (data.valid) {
+                        window.location.href = '/admin.html';
+                    } else {
+                        sessionStorage.removeItem('adminToken');
+                    }
+                })
+                .catch(() => {
+                    sessionStorage.removeItem('adminToken');
+                });
+            }
+            
+            const form = document.getElementById('loginForm');
+            const passwordInput = document.getElementById('password');
+            const loginBtn = document.getElementById('loginBtn');
+            const errorMsg = document.getElementById('errorMessage');
+            const errorText = document.getElementById('errorText');
+            const attemptsWarning = document.getElementById('attemptsWarning');
+            const attemptsText = document.getElementById('attemptsText');
+            const lockedMessage = document.getElementById('lockedMessage');
+            const lockTimer = document.getElementById('lockTimer');
+            const togglePassword = document.getElementById('togglePassword');
+            
+            let failedAttempts = parseInt(sessionStorage.getItem('loginAttempts') || '0');
+            let lockUntil = parseInt(sessionStorage.getItem('loginLockUntil') || '0');
+            let lockInterval = null;
+            
+            // Mostrar/ocultar contraseña
+            togglePassword.addEventListener('click', function() {
+                const type = passwordInput.type === 'password' ? 'text' : 'password';
+                passwordInput.type = type;
+                this.classList.toggle('fa-eye');
+                this.classList.toggle('fa-eye-slash');
+            });
+            
+            // Verificar estado de bloqueo
+            function checkLockStatus() {
+                const now = Date.now();
+                
+                if (lockUntil > now) {
+                    // Está bloqueado
+                    const remaining = Math.ceil((lockUntil - now) / 1000);
+                    lockedMessage.classList.add('show');
+                    attemptsWarning.classList.remove('show');
+                    loginBtn.disabled = true;
+                    passwordInput.disabled = true;
+                    lockTimer.textContent = remaining;
+                    
+                    if (!lockInterval) {
+                        lockInterval = setInterval(updateLockTimer, 1000);
+                    }
+                    return true;
+                } else {
+                    // No está bloqueado
+                    lockedMessage.classList.remove('show');
+                    loginBtn.disabled = false;
+                    passwordInput.disabled = false;
+                    
+                    if (lockInterval) {
+                        clearInterval(lockInterval);
+                        lockInterval = null;
+                    }
+                    
+                    // Mostrar intentos restantes si hay fallos
+                    if (failedAttempts > 0) {
+                        const remaining = Math.max(0, 5 - failedAttempts);
+                        attemptsWarning.classList.add('show');
+                        attemptsText.textContent = `Intentos restantes: ${remaining}`;
+                        
+                        if (remaining <= 2) {
+                            attemptsWarning.style.background = 'rgba(220,38,38,0.1)';
+                            attemptsWarning.style.borderColor = 'rgba(220,38,38,0.2)';
+                            attemptsWarning.style.color = '#f87171';
+                        }
+                    }
+                    
+                    return false;
+                }
+            }
+            
+            function updateLockTimer() {
+                const now = Date.now();
+                if (lockUntil > now) {
+                    const remaining = Math.ceil((lockUntil - now) / 1000);
+                    lockTimer.textContent = remaining;
+                    
+                    if (remaining <= 10) {
+                        lockTimer.style.color = '#fbbf24';
+                    }
+                } else {
+                    // Desbloquear
+                    failedAttempts = 0;
+                    lockUntil = 0;
+                    sessionStorage.removeItem('loginAttempts');
+                    sessionStorage.removeItem('loginLockUntil');
+                    checkLockStatus();
+                }
+            }
+            
+            // Limpiar error al escribir
+            passwordInput.addEventListener('input', function() {
+                errorMsg.classList.remove('show');
+            });
+            
+            // Manejar envío del formulario
+            form.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                
+                if (checkLockStatus()) return;
+                
+                const password = passwordInput.value.trim();
+                
+                if (!password) {
+                    errorText.textContent = 'Ingresá la contraseña';
+                    errorMsg.classList.add('show');
+                    return;
+                }
+                
+                // Deshabilitar botón
+                loginBtn.disabled = true;
+                loginBtn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> Verificando...';
+                
+                try {
+                    const res = await fetch('/api/login', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ password })
+                    });
+                    
+                    const data = await res.json();
+                    
+                    if (res.ok && data.success) {
+                        // Login exitoso
+                        failedAttempts = 0;
+                        lockUntil = 0;
+                        sessionStorage.removeItem('loginAttempts');
+                        sessionStorage.removeItem('loginLockUntil');
+                        sessionStorage.setItem('adminToken', data.token);
+                        
+                        // Mostrar éxito breve
+                        loginBtn.innerHTML = '<i class="fas fa-check"></i> ¡Acceso concedido!';
+                        loginBtn.style.background = 'linear-gradient(135deg, #059669, #047857)';
+                        
+                        setTimeout(() => {
+                            window.location.href = '/admin.html';
+                        }, 500);
+                        
+                    } else if (res.status === 403 && data.bloqueado) {
+                        // IP bloqueada
+                        errorText.textContent = 'Tu IP ha sido bloqueada por seguridad. Intentá más tarde.';
+                        errorMsg.classList.add('show');
+                        loginBtn.disabled = false;
+                        loginBtn.innerHTML = '<i class="fas fa-lock"></i> Acceder al Panel';
+                        passwordInput.value = '';
+                        
+                    } else {
+                        // Contraseña incorrecta
+                        failedAttempts++;
+                        sessionStorage.setItem('loginAttempts', failedAttempts.toString());
+                        
+                        if (failedAttempts >= 5) {
+                            // Bloquear por 60 segundos
+                            lockUntil = Date.now() + 60000;
+                            sessionStorage.setItem('loginLockUntil', lockUntil.toString());
+                            errorText.textContent = 'Demasiados intentos. Bloqueado por 60 segundos.';
+                        } else {
+                            const remaining = 5 - failedAttempts;
+                            errorText.textContent = `Contraseña incorrecta. ${remaining} intentos restantes.`;
+                        }
+                        
+                        errorMsg.classList.add('show');
+                        passwordInput.value = '';
+                        passwordInput.focus();
+                        
+                        loginBtn.disabled = false;
+                        loginBtn.innerHTML = '<i class="fas fa-lock"></i> Acceder al Panel';
+                        
+                        checkLockStatus();
+                    }
+                    
+                } catch (err) {
+                    errorText.textContent = 'Error de conexión. Verificá tu internet.';
+                    errorMsg.classList.add('show');
+                    loginBtn.disabled = false;
+                    loginBtn.innerHTML = '<i class="fas fa-lock"></i> Acceder al Panel';
+                }
+            });
+            
+            // Enfocar el input al cargar
+            passwordInput.focus();
+            
+            // Verificar estado inicial
+            checkLockStatus();
+            
+            // Prevenir envío múltiple con Enter
+            let submitting = false;
+            form.addEventListener('submit', function() {
+                if (submitting) return false;
+                submitting = true;
+                setTimeout(() => { submitting = false; }, 2000);
+            });
+            
+        })();
+    </script>
+</body>
+</html>
