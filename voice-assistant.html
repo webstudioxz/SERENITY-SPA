@@ -1,0 +1,799 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Asistente de Voz | Serenity Spa</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
+        .card {
+            max-width: 550px;
+            width: 100%;
+            background: rgba(255,255,255,0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 2rem;
+            overflow: hidden;
+            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        .header {
+            background: linear-gradient(135deg, rgba(201,169,97,0.2), rgba(168,136,63,0.1));
+            padding: 1.5rem;
+            text-align: center;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        .avatar {
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, #C9A961, #A8883F);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+            box-shadow: 0 8px 20px rgba(201,169,97,0.3);
+        }
+        .avatar svg { width: 35px; height: 35px; color: white; }
+        h1 { color: white; font-size: 1.3rem; font-weight: 600; }
+        .status {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(255,255,255,0.1);
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            color: #ccc;
+            margin-top: 0.5rem;
+        }
+        .dot { width: 8px; height: 8px; border-radius: 50%; background: #4ade80; transition: all 0.3s; }
+        .dot.recording { background: #ef4444; animation: pulse 1s infinite; }
+        .dot.processing { background: #f59e0b; animation: pulse 0.5s infinite; }
+        @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+        
+        .chat { height: 400px; overflow-y: auto; padding: 1rem; display: flex; flex-direction: column; gap: 0.8rem; }
+        .message { display: flex; gap: 0.5rem; max-width: 85%; animation: fadeIn 0.3s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .message.user { align-self: flex-end; flex-direction: row-reverse; }
+        .avatar-msg {
+            width: 32px; height: 32px; border-radius: 50%;
+            background: linear-gradient(135deg, #C9A961, #A8883F);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            font-weight: bold;
+            color: #1a1a2e;
+            flex-shrink: 0;
+        }
+        .message.user .avatar-msg { background: #2a2a4a; color: #C9A961; }
+        .bubble {
+            background: rgba(255,255,255,0.1);
+            padding: 0.7rem 1rem;
+            border-radius: 18px;
+            font-size: 0.85rem;
+            color: white;
+            line-height: 1.4;
+            word-break: break-word;
+        }
+        .message.user .bubble { background: #C9A961; color: #1a1a2e; }
+        
+        .footer { padding: 1rem; border-top: 1px solid rgba(255,255,255,0.1); display: flex; justify-content: center; gap: 1rem; }
+        .mic-btn {
+            width: 65px; height: 65px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #C9A961, #A8883F);
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(201,169,97,0.3);
+        }
+        .mic-btn:hover { transform: scale(1.05); }
+        .mic-btn.recording { background: #ef4444; animation: pulse 1s infinite; box-shadow: 0 0 20px #ef4444; }
+        .mic-btn svg { width: 28px; height: 28px; color: white; }
+        
+        .input-area {
+            display: flex;
+            gap: 0.5rem;
+            padding: 1rem;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            background: rgba(0,0,0,0.2);
+        }
+        .input-area input {
+            flex: 1;
+            padding: 0.8rem 1rem;
+            border-radius: 30px;
+            border: none;
+            background: rgba(255,255,255,0.1);
+            color: white;
+            font-size: 0.9rem;
+            outline: none;
+        }
+        .input-area input::placeholder { color: rgba(255,255,255,0.4); }
+        .input-area input:focus { background: rgba(255,255,255,0.15); }
+        .input-area button {
+            padding: 0.8rem 1.2rem;
+            border-radius: 30px;
+            border: none;
+            background: #C9A961;
+            color: #1a1a2e;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .input-area button:hover { background: #A8883F; }
+        
+        .hidden { display: none; }
+        .typing { display: flex; gap: 0.2rem; padding: 0.5rem 1rem; background: rgba(255,255,255,0.1); border-radius: 18px; width: fit-content; }
+        .typing span {
+            width: 6px; height: 6px;
+            background: rgba(255,255,255,0.6);
+            border-radius: 50%;
+            animation: typingAnim 1.4s infinite ease-in-out;
+        }
+        .typing span:nth-child(2) { animation-delay: 0.2s; }
+        .typing span:nth-child(3) { animation-delay: 0.4s; }
+        @keyframes typingAnim { 0%,60%,100%{transform:translateY(0)} 30%{transform:translateY(-6px)} }
+        
+        .mode-switch {
+            background: rgba(255,255,255,0.1);
+            border: none;
+            padding: 0.5rem;
+            border-radius: 50%;
+            cursor: pointer;
+            color: #C9A961;
+            transition: all 0.2s;
+        }
+        .mode-switch:hover { background: rgba(201,169,97,0.2); }
+        
+        .help-text {
+            text-align: center;
+            padding: 0.5rem;
+            font-size: 0.65rem;
+            color: rgba(255,255,255,0.4);
+            border-top: 1px solid rgba(255,255,255,0.05);
+        }
+    </style>
+</head>
+<body>
+<div class="card">
+    <div class="header">
+        <div class="avatar">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
+                <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+                <line x1="12" y1="19" x2="12" y2="23"/>
+                <line x1="8" y1="23" x2="16" y2="23"/>
+            </svg>
+        </div>
+        <h1>Asistente de Voz</h1>
+        <div class="status">
+            <span class="dot" id="statusDot"></span>
+            <span id="statusText">Conectado</span>
+        </div>
+    </div>
+    
+    <div class="chat" id="chat"></div>
+    
+    <div class="footer">
+        <button class="mic-btn" id="micBtn" title="Mantén presionado para hablar">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
+                <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+                <line x1="12" y1="19" x2="12" y2="23"/>
+                <line x1="8" y1="23" x2="16" y2="23"/>
+            </svg>
+        </button>
+        <button class="mode-switch" id="modeSwitch" title="Modo texto">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <path d="M4 7h16M4 12h16M4 17h10"/>
+                <path d="M17 17l3-3-3-3"/>
+            </svg>
+        </button>
+    </div>
+    
+    <div class="input-area hidden" id="textModeArea">
+        <input type="text" id="textInput" placeholder="Escribe tu mensaje..." autocomplete="off">
+        <button id="sendBtn">Enviar</button>
+    </div>
+    <div class="help-text">
+        💡 Di "reservar turno" para comenzar | Mantén presionado el micrófono para hablar
+    </div>
+</div>
+
+<script>
+    // ==================== CONFIGURACIÓN ====================
+    const HORAS_VALIDAS = [12, 16, 20];
+    const DIAS_VALIDOS = ['lunes', 'martes', 'miercoles', 'jueves', 'viernes', 'sabado'];
+    
+    // Estado de la aplicación
+    let clientName = null;
+    let clientPhone = null;
+    let selectedMassageType = null;
+    let bookingState = null;
+    let pendingBooking = {
+        nombre: '',
+        dia: '',
+        hora: null,
+        massageType: null,
+        telefono: null,
+        codigoPais: '53',
+        ubicacion: null,
+        tipoServicio: 'salon'
+    };
+    
+    let availableMassages = [];
+    let turnos = [];
+    let spaConfig = null;
+    let isBotTyping = false;
+    let messageQueue = [];
+    
+    // DOM Elements
+    const chat = document.getElementById('chat');
+    const micBtn = document.getElementById('micBtn');
+    const statusDot = document.getElementById('statusDot');
+    const statusText = document.getElementById('statusText');
+    const textModeArea = document.getElementById('textModeArea');
+    const textInput = document.getElementById('textInput');
+    const sendBtn = document.getElementById('sendBtn');
+    const modeSwitch = document.getElementById('modeSwitch');
+    
+    let isRecording = false;
+    let recognition = null;
+    let textMode = false;
+    
+    // ==================== FUNCIONES DE RED ====================
+    async function cargarServicios() {
+        try {
+            const response = await fetch('/api/servicios');
+            availableMassages = await response.json();
+            console.log(`✅ ${availableMassages.length} servicios cargados`);
+        } catch (error) {
+            console.error('Error cargando servicios:', error);
+            availableMassages = [];
+        }
+    }
+    
+    async function cargarTurnos() {
+        try {
+            const response = await fetch('/turnos');
+            turnos = await response.json();
+        } catch (error) {
+            console.error('Error cargando turnos:', error);
+            turnos = [];
+        }
+    }
+    
+    async function cargarSpaConfig() {
+        try {
+            const response = await fetch('/api/spa-config');
+            spaConfig = await response.json();
+            if (spaConfig && spaConfig.paisPermitido) {
+                pendingBooking.codigoPais = spaConfig.paisPermitido;
+            }
+        } catch (error) {
+            console.error('Error cargando configuración:', error);
+        }
+    }
+    
+    // ==================== CHAT UI ====================
+    function addMessage(text, isUser) {
+        if (!chat) return;
+        
+        const div = document.createElement('div');
+        div.className = 'message ' + (isUser ? 'user' : 'bot');
+        div.innerHTML = `
+            <div class="avatar-msg">${isUser ? (clientName ? clientName.charAt(0).toUpperCase() : 'T') : 'S'}</div>
+            <div class="bubble">${text.replace(/\n/g, '<br>')}</div>
+        `;
+        chat.appendChild(div);
+        chat.scrollTop = chat.scrollHeight;
+        
+        // Solo leer respuestas del bot
+        if (!isUser && 'speechSynthesis' in window && !textMode) {
+            try {
+                window.speechSynthesis.cancel();
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = 'es-ES';
+                utterance.rate = 0.9;
+                utterance.pitch = 1;
+                window.speechSynthesis.speak(utterance);
+            } catch(e) { console.log('Error en síntesis de voz:', e); }
+        }
+    }
+    
+    function showTyping() {
+        if (!chat) return;
+        const typingDiv = document.createElement('div');
+        typingDiv.className = 'message bot typing-placeholder';
+        typingDiv.id = 'typingIndicator';
+        typingDiv.innerHTML = `
+            <div class="avatar-msg">S</div>
+            <div class="typing"><span></span><span></span><span></span></div>
+        `;
+        chat.appendChild(typingDiv);
+        chat.scrollTop = chat.scrollHeight;
+        isBotTyping = true;
+        statusDot.className = 'dot processing';
+        statusText.textContent = 'Pensando...';
+    }
+    
+    function hideTyping() {
+        const typing = document.getElementById('typingIndicator');
+        if (typing) typing.remove();
+        isBotTyping = false;
+        statusDot.className = 'dot';
+        statusText.textContent = textMode ? 'Modo texto' : 'Listo';
+    }
+    
+    // ==================== FLUJO DE RESERVA ====================
+    function showMassageMenu() {
+        if (!availableMassages.length) {
+            addMessage('Lo siento, no hay servicios disponibles en este momento.', false);
+            return;
+        }
+        
+        let menu = '📋 Nuestros masajes disponibles:\n\n';
+        availableMassages.forEach((m, i) => {
+            menu += `${i+1}. ${m.nombre} - ${m.precio}\n   ${m.descripcion.substring(0, 50)}...\n\n`;
+        });
+        menu += 'Responde con el NÚMERO del masaje que deseas.';
+        addMessage(menu, false);
+    }
+    
+    function iniciarReserva() {
+        if (clientName && clientPhone && pendingBooking.codigoPais) {
+            pendingBooking = {
+                nombre: clientName,
+                dia: '',
+                hora: null,
+                massageType: null,
+                telefono: clientPhone,
+                codigoPais: pendingBooking.codigoPais || (spaConfig ? spaConfig.paisPermitido : '53'),
+                ubicacion: null,
+                tipoServicio: 'salon'
+            };
+            bookingState = 'selecting_massage';
+            showMassageMenu();
+        } else if (clientName && pendingBooking.codigoPais) {
+            bookingState = 'awaiting_phone';
+            addMessage('Para reservar, necesito tu número de teléfono. ¿Cuál es?', false);
+        } else if (clientName) {
+            bookingState = 'awaiting_country';
+            addMessage('¿De qué país eres? (Ej: Cuba, Argentina, México, Colombia, Chile, Perú, España)', false);
+        } else {
+            bookingState = 'awaiting_name';
+            addMessage('Para reservar un turno, necesito tu nombre. ¿Cuál es?', false);
+        }
+    }
+    
+    async function procesarMensaje(msg) {
+        const userMsg = msg.toLowerCase().trim();
+        
+        // Comandos rápidos
+        if (userMsg === 'menu' || userMsg === 'ayuda' || userMsg === 'hola') {
+            addMessage('📋 Puedo ayudarte con:\n1️⃣ Reservar un turno\n2️⃣ Ver horarios (12, 16, 20 hs)\n3️⃣ Tipos de masaje\n4️⃣ Consultar precios\n5️⃣ Nuestra ubicación\n\n¿Qué necesitas?', false);
+            return;
+        }
+        
+        if (userMsg.includes('horario') && !bookingState) {
+            const horarios = spaConfig?.horarios || '12:00, 16:00, 20:00';
+            addMessage(`Nuestros horarios son: ${horarios} horas. De lunes a sábado. ¿Quieres reservar un turno?`, false);
+            return;
+        }
+        
+        if ((userMsg.includes('precio') || userMsg.includes('costo')) && !bookingState) {
+            let lista = '💰 Precios:\n\n';
+            availableMassages.forEach(m => { lista += `• ${m.nombre}: ${m.precio}\n`; });
+            lista += '\n¿Te gustaría reservar alguno?';
+            addMessage(lista, false);
+            return;
+        }
+        
+        if ((userMsg.includes('ubicacion') || userMsg.includes('dirección') || userMsg.includes('donde')) && !bookingState) {
+            const direccion = spaConfig?.direccionSalon || 'Calle 23 #456, La Habana, Cuba';
+            addMessage(`📍 Nuestra dirección es: ${direccion}. También tenemos servicio a domicilio. ¿Te interesa reservar?`, false);
+            return;
+        }
+        
+        if ((userMsg.includes('masaje') || userMsg.includes('tipos')) && !bookingState) {
+            showMassageMenu();
+            return;
+        }
+        
+        // Detectar intención de reserva
+        const palabrasReserva = ['reservar', 'turno', 'cita', 'agendar', 'quiero reservar', 'necesito reservar', 'quisiera reservar'];
+        const quiereReservar = palabrasReserva.some(p => userMsg.includes(p));
+        
+        if (quiereReservar && !bookingState) {
+            iniciarReserva();
+            return;
+        }
+        
+        // FLUJO DE RESERVA
+        if (bookingState) {
+            await procesarFlujoReserva(msg);
+            return;
+        }
+        
+        // Respuesta por defecto
+        addMessage('Hola, soy el asistente de Serenity Spa. ¿En qué puedo ayudarte? Puedo ayudarte a reservar turnos, consultar horarios (12, 16, 20 hs), ver nuestros masajes o preguntar por precios. ¿Qué necesitas?', false);
+    }
+    
+    async function procesarFlujoReserva(msg) {
+        const userMsg = msg.toLowerCase().trim();
+        
+        // AWAITING NAME
+        if (bookingState === 'awaiting_name') {
+            if (!msg.trim()) { addMessage('Por favor, ingresa tu nombre.', false); return; }
+            clientName = msg.trim();
+            pendingBooking.nombre = clientName;
+            addMessage(`Gracias ${clientName}. ¿De qué país eres?`, false);
+            bookingState = 'awaiting_country';
+            return;
+        }
+        
+        // AWAITING COUNTRY
+        if (bookingState === 'awaiting_country') {
+            const paisesMap = {
+                'cuba': '53', 'argentina': '54', 'méxico': '52', 'mexico': '52',
+                'colombia': '57', 'chile': '56', 'perú': '51', 'peru': '51',
+                'españa': '34', 'espania': '34', 'eeuu': '1', 'usa': '1', 'estados unidos': '1',
+                'venezuela': '58', 'ecuador': '593', 'uruguay': '598', 'paraguay': '595', 'brasil': '55'
+            };
+            
+            let codigo = null;
+            for (const [pais, cod] of Object.entries(paisesMap)) {
+                if (userMsg.includes(pais)) {
+                    codigo = cod;
+                    break;
+                }
+            }
+            
+            if (codigo) {
+                pendingBooking.codigoPais = codigo;
+                addMessage(`País registrado. Ahora, ¿cuál es tu número de teléfono?`, false);
+                bookingState = 'awaiting_phone';
+            } else {
+                addMessage('No reconocí el país. Por favor, dime: Cuba, Argentina, México, Colombia, Chile, Perú, España, etc.', false);
+            }
+            return;
+        }
+        
+        // AWAITING PHONE
+        if (bookingState === 'awaiting_phone') {
+            const telefono = msg.replace(/\D/g, '');
+            if (telefono.length < 7) { 
+                addMessage('Número inválido. Ingresa al menos 7 dígitos.', false); 
+                return; 
+            }
+            clientPhone = telefono;
+            pendingBooking.telefono = telefono;
+            pendingBooking.nombre = clientName;
+            pendingBooking.codigoPais = pendingBooking.codigoPais || (spaConfig ? spaConfig.paisPermitido : '53');
+            bookingState = 'selecting_massage';
+            showMassageMenu();
+            return;
+        }
+        
+        // SELECTING MASSAGE
+        if (bookingState === 'selecting_massage') {
+            const option = parseInt(msg);
+            if (!isNaN(option) && option >= 1 && option <= availableMassages.length) {
+                selectedMassageType = availableMassages[option - 1].nombre;
+                pendingBooking.massageType = selectedMassageType;
+                bookingState = 'awaiting_service_type';
+                addMessage(`Has seleccionado ${selectedMassageType}. ¿Dónde prefieres recibirlo?\n1️⃣ En el salón\n2️⃣ A domicilio`, false);
+            } else {
+                addMessage('Por favor, responde con el NÚMERO del masaje (1, 2, 3...).', false);
+            }
+            return;
+        }
+        
+        // AWAITING SERVICE TYPE
+        if (bookingState === 'awaiting_service_type') {
+            if (msg === '1' || userMsg.includes('salon') || userMsg.includes('salón')) {
+                pendingBooking.tipoServicio = 'salon';
+                pendingBooking.ubicacion = spaConfig?.direccionSalon || 'Salón Serenity Spa';
+                bookingState = 'awaiting_day';
+                addMessage(`Servicio en el salón. ¿Qué día prefieres? (Lunes a Sábado)`, false);
+            } else if (msg === '2' || userMsg.includes('domicilio') || userMsg.includes('casa')) {
+                pendingBooking.tipoServicio = 'domicilio';
+                bookingState = 'awaiting_location';
+                addMessage(`Servicio a domicilio. Por favor, ingresa tu dirección completa:`, false);
+            } else {
+                addMessage(`Responde 1️⃣ para salón o 2️⃣ para domicilio.`, false);
+            }
+            return;
+        }
+        
+        // AWAITING LOCATION
+        if (bookingState === 'awaiting_location') {
+            if (!msg.trim()) { addMessage('Por favor, ingresa una dirección válida.', false); return; }
+            pendingBooking.ubicacion = msg.trim();
+            bookingState = 'awaiting_day';
+            addMessage(`Dirección registrada. ¿Qué día prefieres? (Lunes a Sábado)`, false);
+            return;
+        }
+        
+        // AWAITING DAY
+        if (bookingState === 'awaiting_day') {
+            const diasMap = { 
+                'lunes': 'lunes', 'martes': 'martes', 'miercoles': 'miercoles', 
+                'jueves': 'jueves', 'viernes': 'viernes', 'sabado': 'sabado',
+                'sábado': 'sabado'
+            };
+            let dia = null;
+            for (const [key, value] of Object.entries(diasMap)) {
+                if (userMsg.includes(key)) {
+                    dia = value;
+                    break;
+                }
+            }
+            if (!dia) {
+                addMessage(`Día no reconocido. Días disponibles: Lunes, Martes, Miércoles, Jueves, Viernes, Sábado.`, false);
+                return;
+            }
+            pendingBooking.dia = dia;
+            bookingState = 'awaiting_time';
+            const horarios = spaConfig?.horarios || '12:00, 16:00, 20:00';
+            addMessage(`Horarios disponibles: ${horarios}. ¿A qué hora prefieres? (12, 16 o 20)`, false);
+            return;
+        }
+        
+        // AWAITING TIME
+        if (bookingState === 'awaiting_time') {
+            const hora = parseInt(msg);
+            if (!HORAS_VALIDAS.includes(hora)) {
+                addMessage(`Hora no válida. Horarios: 12:00, 16:00 o 20:00.`, false);
+                return;
+            }
+            
+            await cargarTurnos();
+            const ocupado = turnos.some(t => t.dia === pendingBooking.dia && t.hora === hora);
+            
+            if (!ocupado) {
+                const yaTieneTurno = turnos.some(t => t.telefono === pendingBooking.telefono && t.dia === pendingBooking.dia);
+                if (yaTieneTurno) {
+                    addMessage(`Ya tienes un turno reservado para el ${pendingBooking.dia}. Solo se permite un masaje por día.`, false);
+                    bookingState = null;
+                    return;
+                }
+                
+                pendingBooking.hora = hora;
+                await confirmarReserva();
+            } else {
+                addMessage(`El horario de las ${hora}:00 del ${pendingBooking.dia} está ocupado. ¿Te gustaría probar con otro día u horario?`, false);
+                bookingState = 'awaiting_day';
+            }
+            return;
+        }
+    }
+    
+    async function confirmarReserva() {
+        const datos = {
+            nombre: pendingBooking.nombre,
+            dia: pendingBooking.dia,
+            hora: pendingBooking.hora,
+            massageType: pendingBooking.massageType,
+            telefono: pendingBooking.telefono,
+            codigoPais: pendingBooking.codigoPais,
+            ubicacion: pendingBooking.ubicacion,
+            tipoServicio: pendingBooking.tipoServicio
+        };
+        
+        try {
+            const response = await fetch('/turnos', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(datos)
+            });
+            
+            const data = await response.json();
+            
+            if (response.ok) {
+                const tipoTexto = datos.tipoServicio === 'domicilio' ? `📍 Dirección: ${datos.ubicacion}` : '📍 En nuestro salón';
+                addMessage(`✅ ¡Turno confirmado!\n\n📅 Día: ${datos.dia}\n⏰ Hora: ${datos.hora}:00\n💆‍♂️ Masaje: ${datos.massageType}\n${tipoTexto}\n\n¡Te esperamos!`, false);
+                
+                // Resetear estado
+                bookingState = null;
+                pendingBooking = {
+                    nombre: clientName,
+                    dia: '',
+                    hora: null,
+                    massageType: null,
+                    telefono: clientPhone,
+                    codigoPais: pendingBooking.codigoPais,
+                    ubicacion: null,
+                    tipoServicio: 'salon'
+                };
+                await cargarTurnos();
+            } else {
+                addMessage(`❌ Error: ${data.error || 'No se pudo reservar el turno'}`, false);
+                if (data.alternativa) {
+                    addMessage(`⚠️ Horario alternativo disponible: ${data.alternativa.dia} a las ${data.alternativa.hora}:00. ¿Te sirve?`, false);
+                }
+            }
+        } catch (error) {
+            console.error('Error en reserva:', error);
+            addMessage('❌ Error de conexión. Por favor, intenta de nuevo.', false);
+        }
+    }
+    
+    // ==================== IA con fallback ====================
+    async function enviarMensajeIA(texto) {
+        showTyping();
+        
+        try {
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 8000);
+            
+            const response = await fetch('/api/chat-ia', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    mensaje: texto,
+                    nombre: clientName,
+                    codigoPais: pendingBooking.codigoPais
+                }),
+                signal: controller.signal
+            });
+            
+            clearTimeout(timeoutId);
+            
+            if (response.ok) {
+                const data = await response.json();
+                if (data.respuesta && data.respuesta.length > 5) {
+                    hideTyping();
+                    addMessage(data.respuesta, false);
+                    
+                    // Detectar si la IA quiere iniciar reserva
+                    const respuestaLower = data.respuesta.toLowerCase();
+                    if ((respuestaLower.includes('reservar') || respuestaLower.includes('turno')) && !bookingState) {
+                        setTimeout(() => iniciarReserva(), 1500);
+                    }
+                    return;
+                }
+            }
+            throw new Error('Respuesta inválida');
+        } catch(e) {
+            console.log('IA no disponible, usando flujo local:', e.message);
+            hideTyping();
+            await procesarMensaje(texto);
+        }
+    }
+    
+    // ==================== RECONOCIMIENTO DE VOZ ====================
+    function startRecording() {
+        if (isRecording) return;
+        
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        if (!SpeechRecognition) {
+            addMessage('⚠️ Tu navegador no soporta reconocimiento de voz. Usa el modo texto.', false);
+            textMode = true;
+            micBtn.classList.add('hidden');
+            textModeArea.classList.remove('hidden');
+            return;
+        }
+        
+        recognition = new SpeechRecognition();
+        recognition.lang = 'es-ES';
+        recognition.continuous = false;
+        recognition.interimResults = false;
+        recognition.maxAlternatives = 1;
+        
+        recognition.onstart = () => {
+            isRecording = true;
+            micBtn.classList.add('recording');
+            statusDot.className = 'dot recording';
+            statusText.textContent = 'Grabando... Habla ahora';
+        };
+        
+        recognition.onresult = (event) => {
+            const text = event.results[0][0].transcript;
+            console.log('🎤 Transcripción:', text);
+            addMessage(text, true);
+            enviarMensajeIA(text);
+        };
+        
+        recognition.onerror = (event) => {
+            console.error('Error reconocimiento:', event.error);
+            if (event.error !== 'no-speech') {
+                addMessage('No te entendí. ¿Podrías repetir?', false);
+            }
+        };
+        
+        recognition.onend = () => {
+            isRecording = false;
+            micBtn.classList.remove('recording');
+            if (!isBotTyping) {
+                statusDot.className = 'dot';
+                statusText.textContent = textMode ? 'Modo texto' : 'Listo';
+            }
+        };
+        
+        recognition.start();
+    }
+    
+    function stopRecording() {
+        if (recognition) {
+            recognition.stop();
+        }
+    }
+    
+    // ==================== EVENTOS ====================
+    micBtn.addEventListener('mousedown', startRecording);
+    micBtn.addEventListener('mouseup', stopRecording);
+    micBtn.addEventListener('mouseleave', stopRecording);
+    
+    micBtn.addEventListener('touchstart', (e) => {
+        e.preventDefault();
+        startRecording();
+    });
+    micBtn.addEventListener('touchend', (e) => {
+        e.preventDefault();
+        stopRecording();
+    });
+    
+    // Modo texto
+    modeSwitch.addEventListener('click', () => {
+        textMode = !textMode;
+        if (textMode) {
+            micBtn.classList.add('hidden');
+            textModeArea.classList.remove('hidden');
+            textInput.focus();
+            statusText.textContent = 'Modo texto';
+            addMessage('📝 Modo texto activado. Escribe tu mensaje.', false);
+        } else {
+            micBtn.classList.remove('hidden');
+            textModeArea.classList.add('hidden');
+            statusText.textContent = 'Listo';
+            addMessage('🎤 Modo voz activado. Mantén presionado el micrófono para hablar.', false);
+        }
+    });
+    
+    sendBtn.addEventListener('click', () => {
+        const text = textInput.value.trim();
+        if (text) {
+            addMessage(text, true);
+            enviarMensajeIA(text);
+            textInput.value = '';
+        }
+    });
+    
+    textInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            sendBtn.click();
+        }
+    });
+    
+    // ==================== INICIALIZACIÓN ====================
+    async function init() {
+        addMessage('🎤 Hola, soy el asistente de Serenity Spa. ¿En qué puedo ayudarte?', false);
+        addMessage('💡 Puedes decir "reservar turno" para comenzar, o preguntar por horarios, precios o ubicación.', false);
+        
+        await Promise.all([
+            cargarServicios(),
+            cargarTurnos(),
+            cargarSpaConfig()
+        ]);
+        
+        console.log('✅ Asistente de voz inicializado');
+    }
+    
+    init();
+</script>
+</body>
+</html>
