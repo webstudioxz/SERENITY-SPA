@@ -660,9 +660,13 @@
   // CONFIGURACIÓN DE SUPABASE
   // ⚠️ REEMPLAZA CON TUS DATOS REALES DE SUPABASE
   // ============================================
-  const SUPABASE_URL = 'https://tu-proyecto.supabase.co';
-  const SUPABASE_ANON_KEY = 'tu-anon-key-aqui';
   
+
+const SUPABASE_URL = window.SUPABASE_URL || 'https://tu-proyecto.supabase.co';
+const SUPABASE_ANON_KEY = window.SUPABASE_ANON_KEY || 'tu-anon-key-aqui';
+  
+
+
   const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
   const SITE_URL = window.location.origin;
 
